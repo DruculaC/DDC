@@ -1,0 +1,39 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+C:\Users\richard\Desktop\moto\Ö÷»ú\newHost.uvproj
+Project File Date:  03/23/2013
+
+<h2>Output:</h2>
+Build target 'Target 1'
+assembling STARTUP.A51...
+compiling newHost.c...
+compiling AD.c...
+AD.C(108): warning C291: not every exit path returns a value
+compiling PWM.c...
+compiling T0.c...
+compiling voice.c...
+compiling UART.c...
+compiling T1.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?COMMODE_2_DATA?NEWHOST
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?INITUART?UART
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SENDNBYTE?UART
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?CO?UART
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?INITSIGNAL?NEWHOST
+    CALLER1: ?PR?TIMET1?NEWHOST
+    CALLER2: ?PR?TIME0?NEWHOST
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?_SC_SPEECH?VOICE
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?TIME0?NEWHOST
+Program Size: data=11.1 xdata=67 code=3503
+creating hex file from ".\out\newHost"...
+".\out\newHost" - 0 Error(s), 7 Warning(s).

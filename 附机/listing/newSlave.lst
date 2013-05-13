@@ -1,0 +1,697 @@
+C51 COMPILER V9.01   NEWSLAVE                                                              04/23/2013 11:43:45 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE NEWSLAVE
+OBJECT MODULE PLACED IN .\out\newSlave.obj
+COMPILER INVOKED BY: d:\Keil\C51\BIN\C51.EXE newSlave.c BROWSE DEBUG OBJECTEXTEND PRINT(.\listing\newSlave.lst) OBJECT(.
+                    -\out\newSlave.obj)
+
+line level    source
+
+   1          
+   2          
+   3          #include"N79E81x.h"
+   4          #include<intrins.h>
+   5          #include"AD.h"
+   6          #include"UART.h"
+   7          #include"T0.h"
+   8          #include"voice.h"
+   9          #include"pwm.h"
+  10          #include"T1.h"
+  11          
+  12          //定义通信命令
+  13          
+  14          #define CmdStart 0x00 //开机命令
+  15          #define CmdStop 0x01  //关机命令
+  16          
+  17          #define ComMode_1 0xc1 //通信模式1 
+  18          #define ComMode_2 0xc2 //通信模式2
+  19          #define ComMode_3 0xc3 //通信模式3
+  20          #define ComMode_4 0xc4 //抬起指令
+  21          #define ComMode_5 0xc5//倒地指令
+  22          
+  23          #define Succeed 0xce  //通信成功
+  24          #define Wrong 0xff    //通信失败
+  25          
+  26          #define CmdHead 0xc8
+  27          #define CmdHead1 0x33 //数据帧的首部1, 00110011,11
+  28          #define CmdHead2 0xcc //数据帧的首部2,11001100,00
+  29          #define CmdHead3 0x3c //数据帧的首部3,11000011,01
+  30          #define CmdHead4 0xcc //数据帧的首部4,11001100,00
+  31          
+  32          #define MyAddress 0xe0
+  33          #define MyAddress1 0x33 //本机地址1, 00110011,11
+  34          #define MyAddress2 0x3c //本机地址2, 11000011,01
+  35          #define MyAddress3 0xcc //本机地址3,11001100,00
+  36          #define MyAddress4 0xcc //本机地址4,11001100,00
+  37          
+  38          //三路循环
+  39          sbit onePin=P1^6;
+  40          sbit twoPin=P1^7;
+  41          sbit threePin=P0^0;
+  42          
+  43          //附机的发射部分的控制端口
+  44          //sbit PWMout=P3^5;//发射机的方波输出口，现在使用PWM外设了
+  45          sbit ModeControl_1=P2^6;//发射机模式控制,0亮为1.5M模式，1灭为3M模式
+  46          
+  47          //接收机控制
+  48          //sbit SwitchControl=P1^3;      //1关闭接收机，0开启接收机
+  49          
+  50          //开关按键
+  51          sbit Turn=P0^3;//开关
+  52          
+  53          //模式选择按键
+  54          sbit ModeChange=P0^4;
+C51 COMPILER V9.01   NEWSLAVE                                                              04/23/2013 11:43:45 PAGE 2   
+
+  55          
+  56          //马达控制端
+  57          sbit Moto=P2^4;
+  58          
+  59          //电池控制      AD的1号通道为电池的电量检测端
+  60          sbit BatteryControl=P1^2;
+  61          
+  62          //接收机控制
+  63          //sbit SwitchControl=P1^3;      //1有效，0关闭
+  64          //发射机pin18
+  65          //sbit tran_out=P1^0;
+  66          
+  67          //开机状态标记位
+  68          bit TurnFlag=0;//0位关机状态，1为开机状态
+  69          
+  70          //模式选择位，0则用模式1,1则用模式2
+  71          bit ModeFlag=0;
+  72          
+  73          bit receiveFlag=0;//接收到数据标志
+  74          bit commuFlag=0;//开启通信标志
+  75          
+  76          bit alarmFlag2=0;//是否继续报警标志
+  77          bit alarmFlag3=0;//是否继续报警标志
+  78          bit alarmFlag4=0;       //抬起报警
+  79          bit alarmFlag5=0;       //倒地报警
+  80          unsigned int alarmCount2=0;//报警2循环次数
+  81          unsigned int alarmCount3=0;//报警3循环次数
+  82          unsigned int alarmCount4=0;//抬起报警循环次数
+  83          unsigned int alarmCount5=0;//倒地报警循环次数
+  84          
+  85          bit threeFlag=0;//三路循环开关标志
+  86          
+  87          bit power1Flag=0;
+  88          bit power2Flag=0;
+  89          bit power3Flag=0;
+  90          bit power4Flag=0;
+  91          
+  92          unsigned char voiceFlag=0;//声音循环开关 
+  93          
+  94          unsigned char dataFirst=0;//用于存储上次编码类型
+  95          
+  96          unsigned char count=0;//串口接收部分的计数器
+  97           
+  98          unsigned int time0Count_3=0;//作为串口每秒主辅机的信息交互时钟
+  99          
+ 100          unsigned int lastAddr=0;//上一次接收到的编码的地址
+ 101          unsigned int TestFlag=0;//1、2、3分别为每1S后的计数，在串口的成功指令里会执行将去归零的操作
+ 102                                          //如果连续3次都没有归零，则说明不在场了
+ 103          
+ 104          //作为接收和发送的缓存区
+ 105          unsigned char TxRxBuf[28]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+             -,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+ 106          //一个头字节，一个地址字节，一个命令字节，两个编码地址字节，两个编码
+ 107          unsigned char myTxRxData[7]={0x00,0x00,0x00,0x00,0x00,0x00,0x00};//处理完后的通信数据的缓冲区
+ 108          
+ 109          unsigned int time0Count_Clock=0;//电量检测时钟
+ 110          unsigned int Check=0;//作为AD检测值
+ 111          bit checkFlag=0;//电量检测标志
+ 112           
+ 113          unsigned char DataBetween=0;//作为接收数据的中间变量
+ 114          unsigned char RecData=0;//接收到的数据
+ 115          unsigned char DataTime=0;//作为接收的数据的移位次数计数
+C51 COMPILER V9.01   NEWSLAVE                                                              04/23/2013 11:43:45 PAGE 3   
+
+ 116          bit ComFlag=1;//做上升沿的一个标志
+ 117          unsigned char T1highcount=0;       //定时器T1在没有信号到来的时候，对高电平计数，一旦超过某个值，则将Datatime
+             -清0
+ 118          
+ 119          //功放开关控制，1为打开功放，0为关闭功放
+ 120          sbit PAshutdown=P1^4;
+ 121          
+ 122          //定义一个计数，来表示信号接收后，多长时间使接收机打开，即控制SwitchControl的高电平时间。
+ 123          //unsigned int SwitchControlcount=0;
+ 124            
+ 125          //函数声明
+ 126          //void codeData(unsigned char *doData,unsigned char len);               //编码 ,电平1变为0011，电平0变为1100
+ 127          //void transCode(unsigned char *doData,unsigned char len);//解码，将接收到得数据还原
+ 128          void ComMode_1_Data(void);//发送边码1
+ 129          
+ 130          //开机函数
+ 131          void StartAll(void);
+ 132          //关机函数
+ 133          void StopAll(void);
+ 134          
+ 135          //t=1时，延迟100us左右
+ 136          void Delay3(unsigned int t)
+ 137          {
+ 138   1              unsigned int i,j;
+ 139   1              for(i=0;i<t;i++)                
+ 140   1              for(j=0;j<23;j++);
+ 141   1      }
+ 142          
+ 143          //init signal，发送编码信号前的起始信号，用于将接收机的自动增益打开
+ 144          void initsignal()
+ 145          {
+ 146   1              unsigned char k,k1;
+ 147   1              unsigned char mystartbuffer=0xaa;
+ 148   1              for(k1=0;k1<1;k1++)
+ 149   1              {
+ 150   2                      for(k=0;k<8;k++)
+ 151   2                      {
+ 152   3                              if((mystartbuffer&0x80)==0x80)//为1
+ 153   3                              {
+ 154   4                                      P10=0;
+ 155   4                                      Delay3(80);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+ 156   4                              }
+ 157   3                              else//为0的情况
+ 158   3                              {
+ 159   4                                      P10=0;
+ 160   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+ 161   4                              }
+ 162   3                              P10=1;//常态为高电平
+ 163   3                              mystartbuffer<<=1;
+ 164   3                              Delay3(150);//延时要大于2ms
+ 165   3                      }
+ 166   2                      mystartbuffer=0xaa;
+ 167   2                      Delay3(80);
+ 168   2              }
+ 169   1              P10=1;
+ 170   1      //      Delay3(80);
+ 171   1      }
+ 172          
+ 173          void main(void)
+ 174          {
+ 175   1      //      unsigned int Check=0;//作为AD检测值     
+ 176   1      
+C51 COMPILER V9.01   NEWSLAVE                                                              04/23/2013 11:43:45 PAGE 4   
+
+ 177   1              noVoice();
+ 178   1      //      InitUART();
+ 179   1              InitT0();
+ 180   1              InitT1();
+ 181   1      //      TI=0;
+ 182   1      //      RI=0;
+ 183   1      
+ 184   1              Turn=1;           //至高开关位
+ 185   1              ModeChange=1;
+ 186   1      
+ 187   1              BatteryControl=0;//电池在没有充满的情况下为低电平
+ 188   1      
+ 189   1              Moto=1; //关闭马达
+ 190   1      //      SwitchControl=0;         //开起接收机的控制端为高电平
+ 191   1      
+ 192   1      //      ES=1;
+ 193   1              ET0=1;
+ 194   1              ET1=1;
+ 195   1              PT1=1;//定时器1的中断优先级最高
+ 196   1              EA=1;
+ 197   1      
+ 198   1              myPwm();        //开发射机
+ 199   1      
+ 200   1      //      P1M1=0x02;
+ 201   1      //      P1M2=0x00;
+ 202   1              P10=1;
+ 203   1      //      P11=1;
+ 204   1              PAshutdown=0;             //开机时，将功放关闭
+ 205   1              
+ 206   1              Check=GetADCResult(6);//上电时，电池电量检测一次
+ 207   1      
+ 208   1              while(1)
+ 209   1              {
+ 210   2                      if(Turn==0)
+ 211   2                      {
+ 212   3                              Delay(30);
+ 213   3                              if(Turn==0)
+ 214   3                              {
+ 215   4      //                              while(Turn==0);
+ 216   4                                      if(TurnFlag==0)          //说明是关机状态,则开机
+ 217   4                                      {
+ 218   5      //                                      SwitchControl=0;         //开起接收机的控制端为高电平
+ 219   5      
+ 220   5                                              PAshutdown=1;
+ 221   5                                              SC_Speech(3);            //车锁已打开
+ 222   5                                              Delay(100);
+ 223   5                                              PAshutdown=0;
+ 224   5                                                                                                                                                                                 
+ 225   5      //                                      StartAll();//开机给主机发送开机指令     
+ 226   5                                              commuFlag=1;//开启通信
+ 227   5                                              TurnFlag=1;
+ 228   5      
+ 229   5                                              alarmCount3=0;//清报警计数器
+ 230   5                                              alarmFlag3=0;//清报警标志
+ 231   5                                      }
+ 232   4                                      else
+ 233   4                                      {        
+ 234   5                                              PAshutdown=1;
+ 235   5                                              SC_Speech(2);
+ 236   5                                              Delay(100);
+ 237   5                                              PAshutdown=0;
+ 238   5                                              Moto=1;//停止马达震动
+C51 COMPILER V9.01   NEWSLAVE                                                              04/23/2013 11:43:45 PAGE 5   
+
+ 239   5      //                                      StopAll();
+ 240   5                                              commuFlag=0;//关闭通信
+ 241   5                                              TurnFlag=0;
+ 242   5      
+ 243   5                                              alarmCount3=0;//清报警计数器
+ 244   5                                              alarmFlag3=0;//清报警标志
+ 245   5      
+ 246   5      //                                      Check=GetADCResult(6);//电池电量检测
+ 247   5                                      }
+ 248   4                              }
+ 249   3                      }
+ 250   2      
+ 251   2                      if((alarmFlag3==1)&&(alarmCount3<2))//编码3开始相应的报警
+ 252   2                      {
+ 253   3                              alarmCount3++;
+ 254   3      
+ 255   3                              PAshutdown=1;
+ 256   3                              SC_Speech(1);
+ 257   3                              Delay(150);
+ 258   3                              PAshutdown=0;
+ 259   3                              
+ 260   3                              Moto=0;//开震动
+ 261   3                              Delay(10);
+ 262   3                              Moto=1;
+ 263   3                                      
+ 264   3                              PAshutdown=1;
+ 265   3                              SC_Speech(1);
+ 266   3                              Delay(150);
+ 267   3                              PAshutdown=0;
+ 268   3                              
+ 269   3                              Moto=0;//开震动
+ 270   3                              Delay(10);
+ 271   3                              Moto=1;
+ 272   3                      }
+ 273   2      //              if(alarmCount3>=2) //调节语音的段数        
+ 274   2      //              {
+ 275   2      //                      alarmCount3=0;//清报警计数器
+ 276   2      //                      alarmFlag3=0;//清报警标志
+ 277   2      //              }
+ 278   2      
+ 279   2                      if((alarmFlag4==1)&&(alarmCount4<2))//抬起开始相应的报警
+ 280   2                      {
+ 281   3                              alarmCount4++;
+ 282   3      
+ 283   3                              PAshutdown=1;
+ 284   3                              SC_Speech(5);
+ 285   3                              Delay(180);
+ 286   3                              
+ 287   3                              Moto=0;//开震动
+ 288   3                              Delay(10);
+ 289   3                              Moto=1;
+ 290   3              
+ 291   3                              SC_Speech(5);
+ 292   3                              Delay(180);
+ 293   3                              PAshutdown=0;
+ 294   3      
+ 295   3                              Moto=0;//开震动
+ 296   3                              Delay(10);
+ 297   3                              Moto=1;
+ 298   3                      }
+ 299   2      //              if(alarmCount4>=1) //调节语音的段数        
+ 300   2      //              {
+C51 COMPILER V9.01   NEWSLAVE                                                              04/23/2013 11:43:45 PAGE 6   
+
+ 301   2      //                      alarmCount4=0;//清报警计数器
+ 302   2      //                      alarmFlag4=0;//清报警标志
+ 303   2      //              }
+ 304   2      
+ 305   2                      if((alarmFlag5==1)&&(alarmCount5<2))//倒地开始相应的报警
+ 306   2                      {
+ 307   3                              alarmCount5++;
+ 308   3      
+ 309   3                              PAshutdown=1;
+ 310   3                              SC_Speech(4);
+ 311   3                              Delay(180);
+ 312   3      
+ 313   3                              Moto=0;//开震动
+ 314   3                              Delay(10);
+ 315   3                              Moto=1;
+ 316   3              
+ 317   3                              SC_Speech(4);
+ 318   3                              Delay(180);
+ 319   3                              PAshutdown=0;
+ 320   3      
+ 321   3                              Moto=0;//开震动
+ 322   3                              Delay(10);
+ 323   3                              Moto=1;
+ 324   3                      }
+ 325   2      //              if(alarmCount5>=1) //调节语音的段数        
+ 326   2      //              {
+ 327   2      //                      alarmCount5=0;//清报警计数器
+ 328   2      //                      alarmFlag5=0;//清报警标志
+ 329   2      //              }
+ 330   2      
+ 331   2                      if(Check>=0x377) //表示电池充包了
+ 332   2                      {
+ 333   3                              BatteryControl=1;//开漏模式，这样为高阻态       
+ 334   3                      }
+ 335   2                      else
+ 336   2                      {
+ 337   3                              BatteryControl=0;//电池在没有充满的情况下为低电平
+ 338   3                      }
+ 339   2      /*
+ 340   2                      if((Check>=0x36f)&&(TurnFlag==1)&&(power1Flag==0))//设置比较电压，此处为4V,以4.2V为基准
+ 341   2                      {
+ 342   2                              PAshutdown=1;
+ 343   2                              SC_Speech(11);  //4V电量充足提示
+ 344   2                              Delay(130);
+ 345   2                              PAshutdown=0;
+ 346   2      
+ 347   2                              power1Flag=1;
+ 348   2                              power2Flag=0;
+ 349   2                              power3Flag=0;
+ 350   2                              power4Flag=0;
+ 351   2                      }
+ 352   2                  else if((Check<0x36f)&&(Check>=0x365)&&(TurnFlag==1)&&(power2Flag==0))
+ 353   2                      {
+ 354   2                              PAshutdown=1;
+ 355   2                              SC_Speech(10);  //3.8V电量充足提示
+ 356   2                              Delay(130);
+ 357   2                              PAshutdown=0;
+ 358   2              
+ 359   2                              power2Flag=1;
+ 360   2                              power1Flag=0;
+ 361   2                              power3Flag=0;
+ 362   2                              power4Flag=0;
+C51 COMPILER V9.01   NEWSLAVE                                                              04/23/2013 11:43:45 PAGE 7   
+
+ 363   2                      }
+ 364   2                      else if((Check<0x365)&&(Check>=0x360)&&(TurnFlag==1)&&(power3Flag==0))
+ 365   2                      {
+ 366   2                              PAshutdown=1;
+ 367   2                              SC_Speech(9);  //3.6V电量充足提示
+ 368   2                              Delay(130);
+ 369   2                              PAshutdown=0;
+ 370   2      
+ 371   2                              power3Flag=1;
+ 372   2                              power1Flag=0;
+ 373   2                              power2Flag=0;
+ 374   2                              power4Flag=0;
+ 375   2                      }
+ 376   2                      else if((Check<0x360)&&(TurnFlag==1)&&(power4Flag==0))
+ 377   2                      {
+ 378   2                              PAshutdown=1;
+ 379   2                              SC_Speech(8);  //低于3.6v电量充足提示
+ 380   2                              Delay(130);
+ 381   2                              PAshutdown=0;
+ 382   2      
+ 383   2                              power4Flag=1;
+ 384   2                              power1Flag=0;
+ 385   2                              power2Flag=0;
+ 386   2                              power3Flag=0;
+ 387   2                      }
+ 388   2      */
+ 389   2              }
+ 390   1      }
+ 391          
+ 392          void timeT1() interrupt 3 //定时器1中断接收数据
+ 393          {
+ 394   1      //      unsigned int newAddr=0;
+ 395   1              TH1=timer1H;//重装载
+ 396   1              TL1=timer1L;
+ 397   1      
+ 398   1              if(P11==0)//正常情况为高电平,有低电平说明有信号
+ 399   1              {
+ 400   2                      DataBetween++;
+ 401   2                      ComFlag=0;
+ 402   2                      if(DataBetween==150)//低电平持续的最大时间      
+ 403   2                      {
+ 404   3                              DataBetween=0;
+ 405   3                      }
+ 406   2              }
+ 407   1              else//为高电平了
+ 408   1              {
+ 409   2                      if(ComFlag==0)//说明有一个低电平
+ 410   2                      {
+ 411   3                              ComFlag=1;
+ 412   3      //                      RecData<<=1;
+ 413   3      
+ 414   3                              if((DataBetween>60)&&(DataBetween<=100))//低电平持续的时间小于3ms，则为0
+ 415   3                              {
+ 416   4                                      RecData<<=1;
+ 417   4                                      RecData &= 0xfe;
+ 418   4                                      DataTime++;
+ 419   4                                      T1highcount=0;
+ 420   4                              }
+ 421   3                              if(DataBetween>100)//低电平持续的时间大于4.5ms，则为1
+ 422   3                              {
+ 423   4                                      RecData<<=1;
+ 424   4                                      RecData |= 0x01;
+C51 COMPILER V9.01   NEWSLAVE                                                              04/23/2013 11:43:45 PAGE 8   
+
+ 425   4                                      DataTime++;
+ 426   4                                      T1highcount=0;
+ 427   4                              }
+ 428   3                              else
+ 429   3                              {
+ 430   4                                      T1highcount++;  
+ 431   4                              }
+ 432   3      
+ 433   3                              DataBetween=0;
+ 434   3      //                              DataTime++;
+ 435   3                      }
+ 436   2                      else
+ 437   2                      {
+ 438   3                              T1highcount++;
+ 439   3                              if(T1highcount>=120)
+ 440   3                              {
+ 441   4                                      DataTime=0;
+ 442   4                                      ComFlag=1;
+ 443   4                                      count=0;
+ 444   4                              }               
+ 445   3                      }
+ 446   2              }
+ 447   1      
+ 448   1              if(DataTime==8)//说明一个字节的数据已经接受完全
+ 449   1              {
+ 450   2                      DataTime=0;
+ 451   2                      myTxRxData[count]=RecData;
+ 452   2                      if(count==0&&myTxRxData[0]==CmdHead)
+ 453   2                      {
+ 454   3                              count=1;
+ 455   3                      }
+ 456   2                      else if(count==1&&myTxRxData[1]==MyAddress)
+ 457   2                      {
+ 458   3                              count=2;
+ 459   3                      }
+ 460   2                      else if(count>=2&&count<=5)
+ 461   2                      {
+ 462   3                              count++;
+ 463   3                      }
+ 464   2                      else if(count==6)
+ 465   2                      {
+ 466   3                              receiveFlag=1;
+ 467   3                              count=0;
+ 468   3                      }
+ 469   2                      else 
+ 470   2                      {
+ 471   3                              count=0;
+ 472   3                      }
+ 473   2              }
+ 474   1      
+ 475   1              if(receiveFlag==1)      //说明接收到了数据，开始处理
+ 476   1              {
+ 477   2                      receiveFlag=0;  //清接收标志
+ 478   2      
+ 479   2                      switch(myTxRxData[2])//解析指令
+ 480   2                      {
+ 481   3                              case ComMode_1://接收到的是主机发送过来的编码1的信号，说明主机在3M内，是正常的
+ 482   3                              {       
+ 483   4                                      TestFlag=0;//正常情况，清超时标志
+ 484   4      
+ 485   4                                      alarmCount3=0;//清报警计数器
+ 486   4                                      alarmFlag3=0;//清报警标志
+C51 COMPILER V9.01   NEWSLAVE                                                              04/23/2013 11:43:45 PAGE 9   
+
+ 487   4      
+ 488   4                                      alarmCount4=0;//清报警计数器
+ 489   4                                      alarmFlag4=0;//清报警标志
+ 490   4      
+ 491   4                                      alarmCount5=0;//清报警计数器
+ 492   4                                      alarmFlag5=0;//清报警标志
+ 493   4                              }
+ 494   3                              break;
+ 495   3                      
+ 496   3                              case ComMode_3:
+ 497   3                              {
+ 498   4                                      TestFlag=0;//清超时标志                         
+ 499   4                                      alarmFlag3=1;
+ 500   4                              }
+ 501   3                              break;
+ 502   3                      
+ 503   3                              case ComMode_4://留作抬起信号使用
+ 504   3                              {
+ 505   4                                      TestFlag=0;//清超时标志 
+ 506   4                                      alarmFlag4=1;//抬起报警
+ 507   4                              }
+ 508   3                              break;
+ 509   3      
+ 510   3                              case ComMode_5://留作倒地信号使用
+ 511   3                              {
+ 512   4                                      TestFlag=0;//清超时标志
+ 513   4                                      alarmFlag5=1;   //倒地报警
+ 514   4                              }
+ 515   3                              break;
+ 516   3                      }
+ 517   2              }
+ 518   1      }
+ 519          
+ 520          void time0() interrupt 1        //作为整个系统自己的时钟
+ 521          {
+ 522   1              TH0=timer0H;//重装载
+ 523   1              TL0=timer0L;
+ 524   1      
+ 525   1              time0Count_3++;
+ 526   1      
+ 527   1              if(time0Count_3>=60)//串口每1S发送一次的数据的时间标志
+ 528   1              {
+ 529   2                      Check=GetADCResult(6);//电池电量检测
+ 530   2      
+ 531   2                      if(commuFlag==1)//说明开启了通信
+ 532   2                      {
+ 533   3                              ComMode_1_Data();//发送模式1信号
+ 534   3                              TestFlag++;
+ 535   3                              
+ 536   3                              if(TestFlag>=4)//说明已经出了300M了。收不到任何信号了，要做报警
+ 537   3                              {
+ 538   4                                      TestFlag=5;
+ 539   4                                      //加入相应处理代码      
+ 540   4                              }
+ 541   3                      }
+ 542   2                      time0Count_3=0;
+ 543   2              }
+ 544   1      }
+ 545          
+ 546          void StartAll() //发送开始信号
+ 547          {
+ 548   1              unsigned char i,n;
+C51 COMPILER V9.01   NEWSLAVE                                                              04/23/2013 11:43:45 PAGE 10  
+
+ 549   1      
+ 550   1              myTxRxData[0]=CmdHead;
+ 551   1              myTxRxData[1]=MyAddress;
+ 552   1              myTxRxData[2]=CmdStart;
+ 553   1              myTxRxData[3]=0x00;
+ 554   1              myTxRxData[4]=0x00;
+ 555   1              myTxRxData[5]=0x00;
+ 556   1              myTxRxData[6]=0x00;
+ 557   1              
+ 558   1              initsignal();
+ 559   1      
+ 560   1              for(i=0;i<7;i++)
+ 561   1              {
+ 562   2                      for(n=0;n<8;n++)
+ 563   2                      {
+ 564   3                              if((myTxRxData[i]&0x80)==0x80)//为1
+ 565   3                              {
+ 566   4                                      P10=0;
+ 567   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+ 568   4                              }
+ 569   3                              else//为0的情况
+ 570   3                              {
+ 571   4                                      P10=0;
+ 572   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+ 573   4                              }
+ 574   3                              P10=1;//常态为高电平
+ 575   3                              myTxRxData[i]<<=1;
+ 576   3                              Delay3(50);//延时要大于2ms
+ 577   3                      }
+ 578   2              }
+ 579   1      }
+ 580          
+ 581          void StopAll() //发送停止信号
+ 582          {
+ 583   1              unsigned char i,n;
+ 584   1      
+ 585   1              myTxRxData[0]=CmdHead;
+ 586   1              myTxRxData[1]=MyAddress;
+ 587   1              myTxRxData[2]=CmdStop;
+ 588   1              myTxRxData[3]=0x00;
+ 589   1              myTxRxData[4]=0x00;
+ 590   1              myTxRxData[5]=0x00;
+ 591   1              myTxRxData[6]=0x00;
+ 592   1      
+ 593   1              initsignal();
+ 594   1      
+ 595   1              for(i=0;i<7;i++)
+ 596   1              {
+ 597   2                      for(n=0;n<8;n++)
+ 598   2                      {
+ 599   3                              if((myTxRxData[i]&0x80)==0x80)//为1
+ 600   3                              {
+ 601   4                                      P10=0;
+ 602   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+ 603   4                              }
+ 604   3                              else//为0的情况
+ 605   3                              {
+ 606   4                                      P10=0;
+ 607   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+ 608   4                              }
+ 609   3                              P10=1;//常态为高电平
+ 610   3                              myTxRxData[i]<<=1;
+C51 COMPILER V9.01   NEWSLAVE                                                              04/23/2013 11:43:45 PAGE 11  
+
+ 611   3                              Delay3(50);//延时要大于2ms
+ 612   3                      }
+ 613   2              }
+ 614   1      }
+ 615          
+ 616          void ComMode_1_Data()//发送边码1
+ 617          {
+ 618   1              unsigned char i,n;
+ 619   1      
+ 620   1              ModeControl_1=0;//30M发射功率                           
+ 621   1      
+ 622   1              myTxRxData[0]=CmdHead;
+ 623   1              myTxRxData[1]=MyAddress;
+ 624   1              myTxRxData[2]=ComMode_1;
+ 625   1              myTxRxData[3]=0x00;
+ 626   1              myTxRxData[4]=0x00;
+ 627   1              myTxRxData[5]=0x00;
+ 628   1              myTxRxData[6]=0x00;
+ 629   1      
+ 630   1              initsignal();
+ 631   1      
+ 632   1              for(i=0;i<7;i++)
+ 633   1              {
+ 634   2                      for(n=0;n<8;n++)
+ 635   2                      {
+ 636   3                              if((myTxRxData[i]&0x80)==0x80)//为1
+ 637   3                              {
+ 638   4                                      P10=0;
+ 639   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+ 640   4                              }
+ 641   3                              else//为0的情况
+ 642   3                              {
+ 643   4                                      P10=0;
+ 644   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+ 645   4                              }
+ 646   3                              P10=1;//常态为高电平
+ 647   3                              myTxRxData[i]<<=1;
+ 648   3                              Delay3(50);//延时要大于2ms
+ 649   3                      }
+ 650   2              }
+ 651   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1088    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     60       8
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =     15    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
