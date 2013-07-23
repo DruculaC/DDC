@@ -210,10 +210,10 @@
       <FileType>1</FileType>
       <tvExp>1</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>48</ColumnNumber>
+      <ColumnNumber>60</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>388</TopLine>
-      <CurrentLine>388</CurrentLine>
+      <TopLine>346</TopLine>
+      <CurrentLine>355</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\newSlave.c</PathWithFileName>
       <FilenameWithoutPath>newSlave.c</FilenameWithoutPath>
@@ -305,7 +305,7 @@
   </Group>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\DXM\Desktop\moto\附机\PWM.H</PathWithFilename>
+    <PathWithFilename>C:\Users\richard\Documents\GitHub\DDC\附机\PWM.H</PathWithFilename>
     <TopLine>24</TopLine>
     <CurrentLine>24</CurrentLine>
     <Constant>0</Constant>
@@ -331,7 +331,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\DXM\Desktop\moto\附机\VOICE.H</PathWithFilename>
+    <PathWithFilename>C:\Users\richard\Documents\GitHub\DDC\附机\VOICE.H</PathWithFilename>
     <TopLine>1</TopLine>
     <CurrentLine>13</CurrentLine>
     <Constant>0</Constant>
@@ -357,7 +357,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\DXM\Desktop\moto\附机\UART.H</PathWithFilename>
+    <PathWithFilename>C:\Users\richard\Documents\GitHub\DDC\附机\UART.H</PathWithFilename>
     <TopLine>1</TopLine>
     <CurrentLine>1</CurrentLine>
     <Constant>0</Constant>
@@ -383,7 +383,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\DXM\Desktop\moto\附机\N79E81X.H</PathWithFilename>
+    <PathWithFilename>C:\Users\richard\Documents\GitHub\DDC\附机\N79E81X.H</PathWithFilename>
     <TopLine>36</TopLine>
     <CurrentLine>47</CurrentLine>
     <Constant>0</Constant>
@@ -409,7 +409,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\DXM\Desktop\moto\附机\T1.H</PathWithFilename>
+    <PathWithFilename>C:\Users\richard\Documents\GitHub\DDC\附机\T1.H</PathWithFilename>
     <TopLine>1</TopLine>
     <CurrentLine>1</CurrentLine>
     <Constant>0</Constant>
@@ -435,7 +435,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\DXM\Desktop\moto\附机\T0.H</PathWithFilename>
+    <PathWithFilename>C:\Users\richard\Documents\GitHub\DDC\附机\T0.H</PathWithFilename>
     <TopLine>1</TopLine>
     <CurrentLine>7</CurrentLine>
     <Constant>0</Constant>
@@ -461,7 +461,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\DXM\Desktop\moto\附机\AD.H</PathWithFilename>
+    <PathWithFilename>C:\Users\richard\Documents\GitHub\DDC\附机\AD.H</PathWithFilename>
     <TopLine>1</TopLine>
     <CurrentLine>5</CurrentLine>
     <Constant>0</Constant>
@@ -1861,9 +1861,9 @@
         </Doc>
         <Doc>
           <Name>.\newSlave.c</Name>
-          <ColumnNumber>48</ColumnNumber>
-          <TopLine>388</TopLine>
-          <CurrentLine>388</CurrentLine>
+          <ColumnNumber>60</ColumnNumber>
+          <TopLine>346</TopLine>
+          <CurrentLine>355</CurrentLine>
         </Doc>
         <Doc>
           <Name>.\T1.c</Name>

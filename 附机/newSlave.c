@@ -64,6 +64,9 @@ sbit BatteryControl=P1^2;
 //发射机pin18
 //sbit tran_out=P1^0;
 
+//无线发射机控制
+sbit tran_en=P2^7;//发射机开关，1亮为开了，0灭为关了
+
 //开机状态标记位
 bit TurnFlag=0;//0位关机状态，1为开机状态
 
@@ -204,9 +207,25 @@ void main(void)
 	PAshutdown=0;		  //开机时，将功放关闭
 	
 	Check=GetADCResult(6);//上电时，电池电量检测一次
+	
+//开机直接启动附机
+//	SwitchControl=0;	 //开起接收机的控制端为高电平
+
+	PAshutdown=1;
+	SC_Speech(3);		 //车锁已打开
+	Delay(100);
+	PAshutdown=0;
+																	   
+//					StartAll();//开机给主机发送开机指令	
+	commuFlag=1;//开启通信
+	TurnFlag=1;
+
+	alarmCount3=0;//清报警计数器
+	alarmFlag3=0;//清报警标志
 
 	while(1)
 	{
+/*
 		if(Turn==0)
 		{
 		 	Delay(30);
@@ -247,20 +266,11 @@ void main(void)
 				}
 			}
 		}
-
-		if((alarmFlag3==1)&&(alarmCount3<2))//编码3开始相应的报警
+*/
+		if((alarmFlag3==1)&&(alarmCount3<3))//编码3开始相应的报警
 		{
 			alarmCount3++;
 
-			PAshutdown=1;
-			SC_Speech(1);
-			Delay(150);
-			PAshutdown=0;
-			
-			Moto=0;//开震动
-			Delay(10);
-			Moto=1;
-				
 			PAshutdown=1;
 			SC_Speech(1);
 			Delay(150);
@@ -276,7 +286,7 @@ void main(void)
 //			alarmFlag3=0;//清报警标志
 //		}
 
-		if((alarmFlag4==1)&&(alarmCount4<2))//抬起开始相应的报警
+		if((alarmFlag4==1)&&(alarmCount4<3))//抬起开始相应的报警
 		{
 			alarmCount4++;
 
@@ -287,14 +297,6 @@ void main(void)
 			Moto=0;//开震动
 			Delay(10);
 			Moto=1;
-	
-			SC_Speech(5);
-			Delay(180);
-			PAshutdown=0;
-
-			Moto=0;//开震动
-			Delay(10);
-			Moto=1;
 		}
 //		if(alarmCount4>=1) //调节语音的段数	   
 //		{
@@ -302,7 +304,7 @@ void main(void)
 //			alarmFlag4=0;//清报警标志
 //		}
 
-		if((alarmFlag5==1)&&(alarmCount5<2))//倒地开始相应的报警
+		if((alarmFlag5==1)&&(alarmCount5<3))//倒地开始相应的报警
 		{
 			alarmCount5++;
 
@@ -313,21 +315,13 @@ void main(void)
 			Moto=0;//开震动
 			Delay(10);
 			Moto=1;
-	
-			SC_Speech(4);
-			Delay(180);
-			PAshutdown=0;
-
-			Moto=0;//开震动
-			Delay(10);
-			Moto=1;
 		}
 // 		if(alarmCount5>=1) //调节语音的段数	   
 //		{
 //			alarmCount5=0;//清报警计数器
 //			alarmFlag5=0;//清报警标志
 //		}
-
+/*
 		if(Check>=0x377) //表示电池充包了
 		{
 			BatteryControl=1;//开漏模式，这样为高阻态	
@@ -336,6 +330,7 @@ void main(void)
 		{
 			BatteryControl=0;//电池在没有充满的情况下为低电平
 		}
+*/
 /*
 		if((Check>=0x36f)&&(TurnFlag==1)&&(power1Flag==0))//设置比较电压，此处为4V,以4.2V为基准
 		{
@@ -497,6 +492,11 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 			{
 				TestFlag=0;//清超时标志				
 				alarmFlag3=1;
+
+				alarmCount4=0;//清报警计数器
+				alarmFlag4=0;//清报警标志
+				alarmCount5=0;//清报警计数器
+				alarmFlag5=0;//清报警标志
 			}
 			break;
 		
@@ -504,6 +504,11 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 			{
 				TestFlag=0;//清超时标志	
 				alarmFlag4=1;//抬起报警
+
+				alarmCount3=0;//清报警计数器
+				alarmFlag3=0;//清报警标志
+				alarmCount5=0;//清报警计数器
+				alarmFlag5=0;//清报警标志
 			}
 			break;
 
@@ -511,6 +516,12 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 			{
 				TestFlag=0;//清超时标志
 				alarmFlag5=1;	//倒地报警
+
+				alarmCount3=0;//清报警计数器
+				alarmFlag3=0;//清报警标志
+				alarmCount4=0;//清报警计数器
+				alarmFlag4=0;//清报警标志
+
 			}
 			break;
 		}
@@ -618,7 +629,7 @@ void ComMode_1_Data()//发送边码1
 	unsigned char i,n;
 
 	ModeControl_1=0;//30M发射功率				
-
+	tran_en=1;	//打开无线发射机
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_1;
@@ -648,4 +659,5 @@ void ComMode_1_Data()//发送边码1
 			Delay3(50);//延时要大于2ms
 		}
 	}
+	tran_en=0;
 }
