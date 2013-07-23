@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22                                                        07/16/2013  09:33:07  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22                                                        07/23/2013  14:32:23  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
@@ -59,7 +59,7 @@ LINK MAP OF MODULE:  .\out\newHost (?C_STARTUP)
             CODE    0984H     0074H     UNIT         ?PR?_GETADCRESULT?AD
             CODE    09F8H     006EH     UNIT         ?PR?_PWM_CHANNEL?PWM
             CODE    0A66H     0062H     UNIT         ?PR?COMMODE_1_DATA?NEWHOST
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 2
 
 
             CODE    0AC8H     0056H     UNIT         ?PR?INITSIGNAL?NEWHOST
@@ -119,7 +119,7 @@ SEGMENT                              XDATA_GROUP
   +--> ?PR?_DELAY?AD
 
 ?PR?COMMODE_1_DATA?NEWHOST         0037H    0001H
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 3
 
 
   +--> ?PR?INITSIGNAL?NEWHOST
@@ -179,7 +179,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   D:0081H         SYMBOL        SP
   C:08F8H         SYMBOL        STARTUP1
   N:0000H         SYMBOL        XBPSTACK
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 4
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 4
 
 
   N:0000H         SYMBOL        XBPSTACKTOP
@@ -239,7 +239,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   B:0090H.0       PUBLIC        P10
   B:0090H.1       PUBLIC        P11
   X:000DH         PUBLIC        lastAddr
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 5
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 5
 
 
   D:0098H         PUBLIC        SCON
@@ -299,7 +299,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   C:0C6DH         LINE#         152
   C:0C77H         LINE#         153
   C:0C8CH         LINE#         154
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 6
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 6
 
 
   -------         ENDPROC       _DELAY3
@@ -359,7 +359,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   C:075DH         LINE#         199
   C:0760H         LINE#         200
   C:0763H         LINE#         204
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 7
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 7
 
 
   C:0765H         LINE#         205
@@ -419,7 +419,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   C:0817H         LINE#         273
   C:0819H         LINE#         274
   C:0819H         LINE#         275
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 8
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 8
 
 
   C:0819H         LINE#         276
@@ -479,7 +479,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   C:0669H         LINE#         416
   C:066BH         LINE#         419
   C:066BH         LINE#         420
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 9
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 9
 
 
   C:0671H         LINE#         421
@@ -539,7 +539,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   C:071BH         LINE#         482
   C:071DH         LINE#         483
   C:071FH         LINE#         484
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 10
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 10
 
 
   C:0725H         LINE#         485
@@ -599,7 +599,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   C:04A4H         LINE#         549
   C:04A4H         LINE#         550
   C:04A7H         LINE#         551
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 11
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 11
 
 
   C:04A7H         LINE#         552
@@ -659,7 +659,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   C:0559H         LINE#         627
   C:055BH         LINE#         629
   C:055BH         LINE#         630
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 12
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 12
 
 
   C:055EH         LINE#         631
@@ -719,7 +719,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   C:0A66H         LINE#         691
   C:0A66H         LINE#         692
   C:0A66H         LINE#         697
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 13
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 13
 
 
   C:0A68H         LINE#         698
@@ -779,7 +779,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   C:0C35H         LINE#         755
   C:0C37H         LINE#         756
   C:0C39H         LINE#         758
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 14
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 14
 
 
   C:0C39H         LINE#         759
@@ -839,7 +839,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   C:0B6DH         LINE#         808
   C:0B6DH         LINE#         809
   C:0B6DH         LINE#         811
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 15
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 15
 
 
   C:0B6FH         LINE#         812
@@ -899,7 +899,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   C:0BE7H         LINE#         867
   C:0BE9H         LINE#         868
   C:0BEBH         LINE#         870
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 16
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 16
 
 
   C:0BEBH         LINE#         871
@@ -959,7 +959,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   -------         DO            
   D:0005H         SYMBOL        DataL
   D:0002H         SYMBOL        DataH
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 17
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 17
 
 
   -------         ENDDO         
@@ -1019,7 +1019,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   D:0088H         PUBLIC        TCON
   D:00E8H         PUBLIC        EIE
   D:00F8H         PUBLIC        ADCCON0
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 18
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 18
 
 
   D:00C0H         PUBLIC        I2CON
@@ -1079,7 +1079,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   C:0003H         LINE#         69
   C:0008H         LINE#         70
   -------         ENDPROC       MYPWM
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 19
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 19
 
 
   -------         ENDMOD        PWM
@@ -1139,7 +1139,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   D:00C8H         PUBLIC        T2CON
   B:00A0H.0       PUBLIC        SC_RST
   D:00D0H         PUBLIC        PSW
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 20
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 20
 
 
   -------         PROC          _DELAY_MS
@@ -1199,7 +1199,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   C:0DB4H         LINE#         56
   C:0DBBH         LINE#         57
   C:0DBDH         LINE#         58
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 21
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 21
 
 
   C:0DC0H         LINE#         59
@@ -1259,7 +1259,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
   C:0CF8H         LINE#         114
   C:0CF8H         LINE#         115
   C:0CFEH         LINE#         116
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 22
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 22
 
 
   C:0CFEH         LINE#         117
@@ -1319,7 +1319,7 @@ SYMBOL TABLE OF MODULE:  .\out\newHost (?C_STARTUP)
 
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?CO?UART
-BL51 BANKED LINKER/LOCATER V6.22                                                      07/16/2013  09:33:07  PAGE 23
+BL51 BANKED LINKER/LOCATER V6.22                                                      07/23/2013  14:32:23  PAGE 23
 
 
 

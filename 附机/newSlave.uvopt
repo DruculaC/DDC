@@ -210,10 +210,10 @@
       <FileType>1</FileType>
       <tvExp>1</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>60</ColumnNumber>
+      <ColumnNumber>15</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>346</TopLine>
-      <CurrentLine>355</CurrentLine>
+      <TopLine>534</TopLine>
+      <CurrentLine>549</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\newSlave.c</PathWithFileName>
       <FilenameWithoutPath>newSlave.c</FilenameWithoutPath>
@@ -269,7 +269,7 @@
       <ColumnNumber>25</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
       <TopLine>88</TopLine>
-      <CurrentLine>105</CurrentLine>
+      <CurrentLine>88</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\UART.c</PathWithFileName>
       <FilenameWithoutPath>UART.c</FilenameWithoutPath>
@@ -1861,9 +1861,9 @@
         </Doc>
         <Doc>
           <Name>.\newSlave.c</Name>
-          <ColumnNumber>60</ColumnNumber>
-          <TopLine>346</TopLine>
-          <CurrentLine>355</CurrentLine>
+          <ColumnNumber>15</ColumnNumber>
+          <TopLine>534</TopLine>
+          <CurrentLine>549</CurrentLine>
         </Doc>
         <Doc>
           <Name>.\T1.c</Name>
@@ -1905,7 +1905,7 @@
           <Name>.\UART.c</Name>
           <ColumnNumber>25</ColumnNumber>
           <TopLine>88</TopLine>
-          <CurrentLine>105</CurrentLine>
+          <CurrentLine>88</CurrentLine>
         </Doc>
         <Doc>
           <Name>.\pwm.c</Name>

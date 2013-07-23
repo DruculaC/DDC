@@ -1,4 +1,4 @@
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 1   
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 1   
 
 
 C51 COMPILER V9.01, COMPILATION OF MODULE NEWHOST
@@ -62,7 +62,7 @@ line level    source
   52          
   53          //三轴传感器
   54          sbit ReceWave=P0^7;//三轴传感器输入端
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 2   
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 2   
 
   55          sbit SensorControl=P2^5;//三轴传感器控制端
   56          
@@ -126,7 +126,7 @@ line level    source
  112          //unsigned char Check1=0;//作为AD检测值
  113          
  114          bit receiveFlag=0;//接收到数据标志
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 3   
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 3   
 
  115          bit commuFlag=0;//开启通信标志
  116          
@@ -190,7 +190,7 @@ line level    source
  173   4                                      P10=0;
  174   4                                      Delay3(80);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
  175   4                              }
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 4   
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 4   
 
  176   3                              else//为0的情况
  177   3                              {
@@ -254,7 +254,7 @@ line level    source
  235   1      
  236   1              commuFlag=1; //开启通信
  237   1              tran_en=0;   //关闭无线发射机
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 5   
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 5   
 
  238   1      
  239   1      //      ModeFlag=2;
@@ -318,7 +318,7 @@ line level    source
  297   2                      if(Check1>=0x99)//设置比较电压，此处为3V设置
  298   2                      {
  299   2                              PAshutdown=1;   //拾音器超过某个电压时，打开功放
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 6   
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 6   
 
  300   2                      }
  301   2                      else
@@ -382,7 +382,7 @@ line level    source
  359   2                                              Delay(130);
  360   2                                              PAshutdown=0;
  361   2                      
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 7   
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 7   
 
  362   2                                              power4Flag=1;
  363   2                                              power1Flag=0;
@@ -446,7 +446,7 @@ line level    source
  421   3                              if(T1highcount>=120)
  422   3                              {
  423   4                                      DataTime=0;
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 8   
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 8   
 
  424   4                                      ComFlag=1;
  425   4                                      count=0;
@@ -510,7 +510,7 @@ line level    source
  482   5                                              MagentControl_1=0;//磁铁常态为这种模式
  483   5                                              MagentControl_2=0;
  484   5                                              magnetflag=1;
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 9   
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 9   
 
  485   5                                      }
  486   4              
@@ -574,7 +574,7 @@ line level    source
  543   2                      {
  544   3                              ComMode_4_Data();
  545   3                      }
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 10  
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 10  
 
  546   2              }
  547   1      
@@ -638,7 +638,7 @@ line level    source
  605   3      //                      commode2_flag=0;
  606   3                              ComMode_3_Data(); //向附机发送编码3
  607   3                      }
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 11  
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 11  
 
  608   2              }
  609   1      
@@ -702,7 +702,7 @@ line level    source
  667   3                              {
  668   4                                      time0Count_4 =0;//计时期清零
  669   4                                      upFlag=1;//置抬起标志
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 12  
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 12  
 
  670   4                                      downFlag=0;
  671   4                                      alarmFlag=0;
@@ -766,7 +766,7 @@ line level    source
  729   1      }
  730          
  731          void ComMode_2_Data()//发送边码2
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 13  
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 13  
 
  732          {
  733   1      //      unsigned int j;
@@ -830,7 +830,7 @@ line level    source
  791   3                              {
  792   4                                      P10=0;
  793   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 14  
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 14  
 
  794   4                              }
  795   3                              else//为0的情况
@@ -894,7 +894,7 @@ line level    source
  853   1              myTxRxData[3]=0x00;
  854   1              myTxRxData[4]=0x00;
  855   1              myTxRxData[5]=0x00;
-C51 COMPILER V9.01   NEWHOST                                                               07/16/2013 09:33:06 PAGE 15  
+C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 15  
 
  856   1              myTxRxData[6]=0x00;
  857   1      

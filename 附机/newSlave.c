@@ -63,6 +63,7 @@ sbit BatteryControl=P1^2;
 //sbit SwitchControl=P1^3;	//1有效，0关闭
 //发射机pin18
 //sbit tran_out=P1^0;
+sbit receive_en=P1^3;		//接收机使能，要加上拉电阻
 
 //无线发射机控制
 sbit tran_en=P2^7;//发射机开关，1亮为开了，0灭为关了
@@ -470,7 +471,7 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 	if(receiveFlag==1)	//说明接收到了数据，开始处理
 	{
 		receiveFlag=0;	//清接收标志
-
+		receive_en=0;			//关闭接收机
 		switch(myTxRxData[2])//解析指令
 		{
 			case ComMode_1://接收到的是主机发送过来的编码1的信号，说明主机在3M内，是正常的
@@ -485,6 +486,10 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 
 				alarmCount5=0;//清报警计数器
 				alarmFlag5=0;//清报警标志
+
+				Moto=0;//开震动
+				Delay(10);
+				Moto=1;
 			}
 			break;
 		
@@ -541,7 +546,9 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 
 		if(commuFlag==1)//说明开启了通信
 		{
-			ComMode_1_Data();//发送模式1信号
+			receive_en=0;		//打开接收机
+  			ComMode_1_Data();//发送模式1信号
+			receive_en=1;		//打开接收机
 			TestFlag++;
 			
 			if(TestFlag>=4)//说明已经出了300M了。收不到任何信号了，要做报警
