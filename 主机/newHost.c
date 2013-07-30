@@ -1,4 +1,4 @@
-
+//电动车
 #include"N79E81x.h"
 #include<intrins.h>
 #include"AD.h"
@@ -618,6 +618,7 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 			PAshutdown=0;
 //			VoiceControl=0;//开启拾声器
 		}
+		ComMode_3_Data(); //向附机发送编码3
 		if(alarmFlag==1)
 		{
 //			VoiceControl=1;//使用语音时要关闭拾声器
@@ -627,26 +628,7 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 			PAshutdown=0;
 //			VoiceControl=0;//开启拾声器
 		}
-		ComMode_3_Data(); //向附机发送编码3
-		if(alarmFlag==1)
-		{
-//			VoiceControl=1;//使用语音时要关闭拾声器
-			PAshutdown=1;
-			SC_Speech(3);  //关机语言提醒
-			Delay(100);
-			PAshutdown=0;
-//			VoiceControl=0;//开启拾声器
-		}
-		if(alarmFlag==1)
-		{
-//			VoiceControl=1;//使用语音时要关闭拾声器
-			PAshutdown=1;
-			SC_Speech(4);  //关机语言提醒
-			Delay(150);	
-			PAshutdown=0;
-//			VoiceControl=0;//开启拾声器
-		}
-		if(alarmCount>=20) //调节语音的段数
+		if(alarmCount>=100) //调节语音的段数
 		{
 			alarmCount=0;//清报警计数器
 			alarmFlag=0;//清报警标志

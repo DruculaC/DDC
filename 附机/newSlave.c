@@ -1,5 +1,3 @@
-
-
 #include"N79E81x.h"
 #include<intrins.h>
 #include"AD.h"
@@ -34,11 +32,6 @@
 #define MyAddress2 0x3c //本机地址2, 11000011,01
 #define MyAddress3 0xcc //本机地址3,11001100,00
 #define MyAddress4 0xcc //本机地址4,11001100,00
-
-//三路循环
-sbit onePin=P1^6;
-sbit twoPin=P1^7;
-sbit threePin=P0^0;
 
 //附机的发射部分的控制端口
 //sbit PWMout=P3^5;//发射机的方波输出口，现在使用PWM外设了
@@ -502,6 +495,10 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 				alarmFlag4=0;//清报警标志
 				alarmCount5=0;//清报警计数器
 				alarmFlag5=0;//清报警标志
+
+				Moto=0;//开震动
+				Delay(10);
+				Moto=1;
 			}
 			break;
 		
@@ -547,7 +544,7 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 		if(commuFlag==1)//说明开启了通信
 		{
 			receive_en=0;		//打开接收机
-  			ComMode_1_Data();//发送模式1信号
+			ComMode_1_Data();//发送模式1信号
 			receive_en=1;		//打开接收机
 			TestFlag++;
 			

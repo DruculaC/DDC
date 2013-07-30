@@ -1,4 +1,4 @@
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 1   
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 1   
 
 
 C51 COMPILER V9.01, COMPILATION OF MODULE NEWHOST
@@ -8,7 +8,7 @@ COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE newHost.c LARGE
 
 line level    source
 
-   1          
+   1          //电动车
    2          #include"N79E81x.h"
    3          #include<intrins.h>
    4          #include"AD.h"
@@ -62,7 +62,7 @@ line level    source
   52          
   53          //三轴传感器
   54          sbit ReceWave=P0^7;//三轴传感器输入端
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 2   
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 2   
 
   55          sbit SensorControl=P2^5;//三轴传感器控制端
   56          
@@ -126,7 +126,7 @@ line level    source
  112          //unsigned char Check1=0;//作为AD检测值
  113          
  114          bit receiveFlag=0;//接收到数据标志
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 3   
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 3   
 
  115          bit commuFlag=0;//开启通信标志
  116          
@@ -190,7 +190,7 @@ line level    source
  173   4                                      P10=0;
  174   4                                      Delay3(80);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
  175   4                              }
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 4   
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 4   
 
  176   3                              else//为0的情况
  177   3                              {
@@ -254,7 +254,7 @@ line level    source
  235   1      
  236   1              commuFlag=1; //开启通信
  237   1              tran_en=0;   //关闭无线发射机
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 5   
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 5   
 
  238   1      
  239   1      //      ModeFlag=2;
@@ -318,7 +318,7 @@ line level    source
  297   2                      if(Check1>=0x99)//设置比较电压，此处为3V设置
  298   2                      {
  299   2                              PAshutdown=1;   //拾音器超过某个电压时，打开功放
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 6   
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 6   
 
  300   2                      }
  301   2                      else
@@ -382,7 +382,7 @@ line level    source
  359   2                                              Delay(130);
  360   2                                              PAshutdown=0;
  361   2                      
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 7   
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 7   
 
  362   2                                              power4Flag=1;
  363   2                                              power1Flag=0;
@@ -446,7 +446,7 @@ line level    source
  421   3                              if(T1highcount>=120)
  422   3                              {
  423   4                                      DataTime=0;
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 8   
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 8   
 
  424   4                                      ComFlag=1;
  425   4                                      count=0;
@@ -510,7 +510,7 @@ line level    source
  482   5                                              MagentControl_1=0;//磁铁常态为这种模式
  483   5                                              MagentControl_2=0;
  484   5                                              magnetflag=1;
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 9   
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 9   
 
  485   5                                      }
  486   4              
@@ -574,7 +574,7 @@ line level    source
  543   2                      {
  544   3                              ComMode_4_Data();
  545   3                      }
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 10  
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 10  
 
  546   2              }
  547   1      
@@ -638,7 +638,7 @@ line level    source
  605   3      //                      commode2_flag=0;
  606   3                              ComMode_3_Data(); //向附机发送编码3
  607   3                      }
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 11  
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 11  
 
  608   2              }
  609   1      
@@ -653,278 +653,260 @@ line level    source
  618   3                              PAshutdown=0;
  619   3      //                      VoiceControl=0;//开启拾声器
  620   3                      }
- 621   2                      if(alarmFlag==1)
- 622   2                      {
- 623   3      //                      VoiceControl=1;//使用语音时要关闭拾声器
- 624   3                              PAshutdown=1;
- 625   3                              SC_Speech(4);  //关机语言提醒
- 626   3                              Delay(150);
- 627   3                              PAshutdown=0;
- 628   3      //                      VoiceControl=0;//开启拾声器
- 629   3                      }
- 630   2                      ComMode_3_Data(); //向附机发送编码3
- 631   2                      if(alarmFlag==1)
+ 621   2                      ComMode_3_Data(); //向附机发送编码3
+ 622   2                      if(alarmFlag==1)
+ 623   2                      {
+ 624   3      //                      VoiceControl=1;//使用语音时要关闭拾声器
+ 625   3                              PAshutdown=1;
+ 626   3                              SC_Speech(4);  //关机语言提醒
+ 627   3                              Delay(150);
+ 628   3                              PAshutdown=0;
+ 629   3      //                      VoiceControl=0;//开启拾声器
+ 630   3                      }
+ 631   2                      if(alarmCount>=100) //调节语音的段数
  632   2                      {
- 633   3      //                      VoiceControl=1;//使用语音时要关闭拾声器
- 634   3                              PAshutdown=1;
- 635   3                              SC_Speech(3);  //关机语言提醒
- 636   3                              Delay(100);
- 637   3                              PAshutdown=0;
- 638   3      //                      VoiceControl=0;//开启拾声器
- 639   3                      }
- 640   2                      if(alarmFlag==1)
- 641   2                      {
- 642   3      //                      VoiceControl=1;//使用语音时要关闭拾声器
- 643   3                              PAshutdown=1;
- 644   3                              SC_Speech(4);  //关机语言提醒
- 645   3                              Delay(150);     
- 646   3                              PAshutdown=0;
- 647   3      //                      VoiceControl=0;//开启拾声器
- 648   3                      }
- 649   2                      if(alarmCount>=20) //调节语音的段数
- 650   2                      {
- 651   3                              alarmCount=0;//清报警计数器
- 652   3                              alarmFlag=0;//清报警标志
- 653   3                      }
- 654   2                      ComMode_3_Data(); //向附机发送编码3
- 655   2      
- 656   2                      alarmCount++;
- 657   2              }
- 658   1      
- 659   1      //      #if DEBUG 1  //开启倒地和抬起检测
- 660   1      //      //if()//检测倒地和抬起检测的代码
- 661   1              if(downUpFlag==1)//开启了抬起倒地检测
- 662   1              {
- 663   2                      if(upSignal==0)//说明有抬起信号并且是第一次，开始计时
- 664   2                      {
- 665   3                              time0Count_4++;
- 666   3                              if(time0Count_4>=10)//说明已经大于0.5S
- 667   3                              {
- 668   4                                      time0Count_4 =0;//计时期清零
- 669   4                                      upFlag=1;//置抬起标志
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 12  
+ 633   3                              alarmCount=0;//清报警计数器
+ 634   3                              alarmFlag=0;//清报警标志
+ 635   3                      }
+ 636   2                      ComMode_3_Data(); //向附机发送编码3
+ 637   2      
+ 638   2                      alarmCount++;
+ 639   2              }
+ 640   1      
+ 641   1      //      #if DEBUG 1  //开启倒地和抬起检测
+ 642   1      //      //if()//检测倒地和抬起检测的代码
+ 643   1              if(downUpFlag==1)//开启了抬起倒地检测
+ 644   1              {
+ 645   2                      if(upSignal==0)//说明有抬起信号并且是第一次，开始计时
+ 646   2                      {
+ 647   3                              time0Count_4++;
+ 648   3                              if(time0Count_4>=10)//说明已经大于0.5S
+ 649   3                              {
+ 650   4                                      time0Count_4 =0;//计时期清零
+ 651   4                                      upFlag=1;//置抬起标志
+ 652   4                                      downFlag=0;
+ 653   4                                      alarmFlag=0;
+ 654   4                              }               
+ 655   3                      }
+ 656   2      
+ 657   2                      if(downSignal==0)//说明有抬起信号，开始计时
+ 658   2                      {
+ 659   3                              time0Count_5++;
+ 660   3                              if(time0Count_5>=10)//说明已经大于0.5S
+ 661   3                              {
+ 662   4                                      time0Count_5 =0;//计时期清零
+ 663   4                                      downFlag=1;//置抬起标志
+ 664   4                                      upFlag=0;
+ 665   4                                      alarmFlag=0;
+ 666   4                              }               
+ 667   3                      }
+ 668   2              }
+ 669   1      }
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 12  
 
- 670   4                                      downFlag=0;
- 671   4                                      alarmFlag=0;
- 672   4                              }               
- 673   3                      }
- 674   2      
- 675   2                      if(downSignal==0)//说明有抬起信号，开始计时
- 676   2                      {
- 677   3                              time0Count_5++;
- 678   3                              if(time0Count_5>=10)//说明已经大于0.5S
- 679   3                              {
- 680   4                                      time0Count_5 =0;//计时期清零
- 681   4                                      downFlag=1;//置抬起标志
- 682   4                                      upFlag=0;
- 683   4                                      alarmFlag=0;
- 684   4                              }               
- 685   3                      }
- 686   2              }
- 687   1      }
- 688          
- 689          
- 690          //void ComMode_1_Data(unsigned int sendAddr)//发送边码1
- 691          void ComMode_1_Data()//发送边码1
- 692          {
- 693   1      //      unsigned char mystartbuffer=0xbc;
- 694   1      //      unsigned int j;
- 695   1              
- 696   1              unsigned char i,n;
- 697   1              ModeControl_1=0;//30M发射功率                           
- 698   1              tran_en=1;
- 699   1              myTxRxData[0]=CmdHead;
- 700   1              myTxRxData[1]=MyAddress;
- 701   1              myTxRxData[2]=ComMode_1;
- 702   1              myTxRxData[3]=0x00;
- 703   1              myTxRxData[4]=0x00;
- 704   1              myTxRxData[5]=0x00;
- 705   1              myTxRxData[6]=0x00;
- 706   1      
- 707   1              initsignal();
- 708   1      
- 709   1              for(i=0;i<7;i++)
- 710   1              {
- 711   2                      for(n=0;n<8;n++)
- 712   2                      {
- 713   3                              if((myTxRxData[i]&0x80)==0x80)//为1
- 714   3                              {
- 715   4                                      P10=0;
- 716   4                                      Delay4(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
- 717   4                              }
- 718   3                              else//为0的情况
- 719   3                              {
- 720   4                                      P10=0;
- 721   4                                      Delay4(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
- 722   4                              }
- 723   3                              P10=1;//常态为高电平
- 724   3                              myTxRxData[i]<<=1;
- 725   3                              Delay4(50);//延时要大于2ms
- 726   3                      }
- 727   2              }
- 728   1              tran_en=0;
- 729   1      }
- 730          
- 731          void ComMode_2_Data()//发送边码2
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 13  
+ 670          
+ 671          
+ 672          //void ComMode_1_Data(unsigned int sendAddr)//发送边码1
+ 673          void ComMode_1_Data()//发送边码1
+ 674          {
+ 675   1      //      unsigned char mystartbuffer=0xbc;
+ 676   1      //      unsigned int j;
+ 677   1              
+ 678   1              unsigned char i,n;
+ 679   1              ModeControl_1=0;//30M发射功率                           
+ 680   1              tran_en=1;
+ 681   1              myTxRxData[0]=CmdHead;
+ 682   1              myTxRxData[1]=MyAddress;
+ 683   1              myTxRxData[2]=ComMode_1;
+ 684   1              myTxRxData[3]=0x00;
+ 685   1              myTxRxData[4]=0x00;
+ 686   1              myTxRxData[5]=0x00;
+ 687   1              myTxRxData[6]=0x00;
+ 688   1      
+ 689   1              initsignal();
+ 690   1      
+ 691   1              for(i=0;i<7;i++)
+ 692   1              {
+ 693   2                      for(n=0;n<8;n++)
+ 694   2                      {
+ 695   3                              if((myTxRxData[i]&0x80)==0x80)//为1
+ 696   3                              {
+ 697   4                                      P10=0;
+ 698   4                                      Delay4(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+ 699   4                              }
+ 700   3                              else//为0的情况
+ 701   3                              {
+ 702   4                                      P10=0;
+ 703   4                                      Delay4(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+ 704   4                              }
+ 705   3                              P10=1;//常态为高电平
+ 706   3                              myTxRxData[i]<<=1;
+ 707   3                              Delay4(50);//延时要大于2ms
+ 708   3                      }
+ 709   2              }
+ 710   1              tran_en=0;
+ 711   1      }
+ 712          
+ 713          void ComMode_2_Data()//发送边码2
+ 714          {
+ 715   1      //      unsigned int j;
+ 716   1      
+ 717   1              unsigned char i,n;
+ 718   1              ModeControl_1=0;//30M发射功率
+ 719   1              tran_en=1;
+ 720   1              myTxRxData[0]=CmdHead;
+ 721   1              myTxRxData[1]=MyAddress;
+ 722   1              myTxRxData[2]=ComMode_2;
+ 723   1              myTxRxData[3]=0x00;
+ 724   1              myTxRxData[4]=0x00;
+ 725   1              myTxRxData[5]=0x00;
+ 726   1              myTxRxData[6]=0x00;
+ 727   1      
+ 728   1              initsignal();
+ 729   1      
+ 730   1              for(i=0;i<7;i++)
+ 731   1              {
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 13  
 
- 732          {
- 733   1      //      unsigned int j;
- 734   1      
- 735   1              unsigned char i,n;
- 736   1              ModeControl_1=0;//30M发射功率
- 737   1              tran_en=1;
- 738   1              myTxRxData[0]=CmdHead;
- 739   1              myTxRxData[1]=MyAddress;
- 740   1              myTxRxData[2]=ComMode_2;
- 741   1              myTxRxData[3]=0x00;
- 742   1              myTxRxData[4]=0x00;
- 743   1              myTxRxData[5]=0x00;
- 744   1              myTxRxData[6]=0x00;
- 745   1      
- 746   1              initsignal();
- 747   1      
- 748   1              for(i=0;i<7;i++)
- 749   1              {
- 750   2                      for(n=0;n<8;n++)
- 751   2                      {
- 752   3                              if((myTxRxData[i]&0x80)==0x80)//为1
- 753   3                              {
- 754   4                                      P10=0;
- 755   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
- 756   4                              }
- 757   3                              else//为0的情况
- 758   3                              {
- 759   4                                      P10=0;
- 760   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
- 761   4                              }
- 762   3                              P10=1;//常态为高电平
- 763   3                              myTxRxData[i]<<=1;
- 764   3                              Delay3(50);//延时要大于2ms
- 765   3                      }
- 766   2              }
- 767   1              tran_en=0;
- 768   1      }
- 769          
- 770          void ComMode_3_Data()//发送边码3
- 771          {
- 772   1      //      unsigned int j;
- 773   1              unsigned char i,n;
- 774   1              ModeControl_1=1;//切换为300M发射
- 775   1              tran_en=1;
- 776   1              myTxRxData[0]=CmdHead;
- 777   1              myTxRxData[1]=MyAddress;
- 778   1              myTxRxData[2]=ComMode_3;
- 779   1              myTxRxData[3]=0x00;
- 780   1              myTxRxData[4]=0x00;
- 781   1              myTxRxData[5]=0x00;
- 782   1              myTxRxData[6]=0x00;
- 783   1      
- 784   1              initsignal();
- 785   1      
- 786   1              for(i=0;i<7;i++)
- 787   1              {
- 788   2                      for(n=0;n<8;n++)
- 789   2                      {
- 790   3                              if((myTxRxData[i]&0x80)==0x80)//为1
- 791   3                              {
- 792   4                                      P10=0;
- 793   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 14  
+ 732   2                      for(n=0;n<8;n++)
+ 733   2                      {
+ 734   3                              if((myTxRxData[i]&0x80)==0x80)//为1
+ 735   3                              {
+ 736   4                                      P10=0;
+ 737   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+ 738   4                              }
+ 739   3                              else//为0的情况
+ 740   3                              {
+ 741   4                                      P10=0;
+ 742   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+ 743   4                              }
+ 744   3                              P10=1;//常态为高电平
+ 745   3                              myTxRxData[i]<<=1;
+ 746   3                              Delay3(50);//延时要大于2ms
+ 747   3                      }
+ 748   2              }
+ 749   1              tran_en=0;
+ 750   1      }
+ 751          
+ 752          void ComMode_3_Data()//发送边码3
+ 753          {
+ 754   1      //      unsigned int j;
+ 755   1              unsigned char i,n;
+ 756   1              ModeControl_1=1;//切换为300M发射
+ 757   1              tran_en=1;
+ 758   1              myTxRxData[0]=CmdHead;
+ 759   1              myTxRxData[1]=MyAddress;
+ 760   1              myTxRxData[2]=ComMode_3;
+ 761   1              myTxRxData[3]=0x00;
+ 762   1              myTxRxData[4]=0x00;
+ 763   1              myTxRxData[5]=0x00;
+ 764   1              myTxRxData[6]=0x00;
+ 765   1      
+ 766   1              initsignal();
+ 767   1      
+ 768   1              for(i=0;i<7;i++)
+ 769   1              {
+ 770   2                      for(n=0;n<8;n++)
+ 771   2                      {
+ 772   3                              if((myTxRxData[i]&0x80)==0x80)//为1
+ 773   3                              {
+ 774   4                                      P10=0;
+ 775   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+ 776   4                              }
+ 777   3                              else//为0的情况
+ 778   3                              {
+ 779   4                                      P10=0;
+ 780   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+ 781   4                              }
+ 782   3                              P10=1;//常态为高电平
+ 783   3                              myTxRxData[i]<<=1;
+ 784   3                              Delay3(50);//延时要大于2ms
+ 785   3                      }
+ 786   2              }
+ 787   1              tran_en=0;
+ 788   1      }
+ 789          
+ 790          void ComMode_4_Data()//发送抬起编码
+ 791          {
+ 792   1              unsigned char i,n;
+ 793   1              ModeControl_1=0;//切换为300M发射
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 14  
 
- 794   4                              }
- 795   3                              else//为0的情况
- 796   3                              {
- 797   4                                      P10=0;
- 798   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
- 799   4                              }
- 800   3                              P10=1;//常态为高电平
- 801   3                              myTxRxData[i]<<=1;
- 802   3                              Delay3(50);//延时要大于2ms
- 803   3                      }
- 804   2              }
- 805   1              tran_en=0;
- 806   1      }
- 807          
- 808          void ComMode_4_Data()//发送抬起编码
- 809          {
- 810   1              unsigned char i,n;
- 811   1              ModeControl_1=0;//切换为300M发射
- 812   1              tran_en=1;
- 813   1              myTxRxData[0]=CmdHead;
- 814   1              myTxRxData[1]=MyAddress;
- 815   1              myTxRxData[2]=ComMode_4;
- 816   1              myTxRxData[3]=0x00;
- 817   1              myTxRxData[4]=0x00;
- 818   1              myTxRxData[5]=0x00;
- 819   1              myTxRxData[6]=0x00;
- 820   1      
- 821   1              initsignal();
- 822   1      
- 823   1              for(i=0;i<7;i++)
- 824   1              {
- 825   2                      for(n=0;n<8;n++)
- 826   2                      {
- 827   3                              if((myTxRxData[i]&0x80)==0x80)//为1
- 828   3                              {
- 829   4                                      P10=0;
- 830   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
- 831   4                              }
- 832   3                              else//为0的情况
- 833   3                              {
- 834   4                                      P10=0;
- 835   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
- 836   4                              }
- 837   3                              P10=1;//常态为高电平
- 838   3                              myTxRxData[i]<<=1;
- 839   3                              Delay3(50);//延时要大于2ms
- 840   3                      }
- 841   2              }
- 842   1              tran_en=0;
- 843   1      }
- 844          
- 845          void ComMode_5_Data()//发送倒地编码
- 846          {
- 847   1              unsigned char i,n;
- 848   1              ModeControl_1=0;//切换为300M发射
- 849   1              tran_en=1;      //打开无线发射机
- 850   1              myTxRxData[0]=CmdHead;
- 851   1              myTxRxData[1]=MyAddress;
- 852   1              myTxRxData[2]=ComMode_5;
- 853   1              myTxRxData[3]=0x00;
- 854   1              myTxRxData[4]=0x00;
- 855   1              myTxRxData[5]=0x00;
-C51 COMPILER V9.01   NEWHOST                                                               07/23/2013 14:32:22 PAGE 15  
+ 794   1              tran_en=1;
+ 795   1              myTxRxData[0]=CmdHead;
+ 796   1              myTxRxData[1]=MyAddress;
+ 797   1              myTxRxData[2]=ComMode_4;
+ 798   1              myTxRxData[3]=0x00;
+ 799   1              myTxRxData[4]=0x00;
+ 800   1              myTxRxData[5]=0x00;
+ 801   1              myTxRxData[6]=0x00;
+ 802   1      
+ 803   1              initsignal();
+ 804   1      
+ 805   1              for(i=0;i<7;i++)
+ 806   1              {
+ 807   2                      for(n=0;n<8;n++)
+ 808   2                      {
+ 809   3                              if((myTxRxData[i]&0x80)==0x80)//为1
+ 810   3                              {
+ 811   4                                      P10=0;
+ 812   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+ 813   4                              }
+ 814   3                              else//为0的情况
+ 815   3                              {
+ 816   4                                      P10=0;
+ 817   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+ 818   4                              }
+ 819   3                              P10=1;//常态为高电平
+ 820   3                              myTxRxData[i]<<=1;
+ 821   3                              Delay3(50);//延时要大于2ms
+ 822   3                      }
+ 823   2              }
+ 824   1              tran_en=0;
+ 825   1      }
+ 826          
+ 827          void ComMode_5_Data()//发送倒地编码
+ 828          {
+ 829   1              unsigned char i,n;
+ 830   1              ModeControl_1=0;//切换为300M发射
+ 831   1              tran_en=1;      //打开无线发射机
+ 832   1              myTxRxData[0]=CmdHead;
+ 833   1              myTxRxData[1]=MyAddress;
+ 834   1              myTxRxData[2]=ComMode_5;
+ 835   1              myTxRxData[3]=0x00;
+ 836   1              myTxRxData[4]=0x00;
+ 837   1              myTxRxData[5]=0x00;
+ 838   1              myTxRxData[6]=0x00;
+ 839   1      
+ 840   1              initsignal();
+ 841   1      
+ 842   1              for(i=0;i<7;i++)
+ 843   1              {
+ 844   2                      for(n=0;n<8;n++)
+ 845   2                      {
+ 846   3                              if((myTxRxData[i]&0x80)==0x80)//为1
+ 847   3                              {
+ 848   4                                      P10=0;
+ 849   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+ 850   4                              }
+ 851   3                              else//为0的情况
+ 852   3                              {
+ 853   4                                      P10=0;
+ 854   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+ 855   4                              }
+C51 COMPILER V9.01   NEWHOST                                                               07/30/2013 10:01:33 PAGE 15  
 
- 856   1              myTxRxData[6]=0x00;
- 857   1      
- 858   1              initsignal();
- 859   1      
- 860   1              for(i=0;i<7;i++)
- 861   1              {
- 862   2                      for(n=0;n<8;n++)
- 863   2                      {
- 864   3                              if((myTxRxData[i]&0x80)==0x80)//为1
- 865   3                              {
- 866   4                                      P10=0;
- 867   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
- 868   4                              }
- 869   3                              else//为0的情况
- 870   3                              {
- 871   4                                      P10=0;
- 872   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
- 873   4                              }
- 874   3                              P10=1;//常态为高电平
- 875   3                              myTxRxData[i]<<=1;
- 876   3                              Delay3(50);//延时要大于2ms
- 877   3                      }
- 878   2              }
- 879   1              tran_en=0;
- 880   1      }
+ 856   3                              P10=1;//常态为高电平
+ 857   3                              myTxRxData[i]<<=1;
+ 858   3                              Delay3(50);//延时要大于2ms
+ 859   3                      }
+ 860   2              }
+ 861   1              tran_en=0;
+ 862   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1703    ----
+   CODE SIZE        =   1665    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =     54       7
    PDATA SIZE       =   ----    ----

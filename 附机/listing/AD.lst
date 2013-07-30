@@ -1,4 +1,4 @@
-C51 COMPILER V9.01   AD                                                                    07/23/2013 16:33:20 PAGE 1   
+C51 COMPILER V9.01   AD                                                                    07/30/2013 09:59:07 PAGE 1   
 
 
 C51 COMPILER V9.01, COMPILATION OF MODULE AD
@@ -62,7 +62,7 @@ line level    source
   52          {
   53   1              unsigned char DataL=0;
   54   1              unsigned int DataH=0;
-C51 COMPILER V9.01   AD                                                                    07/23/2013 16:33:20 PAGE 2   
+C51 COMPILER V9.01   AD                                                                    07/30/2013 09:59:07 PAGE 2   
 
   55   1              if(ch==5)//检测拾音器的电量大小
   56   1              {
