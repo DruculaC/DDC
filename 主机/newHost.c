@@ -9,35 +9,25 @@
 #include"T1.h"
 
 //定义通信命令
-
 #define CmdStart 0x00 //开机命令
 #define CmdStop 0x01  //关机命令
-
 #define ComMode_1 0xc1 //通信模式1 
 #define ComMode_2 0xc2 //通信模式2
 #define ComMode_3 0xc3 //通信模式3
 #define ComMode_4 0xc4 //抬起指令
 #define ComMode_5 0xc5//倒地指令
-
 #define Succeed 0xce  //通信成功
 #define Wrong 0xff    //通信失败
-
 #define CmdHead 0xc8
 #define CmdHead1 0x33 //数据帧的首部1, 00110011,11
 #define CmdHead2 0xcc //数据帧的首部2,11001100,00
 #define CmdHead3 0x3c //数据帧的首部3,11000011,01
 #define CmdHead4 0xcc //数据帧的首部4,11001100,00
-
 #define MyAddress 0xe0
 #define MyAddress1 0x33 //本机地址1, 00110011,11
 #define MyAddress2 0x3c //本机地址2, 11000011,01
 #define MyAddress3 0xcc //本机地址3,11001100,00
 #define MyAddress4 0xcc //本机地址4,11001100,00
-
-//三路循环
-sbit onePin=P1^6;
-sbit twoPin=P1^7;
-sbit threePin=P0^0;
 
 //设置报电量的按钮，1的时候报一下电量，0的时候为常态
 sbit det_battery=P2^4;
@@ -46,9 +36,6 @@ sbit det_battery=P2^4;
 //sbit PWMout=P0^1;//发射机的方波输出口，使用外设PWM
 sbit ModeControl_1=P2^6;//发射机模式控制,0亮为30M模式，1灭为300M模式
 sbit tran_en=P2^7;//发射机开关，1亮为开了，0灭为关了
-
-//接收机控制
-//sbit SwitchControl=P1^3;//1有效，0关闭
 
 //三轴传感器
 sbit ReceWave=P0^7;//三轴传感器输入端
@@ -193,38 +180,24 @@ void main()
 {
 	SensorControl=1;		  //上电关闭传感器
 
-//	unsigned int newAddr=0;
 	noVoice();
-//	InitUART();
 	InitT0();
 	InitT1();
-//	TI=0;
-//	RI=0;
-
-	onePin=0;
-	twoPin=0;
-	threePin=0;
 	
 	PAshutdown=0;		//将功放关闭
 
 	upSignal=1;
 	downSignal=1;
-//	Delay(30);
-
-//	ES=1;
 	ET0=1;	//开启定时器0中断
 	ET1=1; //开启定时器1中断
-//	PS=1;
 	PT1=1;//定时器1的中断优先级最高
 	EA=1;
 	P10=1;
-//	P11=1;
 	det_battery=0;   
 	BatteryControl=0;	//附机上电的时候置0，即可以充电，电池在没有充满的情况下为低电平
 	myPwm();	//开发射机
 
 	ModeControl_1=0; //发射机模式控制端,开机时为30M模式
-//	VoiceControl=0;//开机时主机开失声器
 	
 	MagentControl_1=0;//关闭磁铁
 	MagentControl_2=1;
@@ -236,7 +209,6 @@ void main()
 	commuFlag=1; //开启通信
 	tran_en=0;   //关闭无线发射机
 
-//	ModeFlag=2;
 	downUpFlag=1;
 
 	while(1)
@@ -290,89 +262,12 @@ void main()
 				}
 			}
 		}
-
-
-/*		
-		Check1=GetADCResult(5);//拾色器的检测
-		if(Check1>=0x99)//设置比较电压，此处为3V设置
-		{
-			PAshutdown=1;	//拾音器超过某个电压时，打开功放
-		}
-		else
-		{
-			PAshutdown=0;	//拾音器一旦低于某个电压，则关闭功放
-		}
-*/	   	
-/*
-		if(Check>=0x3cf) //表示电池充包了
-		{
-			BatteryControl=1;//开漏模式，这样为高阻态	
-		}
-		else
-		{
-			BatteryControl=0;//电池在没有充满的情况下为低电平
-		}
-*/
-/*
-					if(det_battery==1)
-			{
-				if((Check>=0x38a)&&(power1Flag==0))//设置比较电压，此处为4V,以4.2V为基准
-				{
-					PAshutdown=1;
-					SC_Speech(11);  	//4V电量充足提示
-					Delay(130);
-					PAshutdown=0;
-		
-					power1Flag=1;
-					power2Flag=0;
-					power3Flag=0;
-					power4Flag=0;
-				}
-			    else if((Check<0x389)&&(Check>=0x382)&&(power2Flag==0))
-				{
-					PAshutdown=1;
-					SC_Speech(10);  //3.8V电量充足提示
-					Delay(130);
-					PAshutdown=0;
-			
-					power2Flag=1;
-					power1Flag=0;
-					power3Flag=0;
-					power4Flag=0;
-				}
-				else if((Check<0x37b)&&(Check>=0x377)&&(power3Flag==0))
-				{
-					PAshutdown=1;
-					SC_Speech(9);  //3.6V电量充足提示
-					Delay(130);
-					PAshutdown=0;
-		
-					power3Flag=1;
-					power1Flag=0;
-					power2Flag=0;
-					power4Flag=0;
-				}
-				else if((Check<0x373)&&(power4Flag==0))
-				{
-					PAshutdown=1;
-					SC_Speech(8);  //低于3.6v电量充足提示
-					Delay(130);
-					PAshutdown=0;
-		
-					power4Flag=1;
-					power1Flag=0;
-					power2Flag=0;
-					power3Flag=0;
-				}
-			}
-*/
 	}
 }
 
 void timeT1() interrupt 3 //定时器1中断接收数据
 {
-//	unsigned int newAddr=0;
-	
+
 	TH1=timer1H;//重装载
 	TL1=timer1L;
 	
@@ -390,7 +285,6 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 		if(ComFlag==0)//说明有一个低电平
 		{
 			ComFlag=1;
-//			RecData<<=1;
 
 			if((DataBetween>60)&&(DataBetween<=100))	//低电平持续的时间小于10ms，则为0
 			{
@@ -412,7 +306,6 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 			}
 
 			DataBetween=0;
-//			DataTime++;
 		}
 
 		else
@@ -426,7 +319,6 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 			}		
 		}
 	}
-//		P01=~P01;
 
 	if(DataTime==8)//说明一个字节的数据已经接受完全
 	{
@@ -459,7 +351,6 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 	if(receiveFlag==1)
 	{
 		receiveFlag=0;
-		//解析命令
 		switch(myTxRxData[2]) //对数据帧里的命令进行处理
 		{
 			case ComMode_1:  //附机发送过来的只用模式1，说明现在是正常的，数据部分为数组的第一和第二个字节，为密码表内的这个编码的开始字节的那个地址，然后填充数据帧，把密码表的数据发送出去
@@ -483,12 +374,9 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 					MagentControl_2=0;
 					magnetflag=1;
 				}
- 	
 				TestFlag=0;	
-							
 				if(ModeFlag==3||ModeFlag==2)
 				{
-				//恢复了正常，做相应复位动作
 					ModeFlag=1;
 				}
 			}
@@ -580,21 +468,9 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 //			VoiceControl=0;//开启拾声器
 			alarmFlag2=0;
 		}
-/*
-		if(SensorCount==2&&alarmFlag2==1)//三轴传感器二次触发，alarmFlag2控制发声1次
-		{
-//			VoiceControl=1;//使用语音时要关闭拾声器
-			PAshutdown=1;
-			SC_Speech(2);  //关机语言提醒
-			Delay(100);
-			PAshutdown=0;
-//			VoiceControl=0;//开启拾声器
-			alarmFlag2=0;
-		}
-*/
+
 		if(SensorCount>=2)//三轴传感器一次触发
 		{
-//			ComMode_3_Data(lastAddr); //向附机发送编码3
   			ModeFlag=3;//三轴传感器已经有2次触发了，要改变发射模式了
 			alarmFlag=1;//置语音报警位
 			alarmFlag2=0;
@@ -602,7 +478,6 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 			upFlag=0;
 			SensorCount=0; //脉冲计数清零
 			Delay(1);
-//			commode2_flag=0;
 			ComMode_3_Data(); //向附机发送编码3
 		}
 	}
@@ -611,22 +486,18 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 	{
 		if(alarmFlag==1)
 		{
-//			VoiceControl=1;//使用语音时要关闭拾声器
 			PAshutdown=1;
 			SC_Speech(3);  //关机语言提醒
 			Delay(100);
 			PAshutdown=0;
-//			VoiceControl=0;//开启拾声器
 		}
 		ComMode_3_Data(); //向附机发送编码3
 		if(alarmFlag==1)
 		{
-//			VoiceControl=1;//使用语音时要关闭拾声器
 			PAshutdown=1;
 			SC_Speech(4);  //关机语言提醒
 			Delay(150);
 			PAshutdown=0;
-//			VoiceControl=0;//开启拾声器
 		}
 		if(alarmCount>=100) //调节语音的段数
 		{
@@ -638,7 +509,6 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 		alarmCount++;
 	}
 
-//	#if DEBUG 1  //开启倒地和抬起检测
 //	//if()//检测倒地和抬起检测的代码
 	if(downUpFlag==1)//开启了抬起倒地检测
 	{
@@ -669,12 +539,8 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 }
 
 
-//void ComMode_1_Data(unsigned int sendAddr)//发送边码1
 void ComMode_1_Data()//发送边码1
 {
-//	unsigned char mystartbuffer=0xbc;
-//	unsigned int j;
-	
 	unsigned char i,n;
 	ModeControl_1=0;//30M发射功率				
 	tran_en=1;

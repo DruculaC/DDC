@@ -259,10 +259,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>80</ColumnNumber>
+      <ColumnNumber>60</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>622</TopLine>
-      <CurrentLine>643</CurrentLine>
+      <TopLine>150</TopLine>
+      <CurrentLine>150</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\newHost.c</PathWithFileName>
       <FilenameWithoutPath>newHost.c</FilenameWithoutPath>
@@ -354,7 +354,7 @@
   </Group>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\richard\Documents\GitHub\DDC\主机\AD.H</PathWithFilename>
+    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\主机\AD.H</PathWithFilename>
     <TopLine>1</TopLine>
     <CurrentLine>1</CurrentLine>
     <Constant>0</Constant>
@@ -380,7 +380,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\richard\Documents\GitHub\DDC\主机\VOICE.H</PathWithFilename>
+    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\主机\VOICE.H</PathWithFilename>
     <TopLine>1</TopLine>
     <CurrentLine>8</CurrentLine>
     <Constant>0</Constant>
@@ -406,7 +406,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\richard\Documents\GitHub\DDC\主机\PWM.H</PathWithFilename>
+    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\主机\PWM.H</PathWithFilename>
     <TopLine>13</TopLine>
     <CurrentLine>17</CurrentLine>
     <Constant>0</Constant>
@@ -432,7 +432,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\richard\Documents\GitHub\DDC\主机\UART.H</PathWithFilename>
+    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\主机\UART.H</PathWithFilename>
     <TopLine>46</TopLine>
     <CurrentLine>46</CurrentLine>
     <Constant>0</Constant>
@@ -458,9 +458,9 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\richard\Documents\GitHub\DDC\主机\N79E81X.H</PathWithFilename>
-    <TopLine>108</TopLine>
-    <CurrentLine>120</CurrentLine>
+    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\主机\N79E81X.H</PathWithFilename>
+    <TopLine>229</TopLine>
+    <CurrentLine>243</CurrentLine>
     <Constant>0</Constant>
     <WindowPosition>
       <length>0</length>
@@ -484,7 +484,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\richard\Documents\GitHub\DDC\主机\T0.H</PathWithFilename>
+    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\主机\T0.H</PathWithFilename>
     <TopLine>1</TopLine>
     <CurrentLine>3</CurrentLine>
     <Constant>0</Constant>
@@ -510,7 +510,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\richard\Documents\GitHub\DDC\主机\T1.H</PathWithFilename>
+    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\主机\T1.H</PathWithFilename>
     <TopLine>1</TopLine>
     <CurrentLine>6</CurrentLine>
     <Constant>0</Constant>
@@ -1876,7 +1876,7 @@
     <ActiveMDIGroup>0</ActiveMDIGroup>
     <MDIGroup>
       <Size>100</Size>
-      <ActiveTab>5</ActiveTab>
+      <ActiveTab>9</ActiveTab>
       <Documents>
         <Doc>
           <Name>.\T0.c</Name>
@@ -1910,9 +1910,9 @@
         </Doc>
         <Doc>
           <Name>.\newHost.c</Name>
-          <ColumnNumber>80</ColumnNumber>
-          <TopLine>622</TopLine>
-          <CurrentLine>643</CurrentLine>
+          <ColumnNumber>60</ColumnNumber>
+          <TopLine>150</TopLine>
+          <CurrentLine>150</CurrentLine>
         </Doc>
         <Doc>
           <Name>.\AD.c</Name>
@@ -1934,9 +1934,9 @@
         </Doc>
         <Doc>
           <Name>N79E81X.H</Name>
-          <ColumnNumber>5</ColumnNumber>
-          <TopLine>108</TopLine>
-          <CurrentLine>120</CurrentLine>
+          <ColumnNumber>104</ColumnNumber>
+          <TopLine>229</TopLine>
+          <CurrentLine>243</CurrentLine>
         </Doc>
         <Doc>
           <Name>UART.H</Name>
