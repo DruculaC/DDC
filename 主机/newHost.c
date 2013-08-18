@@ -16,6 +16,7 @@
 #define ComMode_3 0xc3 //通信模式3
 #define ComMode_4 0xc4 //抬起指令
 #define ComMode_5 0xc5//倒地指令
+#define ComMode_6 0xc6	//充电已满指令
 #define Succeed 0xce  //通信成功
 #define Wrong 0xff    //通信失败
 #define CmdHead 0xc8
@@ -30,8 +31,10 @@
 #define MyAddress4 0xcc //本机地址4,11001100,00
 
 //设置报电量的按钮，1的时候报一下电量，0的时候为常态
-sbit det_battery=P2^4;
+sbit det_battery=P2^4;			
 
+//设置充电指示
+sbit det_charge=P0^2;
 //主机的发射部分的控制端口
 //sbit PWMout=P0^1;//发射机的方波输出口，使用外设PWM
 sbit ModeControl_1=P2^6;//发射机模式控制,0亮为30M模式，1灭为300M模式
@@ -73,7 +76,7 @@ unsigned char ModeFlag=1;//模式选择位，1则用模式1,2则用模式2,3则为模式3
 
 bit alarmFlag=0;//报警语音的开启标志
 bit alarmFlag2=0;//报警语音标志2
-unsigned char alarmCount=0;//报警语音的次数
+unsigned int alarmCount=0;//报警语音的次数
 
 bit threeFlag=0;//三路循环开关标志
 
@@ -121,6 +124,25 @@ unsigned char magnetflag=0;
 //unsigned char commode2_flag=0; //发送编码2的标志位
 //unsigned char commode3_flag=0; //发送编码3的标志位
 
+bit ADCcheck=0;			//置1时，执行一次电量转换，执行完后，将其置0
+bit sendcomm1=0;		//置1时，执行一次发送编码1，执行完后，将其置0
+bit sendcomm3=0;		//置1时，执行一次发送编码3，执行完后，将其置0
+bit sendcomm4=0;		//置1时，执行一次发送编码4，执行完后，将其置0
+bit sendcomm5=0;		//置1时，执行一次发送编码5，执行完后，将其置0
+bit magcon=0;			//置1时，执行一次电磁铁锁上操作，执行完后，将其置0
+bit magcon2=0;			//置1时，执行一次电磁铁打开操作，执行完后，将其置0
+bit sendspeech1=0;		//置1时，执行一次报语音（被碰警告），执行完后，将其置0
+bit sendspeech2=0;		//置1时，执行一次报语音（警笛音+报警），执行完后，将其置0
+bit sendspeech3=0;		//置1时，执行一次报语音（被碰警告），执行完后，将其置0
+bit sendspeech4=0;		//置1时，执行一次报语音（警笛音+报警），执行完后，将其置0
+bit sendspeech5=0;
+bit sendspeech6=0;
+bit sendspeech7=0;
+bit sendspeech8=0;
+
+bit turnonflag=0;		//电动车开启关闭标志位，1表示电动车开启了，0表示电动车关闭了
+unsigned char turnon_speech_flag=0;		//开机语音标志位，用来变换语音。
+
 //函数声明
 //void ComMode_1_Data(unsigned int sendAddr);	//发送模式1编码
 void ComMode_1_Data(void);	//发送模式1编码
@@ -128,6 +150,8 @@ void ComMode_2_Data(void);//发送模式2编码
 void ComMode_3_Data(void);//发送模式3编码
 void ComMode_4_Data(void);//发送抬起编码
 void ComMode_5_Data(void);//发送倒地编码
+void ComMode_6_Data(void);//发送充电已满编码
+void verifybattery(void);
 
 //void codeData(unsigned char *doData,unsigned char len);		//编码 ,电平1变为0011，电平0变为1100
 //void transCode(unsigned char *doData,unsigned char len);//解码，将接收到得数据还原
@@ -193,7 +217,8 @@ void main()
 	PT1=1;//定时器1的中断优先级最高
 	EA=1;
 	P10=1;
-	det_battery=0;   
+	det_charge=1;
+	det_battery=1;   
 	BatteryControl=0;	//附机上电的时候置0，即可以充电，电池在没有充满的情况下为低电平
 	myPwm();	//开发射机
 
@@ -213,55 +238,221 @@ void main()
 
 	while(1)
 	{
-		if(det_battery==1)
+		if((det_battery==1)&&(turnonflag==0))		   //开车转动钥匙时，执行一次电量转换
 		{
 		 	Delay(30);
 			if(det_battery==1)
 			{
-				if((Check>=0x3a3))//设置比较电压，此处以4.96V为基准，大于47.4V（4.5V）
+				verifybattery();
+				
+				if(turnon_speech_flag==0)
 				{
-					PAshutdown=1;
-					SC_Speech(11);  	//4V电量充足提示
-					Delay(130);
-					PAshutdown=0;
+					SC_Speech(7);
 				}
-			    else if((Check<0x3a0)&&(Check>=0x37c))		//小于47.4，大于45（4.31V）
+				else
 				{
-					PAshutdown=1;
-					SC_Speech(10);  //3.8V电量充足提示
-					Delay(130);
-					PAshutdown=0;
+					SC_Speech(8);
 				}
-				else if((Check<0x378)&&(Check>=0x359))		 //小于45，大于43（4.14V）
-				{
-					PAshutdown=1;
-					SC_Speech(9);  //3.6V电量充足提示
-					Delay(130);
-					PAshutdown=0;
-				}
-				else if((Check<0x355)&&(Check>=0x327))		 //小于43，大于40（3.9V）
-				{
-					PAshutdown=1;
-					SC_Speech(8);  //低于3.6v电量充足提示
-					Delay(130);
-					PAshutdown=0;
-				}
-				else if((Check<0x323)&&(Check>=0x304))		  //小于40，大于38（3.73V）
-				{
-					PAshutdown=1;
-					SC_Speech(7);  //低于3.6v电量充足提示
-					Delay(130);
-					PAshutdown=0;
-				}
-				else if((Check<0x300))						  //小于38V报警
-				{
-					PAshutdown=1;
-					SC_Speech(6);  //低于3.6v电量充足提示
-					Delay(130);
-					PAshutdown=0;
-				}
+
+				turnonflag=1;
 			}
 		}
+		else if((det_battery==0)&&(turnonflag==1))
+		{
+		 	Delay(30);
+			if(det_battery==0)
+			{
+				verifybattery();
+				if((Check<0x300))						  //小于38V报警，小于5公里了
+				{
+					PAshutdown=1;
+					SC_Speech(10);  //低于3.6v电量充足提示
+					Delay(130);
+					PAshutdown=0;
+				}
+				PAshutdown=1;
+				SC_Speech(9);
+				Delay(130);
+				PAshutdown=0;
+				turnonflag=0;
+			}
+		}
+		
+		if(det_charge==0)
+		{
+			Delay(100);
+			if(det_charge==0)
+			{
+				PAshutdown=1;
+				SC_Speech(14);
+				Delay(130);
+				PAshutdown=0;
+			}
+			
+			if(Check>=0x3a3)
+			{
+				ComMode_6_Data(); //向附机发送编码6，表示电已充满
+			}			  
+		}
+
+		if(ADCcheck==1)
+		{
+			Check=GetADCResult(6);	//电池电量检测
+			ADCcheck=0;	
+		}
+		
+		if(sendcomm1==1)
+		{
+			ComMode_1_Data(); //向附机发送编码3
+			sendcomm1=0;
+		}		
+		
+		if(sendcomm3==1)
+		{
+			ComMode_3_Data(); //向附机发送编码3
+			sendcomm3=0;
+		}
+
+		if(sendcomm4==1)
+		{
+			ComMode_4_Data(); //向附机发送编码3
+			sendcomm4=0;
+		}
+
+		if(sendcomm5==1)
+		{
+			ComMode_5_Data(); //向附机发送编码3
+			sendcomm5=0;
+		}
+
+		if(magcon==1)
+		{
+			if(magnetflag==1)
+			{
+				MagentControl_1=0;//关闭磁铁
+				MagentControl_2=1;
+				Delay(27);
+				MagentControl_1=0;//磁铁常态为这种模式
+				MagentControl_2=0;
+				magnetflag=0;
+			}
+			magcon=0;
+		}
+
+		if(magcon2==1)
+		{
+			if(magnetflag==0)
+			{
+				MagentControl_1=1;//开启磁铁
+				MagentControl_2=0;
+				Delay(27);
+				MagentControl_1=0;//磁铁常态为这种模式
+				MagentControl_2=0;
+				magnetflag=1;
+			}
+			magcon2=0;
+		}
+
+		if(sendspeech1==1)
+		{
+			PAshutdown=1;
+			SC_Speech(17);  //关机语言提醒
+			Delay(80);
+			PAshutdown=0;
+			sendspeech1=0;
+		}
+
+		if(sendspeech2==1)
+		{
+			if(upSignal==0)
+			{
+				PAshutdown=1;
+				SC_Speech(17);  //关机语言提醒
+				Delay(100);
+				SC_Speech(18);  //关机语言提醒
+				Delay(100);
+				SC_Speech(19);  //关机语言提醒
+				Delay(100);
+				PAshutdown=0;
+				ComMode_3_Data(); //向附机发送编码3
+			}
+			else if(downSignal==0)
+			{
+				PAshutdown=1;
+				SC_Speech(15);  //关机语言提醒
+				Delay(100);
+				SC_Speech(16);  //关机语言提醒
+				Delay(100);
+				PAshutdown=0;
+				ComMode_3_Data(); //向附机发送编码3
+			}
+			else
+			{
+			 	if(alarmFlag==1)
+				{
+					PAshutdown=1;
+					SC_Speech(22);  //关机语言提醒
+					Delay(100);
+					PAshutdown=0;
+				}
+				ComMode_3_Data(); //向附机发送编码3
+				if(alarmFlag==1)
+				{
+					PAshutdown=1;
+					SC_Speech(23);  //关机语言提醒		
+					Delay(80);
+					PAshutdown=0;
+				}
+				ComMode_3_Data(); //向附机发送编码3
+			}
+			
+
+			sendspeech2=0;
+		}
+
+		if(sendspeech3==1)
+		{
+			PAshutdown=1;
+			SC_Speech(17);  //关机语言提醒
+			Delay(80);
+			SC_Speech(16);  //关机语言提醒
+			Delay(80);
+			PAshutdown=0;
+			sendspeech3=0;
+		}
+		if(sendspeech3==1)
+		{
+			PAshutdown=1;
+			SC_Speech(18);  //关机语言提醒
+			Delay(120);
+			SC_Speech(19);  //关机语言提醒
+			Delay(120);
+			SC_Speech(20);  //关机语言提醒
+			Delay(120);
+			PAshutdown=0;
+			sendspeech3=0;
+		}
+
+		if(sendspeech7==1)
+		{
+			PAshutdown=1;
+			SC_Speech(11);  //关机语言提醒
+			Delay(150);
+			PAshutdown=0;
+			sendspeech7=0;
+		}
+
+		if(sendspeech8==1)
+		{
+			PAshutdown=1;
+			SC_Speech(12);  //关机语言提醒
+			Delay(150);
+			SC_Speech(13);
+			Delay(150);
+			PAshutdown=0;
+			sendspeech8=0;
+		}
+
 	}
 }
 
@@ -351,29 +542,23 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 	if(receiveFlag==1)
 	{
 		receiveFlag=0;
-		switch(myTxRxData[2]) //对数据帧里的命令进行处理
+		switch(myTxRxData[2]) 		//对数据帧里的命令进行处理
 		{
-			case ComMode_1:  //附机发送过来的只用模式1，说明现在是正常的，数据部分为数组的第一和第二个字节，为密码表内的这个编码的开始字节的那个地址，然后填充数据帧，把密码表的数据发送出去
+			case ComMode_1:  		//附机发送过来的只用模式1，说明现在是正常的，数据部分为数组的第一和第二个字节，为密码表内的这个编码的开始字节的那个地址，然后填充数据帧，把密码表的数据发送出去
 			{
-				ComMode_1_Data();//回复确认信号
+				sendcomm1=1;
+				sendspeech7=1;		//编码1后报一句语音
 
-				alarmFlag=0;//关报警标志位
-				alarmCount=0;//报警计数次数清零
-				SensorControl=0;//三轴传感器
-				downUpFlag=0; //关倒地、抬起检测
+				alarmFlag=0;		//关报警标志位
+				alarmCount=0;		//报警计数次数清零
+				SensorControl=0;	//三轴传感器
+				downUpFlag=0; 		//关倒地、抬起检测
 				downFlag=0;
 				upFlag=0;
 				SensorCount=0;
 				time0Count_2=0;			
-				if(magnetflag==0)
-				{
-					MagentControl_1=1;//开启磁铁
-					MagentControl_2=0;
-					Delay(27);
-					MagentControl_1=0;//磁铁常态为这种模式
-					MagentControl_2=0;
-					magnetflag=1;
-				}
+				magcon2=1;			//打开电磁铁
+
 				TestFlag=0;	
 				if(ModeFlag==3||ModeFlag==2)
 				{
@@ -391,7 +576,7 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 	TL0=timer0L;
 	time0Count_3++;
 
-	if(time0Count_3>=60)//串口每1S接受一次的数据的时间标志
+	if(time0Count_3>=60)//串口每3s接受一次的数据的时间标志
 	{
 		if(commuFlag==1)//说明开启了通信
 		{
@@ -402,34 +587,29 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 				TestFlag=5;
 				if(ModeFlag==1)
 				{
-					MagentControl_1=0;//关闭磁铁
-					MagentControl_2=1;
-					Delay(27);
-					MagentControl_1=0;//磁铁常态为这种模式
-					MagentControl_2=0;
-					magnetflag=0;
+					magcon=1;		 	//电磁铁锁上
+					sendspeech8=1;		//报附机离开语音
 
-					SensorControl=1;//开启三轴传感器
-					downUpFlag=1;//开启倒地、抬起标志
+					SensorControl=1;	//开启三轴传感器
+					downUpFlag=1;		//开启倒地、抬起标志
 					ModeFlag=2;
 
 					SensorCount=0;
 					time0Count_2=0;
-					Delay(60);
 				}	
  			}
  		}
 		time0Count_3=0;
 		
-		Check=GetADCResult(6);//电量检测
+		ADCcheck=1;		
 		
 		if(downFlag==1)  //倒地后做相应的动作
 		{
-			ComMode_5_Data();
+			sendcomm5=1;
 		}
 		if(upFlag==1)//抬起后做相应动作
 		{
-			ComMode_4_Data();
+			sendcomm4=1;
 		}
 	}
 
@@ -438,17 +618,22 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 		if(ReceWave==0)//说明有触发情况，开始计时
 		{
 			time0Count_2++;
-			if(time0Count_2>=10)//说明已经大于0.5S
+			if(time0Count_2>=25)//说明已经大于0.5S
 			{
-				time0Count_2 =0;//计时期清零
+				time0Count_2=0;//计时期清零
 				SensorCount++;//三轴传感器脉冲计数加1
-				alarmFlag2=1;//
+				alarmFlag2=1;
+			}
+			
+			if(time0Count_1>=200)
+			{
+				time0Count_1=0;		//检测到低电平后，然后判断高电平是否大于200，如果是，则将其清0，如果不是，则不影响。	
 			}		
  		}
 		else if(ReceWave==1&&SensorCount!=0)//说明已经有一个有用的脉冲
 		{
 			time0Count_1++;
-			if(time0Count_1>=200)//大于10S
+			if(time0Count_1>=100)//大于10S
 			{
 				SensorCount=0;
 				time0Count_2=0;
@@ -460,53 +645,54 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 	{
 		if(SensorCount==1&&alarmFlag2==1)//三轴传感器一次触发,alarmFlag2控制发声1次
 		{					
-//			VoiceControl=1;//使用语音时要关闭拾声器
-			PAshutdown=1;
-			SC_Speech(5);  //关机语言提醒
-			Delay(150);
-			PAshutdown=0;
-//			VoiceControl=0;//开启拾声器
-			alarmFlag2=0;
+			if((upSignal!=0)&&(downSignal!=0))
+			{
+				sendspeech1=1;
+				alarmFlag2=0;
+			}
 		}
 
-		if(SensorCount>=2)//三轴传感器一次触发
+		if((SensorCount==2)&&(alarmFlag2==1))
 		{
-  			ModeFlag=3;//三轴传感器已经有2次触发了，要改变发射模式了
+			if((upSignal!=0)&&(downSignal!=0))
+			{
+				sendspeech3=1;
+				alarmFlag2=0;
+			}			
+		}
+
+		if((SensorCount==3)&&(alarmFlag2==1))
+		{
+			if((upSignal!=0)&&(downSignal!=0))
+			{
+				sendspeech4=1;
+				alarmFlag2=0;
+			}			
+		}
+
+		if(SensorCount>=4)//三轴传感器一次触发
+		{
+			ModeFlag=3;//三轴传感器已经有2次触发了，要改变发射模式了
 			alarmFlag=1;//置语音报警位
 			alarmFlag2=0;
 			downFlag=0;
 			upFlag=0;
 			SensorCount=0; //脉冲计数清零
-			Delay(1);
-			ComMode_3_Data(); //向附机发送编码3
 		}
 	}
 
 	if(ModeFlag==3)
 	{
-		if(alarmFlag==1)
-		{
-			PAshutdown=1;
-			SC_Speech(3);  //关机语言提醒
-			Delay(100);
-			PAshutdown=0;
-		}
-		ComMode_3_Data(); //向附机发送编码3
-		if(alarmFlag==1)
-		{
-			PAshutdown=1;
-			SC_Speech(4);  //关机语言提醒
-			Delay(150);
-			PAshutdown=0;
-		}
-		if(alarmCount>=100) //调节语音的段数
+		sendspeech2=1;
+		time0Count_4=0;			//将倒地和抬起的传感器计数置0，相当于一直屏蔽
+		time0Count_5=0;
+
+		alarmCount++;
+		if(alarmCount>=1000) //调节语音的段数
 		{
 			alarmCount=0;//清报警计数器
 			alarmFlag=0;//清报警标志
 		}
-		ComMode_3_Data(); //向附机发送编码3
-
-		alarmCount++;
 	}
 
 //	//if()//检测倒地和抬起检测的代码
@@ -515,9 +701,8 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 		if(upSignal==0)//说明有抬起信号并且是第一次，开始计时
 		{
 			time0Count_4++;
-			if(time0Count_4>=10)//说明已经大于0.5S
+			if(time0Count_4>=200)//说明已经大于0.5S
 			{
-				time0Count_4 =0;//计时期清零
 				upFlag=1;//置抬起标志
 				downFlag=0;
 				alarmFlag=0;
@@ -527,7 +712,7 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 		if(downSignal==0)//说明有抬起信号，开始计时
 		{
 			time0Count_5++;
-			if(time0Count_5>=10)//说明已经大于0.5S
+			if(time0Count_5>=200)//说明已经大于0.5S
 			{
 				time0Count_5 =0;//计时期清零
 				downFlag=1;//置抬起标志
@@ -725,4 +910,80 @@ void ComMode_5_Data()//发送倒地编码
 		}
 	}
 	tran_en=0;
+}
+
+void ComMode_6_Data()//发送倒地编码
+{
+	unsigned char i,n;
+	ModeControl_1=0;//切换为300M发射
+	tran_en=1;      //打开无线发射机
+	myTxRxData[0]=CmdHead;
+	myTxRxData[1]=MyAddress;
+	myTxRxData[2]=ComMode_6;
+	myTxRxData[3]=0x00;
+	myTxRxData[4]=0x00;
+	myTxRxData[5]=0x00;
+	myTxRxData[6]=0x00;
+
+	initsignal();
+
+	for(i=0;i<7;i++)
+	{
+		for(n=0;n<8;n++)
+		{
+			if((myTxRxData[i]&0x80)==0x80)//为1
+			{
+				P10=0;
+				Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+			}
+			else//为0的情况
+			{
+				P10=0;
+				Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+			}
+			P10=1;//常态为高电平
+			myTxRxData[i]<<=1;
+			Delay3(50);//延时要大于2ms
+		}
+	}
+	tran_en=0;
+}
+
+void verifybattery()
+{									  
+	if((Check>=0x3a3))//设置比较电压，此处以4.96V为基准，大于47.4V（4.5V）
+	{
+		PAshutdown=1;
+		SC_Speech(6);  	//4V电量充足提示
+		Delay(130);
+		PAshutdown=0;
+	}
+    else if((Check<0x3a0)&&(Check>=0x37c))		//小于47.4，大于45（4.31V）
+	{
+		PAshutdown=1;
+		SC_Speech(5);  //3.8V电量充足提示
+		Delay(130);
+		PAshutdown=0;
+	}
+	else if((Check<0x378)&&(Check>=0x359))		 //小于45，大于43（4.14V）
+	{
+		PAshutdown=1;
+		SC_Speech(4);  //3.6V电量充足提示
+		Delay(130);
+		PAshutdown=0;
+	}
+	else if((Check<0x355)&&(Check>=0x327))		 //小于43，大于40（3.9V）
+	{
+		PAshutdown=1;
+		SC_Speech(3);  //低于3.6v电量充足提示
+		Delay(130);
+		PAshutdown=0;
+	}
+	else if((Check<0x323)&&(Check>=0x304))		  //小于40，大于38（3.73V）
+	{
+		PAshutdown=1;
+		SC_Speech(2);  //低于3.6v电量充足提示
+		Delay(130);
+		PAshutdown=0;
+	}
 }

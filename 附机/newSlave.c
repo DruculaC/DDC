@@ -15,6 +15,7 @@
 #define ComMode_3 0xc3 //通信模式3
 #define ComMode_4 0xc4 //抬起指令
 #define ComMode_5 0xc5//倒地指令
+#define ComMode_6 0xc6//充电已满指令
 #define Succeed 0xce  //通信成功
 #define Wrong 0xff    //通信失败
 #define CmdHead 0xc8
@@ -73,6 +74,14 @@ unsigned char RecData=0;		//接收到的数据
 unsigned char DataTime=0;		//作为接收的数据的移位次数计数
 bit ComFlag=1;					//做上升沿的一个标志
 unsigned char T1highcount=0;	//定时器T1在没有信号到来的时候，对高电平计数，一旦超过某个值，则将Datatime清0
+
+bit ADCcheck=0;			//置1时，执行一次电量转换，执行完后，将其置0
+bit sendcomm1=0;		//置1时，执行一次发送编码1，执行完后，将其置0
+bit sendspeech1=0;		//置1时，执行一次语音提示，表示充电已满
+
+unsigned char powerflag=1;		//电池电位的标记，1表示现在电池是满的，0表示还没满。
+
+
 
 void ComMode_1_Data(void);		//发送编码1
 
@@ -178,6 +187,48 @@ void main(void)
 			Moto=0;//开震动
 			Delay(10);
 			Moto=1;
+		}
+
+		if(ADCcheck==1)				//每个3s检测一次电量，如果电池满的就检测是否低了，如果是不满的就检测是否充满。
+		{
+			Check=GetADCResult(6);	//电池电量检测
+			ADCcheck=0;
+			
+			if((powerflag==1)&&(Check<=0x35a))
+			{
+				powerflag=0;
+				PAshutdown=1;
+				SC_Speech(9);	//电压不充足提示
+				Delay(120);
+				PAshutdown=0;
+			}
+			else if((powerflag==0)&&(Check>=0x377))
+			{
+				powerflag=1;
+				PAshutdown=1;
+				SC_Speech(2);	//电压充足提示
+				Delay(120);
+				PAshutdown=0;
+			}	
+		}
+
+		if(sendcomm1==1)
+		{
+			receive_en=0;		//打开接收机
+			ComMode_1_Data();	//发送模式1信号
+			receive_en=1;		//打开接收机
+			sendcomm1=0;
+		}
+
+		if(sendspeech1==1)
+		{
+			PAshutdown=1;
+			SC_Speech(2);  
+			Delay(80);
+			SC_Speech(3);  
+			Delay(80);
+			PAshutdown=0;
+			sendspeech1=0;
 		}
 	}
 }
@@ -327,6 +378,12 @@ void timeT1() interrupt 3 				//定时器1中断接收数据
 				alarmFlag4=0;//清报警标志
 			}
 			break;
+
+			case ComMode_6://留作倒地信号使用
+			{
+				sendspeech1=1;
+			}
+			break;
 		}
 	}
 }
@@ -340,15 +397,11 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 
 	if(time0Count_3>=60)		//串口每1S发送一次的数据的时间标志
 	{
-		Check=GetADCResult(6);	//电池电量检测
-
+		ADCcheck=1;
 		if(commuFlag==1)		//说明开启了通信
 		{
-			receive_en=0;		//打开接收机
-			ComMode_1_Data();	//发送模式1信号
-			receive_en=1;		//打开接收机
 			TestFlag++;
-			
+			sendcomm1=1;
 			if(TestFlag>=4)		//说明已经出了300M了。收不到任何信号了，要做报警
 			{
 				TestFlag=5;
