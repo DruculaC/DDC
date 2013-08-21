@@ -25,7 +25,7 @@
     <ToolsetNumber>0x0</ToolsetNumber>
     <ToolsetName>MCS-51</ToolsetName>
     <TargetOption>
-      <CLK51>24000000</CLK51>
+      <CLK51>13500000</CLK51>
       <OPTTT>
         <gFlags>1</gFlags>
         <BeepAtEnd>1</BeepAtEnd>
@@ -210,10 +210,10 @@
       <FileType>1</FileType>
       <tvExp>1</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>18</ColumnNumber>
+      <ColumnNumber>82</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>218</TopLine>
-      <CurrentLine>226</CurrentLine>
+      <TopLine>147</TopLine>
+      <CurrentLine>147</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\newSlave.c</PathWithFileName>
       <FilenameWithoutPath>newSlave.c</FilenameWithoutPath>
@@ -305,7 +305,7 @@
   </Group>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\附机\N79E81X.H</PathWithFilename>
+    <PathWithFilename>C:\Users\Richard\Desktop\DDC-1\附机\N79E81X.H</PathWithFilename>
     <TopLine>1</TopLine>
     <CurrentLine>4</CurrentLine>
     <Constant>0</Constant>
@@ -1675,9 +1675,9 @@
       <Documents>
         <Doc>
           <Name>.\newSlave.c</Name>
-          <ColumnNumber>18</ColumnNumber>
-          <TopLine>218</TopLine>
-          <CurrentLine>226</CurrentLine>
+          <ColumnNumber>82</ColumnNumber>
+          <TopLine>147</TopLine>
+          <CurrentLine>147</CurrentLine>
         </Doc>
         <Doc>
           <Name>N79E81X.H</Name>

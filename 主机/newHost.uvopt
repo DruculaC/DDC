@@ -259,10 +259,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>29</ColumnNumber>
+      <ColumnNumber>37</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>969</TopLine>
-      <CurrentLine>979</CurrentLine>
+      <TopLine>657</TopLine>
+      <CurrentLine>657</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\newHost.c</PathWithFileName>
       <FilenameWithoutPath>newHost.c</FilenameWithoutPath>
@@ -354,7 +354,7 @@
   </Group>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\主机\AD.H</PathWithFilename>
+    <PathWithFilename>C:\Users\Richard\Desktop\DDC-1\主机\AD.H</PathWithFilename>
     <TopLine>1</TopLine>
     <CurrentLine>1</CurrentLine>
     <Constant>0</Constant>
@@ -380,7 +380,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\主机\VOICE.H</PathWithFilename>
+    <PathWithFilename>C:\Users\Richard\Desktop\DDC-1\主机\VOICE.H</PathWithFilename>
     <TopLine>1</TopLine>
     <CurrentLine>5</CurrentLine>
     <Constant>0</Constant>
@@ -406,7 +406,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\主机\PWM.H</PathWithFilename>
+    <PathWithFilename>C:\Users\Richard\Desktop\DDC-1\主机\PWM.H</PathWithFilename>
     <TopLine>13</TopLine>
     <CurrentLine>17</CurrentLine>
     <Constant>0</Constant>
@@ -432,7 +432,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\主机\UART.H</PathWithFilename>
+    <PathWithFilename>C:\Users\Richard\Desktop\DDC-1\主机\UART.H</PathWithFilename>
     <TopLine>46</TopLine>
     <CurrentLine>46</CurrentLine>
     <Constant>0</Constant>
@@ -458,7 +458,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\主机\N79E81X.H</PathWithFilename>
+    <PathWithFilename>C:\Users\Richard\Desktop\DDC-1\主机\N79E81X.H</PathWithFilename>
     <TopLine>211</TopLine>
     <CurrentLine>211</CurrentLine>
     <Constant>0</Constant>
@@ -484,7 +484,7 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\主机\T0.H</PathWithFilename>
+    <PathWithFilename>C:\Users\Richard\Desktop\DDC-1\主机\T0.H</PathWithFilename>
     <TopLine>1</TopLine>
     <CurrentLine>3</CurrentLine>
     <Constant>0</Constant>
@@ -510,9 +510,35 @@
   </AlienFiles>
 
   <AlienFiles>
-    <PathWithFilename>C:\Users\Richard\Documents\GitHub\DDC\主机\T1.H</PathWithFilename>
+    <PathWithFilename>C:\Users\Richard\Desktop\DDC-1\主机\T1.H</PathWithFilename>
     <TopLine>1</TopLine>
     <CurrentLine>6</CurrentLine>
+    <Constant>0</Constant>
+    <WindowPosition>
+      <length>0</length>
+      <flags>0</flags>
+      <showCmd>0</showCmd>
+      <MinPosition>
+        <xPos>0</xPos>
+        <yPos>0</yPos>
+      </MinPosition>
+      <MaxPosition>
+        <xPos>0</xPos>
+        <yPos>0</yPos>
+      </MaxPosition>
+      <NormalPosition>
+        <Top>0</Top>
+        <Left>0</Left>
+        <Right>0</Right>
+        <Bottom>0</Bottom>
+      </NormalPosition>
+    </WindowPosition>
+  </AlienFiles>
+
+  <AlienFiles>
+    <PathWithFilename>C:\Users\Richard\Desktop\DDC-1\主机\backup.c</PathWithFilename>
+    <TopLine>60</TopLine>
+    <CurrentLine>66</CurrentLine>
     <Constant>0</Constant>
     <WindowPosition>
       <length>0</length>
@@ -1910,9 +1936,9 @@
         </Doc>
         <Doc>
           <Name>.\newHost.c</Name>
-          <ColumnNumber>29</ColumnNumber>
-          <TopLine>969</TopLine>
-          <CurrentLine>979</CurrentLine>
+          <ColumnNumber>37</ColumnNumber>
+          <TopLine>657</TopLine>
+          <CurrentLine>657</CurrentLine>
         </Doc>
         <Doc>
           <Name>.\AD.c</Name>
@@ -1967,6 +1993,12 @@
           <ColumnNumber>36</ColumnNumber>
           <TopLine>56</TopLine>
           <CurrentLine>59</CurrentLine>
+        </Doc>
+        <Doc>
+          <Name>C:\Users\Richard\Desktop\DDC-1\主机\backup.c</Name>
+          <ColumnNumber>37</ColumnNumber>
+          <TopLine>60</TopLine>
+          <CurrentLine>66</CurrentLine>
         </Doc>
       </Documents>
     </MDIGroup>

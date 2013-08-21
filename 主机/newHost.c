@@ -63,6 +63,9 @@ unsigned int lastAddr=0;//上一次接收到的编码的地址
 
 unsigned char time0Count_1=0;//作为三轴传感器两个脉冲之间的时间间隔计时
 unsigned char time0Count_2=0;//作为三轴传感器的计时
+unsigned char time0Count_6=0;//作为三轴传感器的计时
+unsigned char time0Count_7=0;//作为三轴传感器的计时
+
 unsigned char time0Count_3=0;//作为串口每秒主辅机的信息交互时钟
 unsigned char time0Count_4=0;//作为抬起脉冲的时间间隔计时
 unsigned char time0Count_5=0;//作为倒地脉冲的时间间隔计时
@@ -76,7 +79,7 @@ unsigned char ModeFlag=1;//模式选择位，1则用模式1,2则用模式2,3则为模式3
 
 bit alarmFlag=0;//报警语音的开启标志
 bit alarmFlag2=0;//报警语音标志2
-unsigned int alarmCount=0;//报警语音的次数
+//unsigned int alarmCount=0;//报警语音的次数
 
 bit threeFlag=0;//三路循环开关标志
 
@@ -93,11 +96,9 @@ bit upFlag=0;//抬起的标志
 bit downFlagSend=0;//倒地发送的标志
 bit upFlagSend=0;//抬起发送的标志
 
-//作为接收和发送的缓存区
-unsigned char TxRxBuf[28]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 //一个头字节，一个地址字节，一个命令字节，两个编码地址字节，两个编码
 unsigned char myTxRxData[7]={0x00,0x00,0x00,0x00,0x00,0x00,0x00};//处理完后的通信数据的缓冲区
-
+unsigned char myTxRxData2[7]={0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 unsigned int Check=0;//电量检测
 //unsigned char Check1=0;//作为AD检测值
 
@@ -132,13 +133,22 @@ bit sendcomm5=0;		//置1时，执行一次发送编码5，执行完后，将其置0
 bit magcon=0;			//置1时，执行一次电磁铁锁上操作，执行完后，将其置0
 bit magcon2=0;			//置1时，执行一次电磁铁打开操作，执行完后，将其置0
 bit sendspeech1=0;		//置1时，执行一次报语音（被碰警告），执行完后，将其置0
+unsigned char speech1_count=0;
 bit sendspeech2=0;		//置1时，执行一次报语音（警笛音+报警），执行完后，将其置0
+unsigned char speech2_count=0;
 bit sendspeech3=0;		//置1时，执行一次报语音（被碰警告），执行完后，将其置0
+unsigned char speech3_count=0;
 bit sendspeech4=0;		//置1时，执行一次报语音（警笛音+报警），执行完后，将其置0
 bit sendspeech5=0;
 bit sendspeech6=0;
 bit sendspeech7=0;
+unsigned char speech7_count=0;
 bit sendspeech8=0;
+unsigned char speech8_count=0;
+
+bit stolenflag=0;		//被盗标志位
+unsigned int stolen_count=0;	//被盗计数的时间
+unsigned char stolen_flag=0;	//检测传感器开始标志
 
 bit turnonflag=0;		//电动车开启关闭标志位，1表示电动车开启了，0表示电动车关闭了
 unsigned char turnon_speech_flag=0;		//开机语音标志位，用来变换语音。
@@ -218,7 +228,7 @@ void main()
 	EA=1;
 	P10=1;
 	det_charge=1;
-	det_battery=1;   
+
 	BatteryControl=0;	//附机上电的时候置0，即可以充电，电池在没有充满的情况下为低电平
 	myPwm();	//开发射机
 
@@ -226,7 +236,7 @@ void main()
 	
 	MagentControl_1=0;//关闭磁铁
 	MagentControl_2=1;
-	Delay(27);
+	Delay(50);
 	MagentControl_1=0;//磁铁常态为这种模式
 	MagentControl_2=0;
 	magnetflag=0;
@@ -247,11 +257,19 @@ void main()
 				
 				if(turnon_speech_flag==0)
 				{
-					SC_Speech(7);
+					PAshutdown=1;
+					SC_Speech(8);  
+					Delay(80);
+					PAshutdown=0;
+					turnon_speech_flag=1;
 				}
 				else
 				{
-					SC_Speech(8);
+					PAshutdown=1;
+					SC_Speech(7);  
+					Delay(240);
+					PAshutdown=0;
+					turnon_speech_flag=0;
 				}
 
 				turnonflag=1;
@@ -278,7 +296,7 @@ void main()
 			}
 		}
 		
-		if(det_charge==0)
+		if(det_charge==1)
 		{
 			Delay(100);
 			if(det_charge==0)
@@ -301,18 +319,12 @@ void main()
 			ADCcheck=0;	
 		}
 		
-		if(sendcomm1==1)
+/*		if(sendcomm1==1)
 		{
 			ComMode_1_Data(); //向附机发送编码3
 			sendcomm1=0;
 		}		
 		
-		if(sendcomm3==1)
-		{
-			ComMode_3_Data(); //向附机发送编码3
-			sendcomm3=0;
-		}
-
 		if(sendcomm4==1)
 		{
 			ComMode_4_Data(); //向附机发送编码3
@@ -324,14 +336,14 @@ void main()
 			ComMode_5_Data(); //向附机发送编码3
 			sendcomm5=0;
 		}
-
+*/
 		if(magcon==1)
 		{
 			if(magnetflag==1)
 			{
 				MagentControl_1=0;//关闭磁铁
 				MagentControl_2=1;
-				Delay(27);
+				Delay(50);
 				MagentControl_1=0;//磁铁常态为这种模式
 				MagentControl_2=0;
 				magnetflag=0;
@@ -345,14 +357,14 @@ void main()
 			{
 				MagentControl_1=1;//开启磁铁
 				MagentControl_2=0;
-				Delay(27);
+				Delay(50);
 				MagentControl_1=0;//磁铁常态为这种模式
 				MagentControl_2=0;
 				magnetflag=1;
 			}
 			magcon2=0;
 		}
-
+/*
 		if(sendspeech1==1)
 		{
 			PAshutdown=1;
@@ -361,98 +373,97 @@ void main()
 			PAshutdown=0;
 			sendspeech1=0;
 		}
-
+*/
 		if(sendspeech2==1)
+		{
+			PAshutdown=1;
+			SC_Speech(18);  //关机语言提醒
+			Delay(100);
+			SC_Speech(16);  //关机语言提醒
+			Delay(100);
+			PAshutdown=0;
+			sendspeech2=0;
+		}
+
+		if((sendspeech3==1)&&(speech3_count<8))
 		{
 			if(upSignal==0)
 			{
 				PAshutdown=1;
 				SC_Speech(17);  //关机语言提醒
-				Delay(100);
+				Delay(80);
 				SC_Speech(18);  //关机语言提醒
 				Delay(100);
-				SC_Speech(19);  //关机语言提醒
-				Delay(100);
 				PAshutdown=0;
-				ComMode_3_Data(); //向附机发送编码3
+//				ComMode_3_Data(); //向附机发送编码3
 			}
 			else if(downSignal==0)
 			{
 				PAshutdown=1;
 				SC_Speech(15);  //关机语言提醒
-				Delay(100);
+				Delay(150);
 				SC_Speech(16);  //关机语言提醒
 				Delay(100);
 				PAshutdown=0;
-				ComMode_3_Data(); //向附机发送编码3
+//				ComMode_3_Data(); //向附机发送编码3
 			}
 			else
 			{
-			 	if(alarmFlag==1)
-				{
-					PAshutdown=1;
-					SC_Speech(22);  //关机语言提醒
-					Delay(100);
-					PAshutdown=0;
-				}
-				ComMode_3_Data(); //向附机发送编码3
-				if(alarmFlag==1)
-				{
-					PAshutdown=1;
-					SC_Speech(23);  //关机语言提醒		
-					Delay(80);
-					PAshutdown=0;
-				}
-				ComMode_3_Data(); //向附机发送编码3
-			}
 			
-
-			sendspeech2=0;
+				PAshutdown=1;
+				SC_Speech(22);  //关机语言提醒
+				Delay(180);
+				SC_Speech(23);  //关机语言提醒		
+				Delay(80);
+				PAshutdown=0;
+				
+			}
+			speech3_count++;
+			if(speech3_count==4)
+			{
+				speech3_count=0;
+				sendspeech3=0;
+			}
 		}
 
-		if(sendspeech3==1)
-		{
-			PAshutdown=1;
-			SC_Speech(17);  //关机语言提醒
-			Delay(80);
-			SC_Speech(16);  //关机语言提醒
-			Delay(80);
-			PAshutdown=0;
-			sendspeech3=0;
-		}
-		if(sendspeech3==1)
+/*		if(sendspeech3==1)
 		{
 			PAshutdown=1;
 			SC_Speech(18);  //关机语言提醒
 			Delay(120);
 			SC_Speech(19);  //关机语言提醒
-			Delay(120);
+			Delay(140);
 			SC_Speech(20);  //关机语言提醒
-			Delay(120);
+			Delay(170);
 			PAshutdown=0;
 			sendspeech3=0;
 		}
-
+*/
 		if(sendspeech7==1)
 		{
-			PAshutdown=1;
-			SC_Speech(11);  //关机语言提醒
-			Delay(150);
-			PAshutdown=0;
-			sendspeech7=0;
+			if(speech7_count<1)
+			{
+				PAshutdown=1;
+				SC_Speech(11);  //关机语言提醒
+				Delay(150);
+				PAshutdown=0;
+				speech7_count++;
+			}
 		}
 
 		if(sendspeech8==1)
 		{
-			PAshutdown=1;
-			SC_Speech(12);  //关机语言提醒
-			Delay(150);
-			SC_Speech(13);
-			Delay(150);
-			PAshutdown=0;
-			sendspeech8=0;
+			if(speech8_count<1)
+			{
+				PAshutdown=1;
+				SC_Speech(12);  
+				Delay(80);
+				SC_Speech(13);
+				Delay(80);
+				PAshutdown=0;
+				speech8_count++;
+			}
 		}
-
 	}
 }
 
@@ -514,16 +525,25 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 	if(DataTime==8)//说明一个字节的数据已经接受完全
 	{
 		DataTime=0;
-		myTxRxData[count]=RecData;
-		if(count==0&&myTxRxData[0]==CmdHead)
+		myTxRxData2[count]=RecData;
+		if(count==0&&myTxRxData2[0]==CmdHead)
 		{
 			count=1;
 		}
-		else if(count==1&&myTxRxData[1]==MyAddress)
+		else if(count==1&&myTxRxData2[1]==MyAddress)
 		{
 			count=2;
-
 		}
+		else if(count==2)
+		{
+			receiveFlag=1;
+			count=0;
+		}
+		else 
+		{
+			count=0;
+		}
+/*
 		else if(count>=2&&count<=5)
 		{
 			count++;
@@ -537,27 +557,42 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 		{
 			count=0;
 		}
+*/
 	}
 
 	if(receiveFlag==1)
 	{
 		receiveFlag=0;
-		switch(myTxRxData[2]) 		//对数据帧里的命令进行处理
+		switch(myTxRxData2[2]) 		//对数据帧里的命令进行处理
 		{
 			case ComMode_1:  		//附机发送过来的只用模式1，说明现在是正常的，数据部分为数组的第一和第二个字节，为密码表内的这个编码的开始字节的那个地址，然后填充数据帧，把密码表的数据发送出去
 			{
-				sendcomm1=1;
+//				sendcomm1=1;
+				stolenflag=0;
+				
+				ComMode_1_Data(); //向附机发送编码3
+
 				sendspeech7=1;		//编码1后报一句语音
 
+				sendspeech8=0;
+				speech8_count=0;
+
 				alarmFlag=0;		//关报警标志位
-				alarmCount=0;		//报警计数次数清零
+//				alarmCount=0;		//报警计数次数清零
 				SensorControl=0;	//三轴传感器
 				downUpFlag=0; 		//关倒地、抬起检测
 				downFlag=0;
 				upFlag=0;
-				SensorCount=0;
-				time0Count_2=0;			
 				magcon2=1;			//打开电磁铁
+				
+				SensorCount=0;
+				time0Count_2=0;
+				stolen_count=0;
+				stolen_flag=0;
+				sendspeech1=0;
+				sendspeech2=0;
+				sendspeech3=0;
+				speech3_count=0;
 
 				TestFlag=0;	
 				if(ModeFlag==3||ModeFlag==2)
@@ -582,13 +617,16 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 		{
 			TestFlag++;
 
-			if(TestFlag>=3&&ModeFlag==1)//说明没有接收到数据已经有3次了，附机已经出了3M，现在就要加大功率，切换到模式2,30M再看能不能接收到数据
+			if(TestFlag>=4&&ModeFlag==1)//说明没有接收到数据已经有3次了，附机已经出了3M，现在就要加大功率，切换到模式2,30M再看能不能接收到数据
 			{
 				TestFlag=5;
 				if(ModeFlag==1)
 				{
 					magcon=1;		 	//电磁铁锁上
 					sendspeech8=1;		//报附机离开语音
+					
+					sendspeech7=0;
+					speech7_count=0;
 
 					SensorControl=1;	//开启三轴传感器
 					downUpFlag=1;		//开启倒地、抬起标志
@@ -605,103 +643,92 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 		
 		if(downFlag==1)  //倒地后做相应的动作
 		{
-			sendcomm5=1;
+//			sendcomm5=1;
+			ComMode_5_Data(); //向附机发送编码3
 		}
 		if(upFlag==1)//抬起后做相应动作
 		{
-			sendcomm4=1;
+//			sendcomm4=1;
+			ComMode_4_Data(); //向附机发送编码3
+		}
+		if((stolenflag==1)&&(speech3_count<4))
+		{
+			ComMode_3_Data();	
 		}
 	}
 
 	if(SensorControl==1)//检测三轴传感器是否打开
 	{
-		if(ReceWave==0)//说明有触发情况，开始计时
+		if(ReceWave==1)
 		{
 			time0Count_2++;
-			if(time0Count_2>=25)//说明已经大于0.5S
+			if(time0Count_2>=10)
 			{
-				time0Count_2=0;//计时期清零
-				SensorCount++;//三轴传感器脉冲计数加1
-				alarmFlag2=1;
+				time0Count_2=0;
+				SensorCount++;
+				stolen_flag=1;
 			}
-			
-			if(time0Count_1>=200)
-			{
-				time0Count_1=0;		//检测到低电平后，然后判断高电平是否大于200，如果是，则将其清0，如果不是，则不影响。	
-			}		
- 		}
-		else if(ReceWave==1&&SensorCount!=0)//说明已经有一个有用的脉冲
+		}
+		
+		if(stolen_flag==1)
 		{
-			time0Count_1++;
-			if(time0Count_1>=100)//大于10S
+			stolen_count++;
+			if(stolen_count>=360)
 			{
 				SensorCount=0;
 				time0Count_2=0;
+				stolen_count=0;
+				stolen_flag=0;
+				sendspeech1=0;
+				speech1_count=0;
+				sendspeech2=0;
 			}
 		}
 	}
 
-	if(ModeFlag==2&&SensorCount>=1)//三轴传感器脉冲的相应报警
+	if(SensorCount==1)
 	{
-		if(SensorCount==1&&alarmFlag2==1)//三轴传感器一次触发,alarmFlag2控制发声1次
-		{					
-			if((upSignal!=0)&&(downSignal!=0))
+//		sendspeech1=1;
+		if((speech1_count<1)&&(sendspeech3!=1))
+		{
+			if((downSignal==1)&&(upSignal==1))
 			{
-				sendspeech1=1;
-				alarmFlag2=0;
+				PAshutdown=1;
+				SC_Speech(17);  //关机语言提醒
+				Delay(80);
+				PAshutdown=0;
+				speech1_count++;
 			}
 		}
-
-		if((SensorCount==2)&&(alarmFlag2==1))
-		{
-			if((upSignal!=0)&&(downSignal!=0))
-			{
-				sendspeech3=1;
-				alarmFlag2=0;
-			}			
-		}
-
-		if((SensorCount==3)&&(alarmFlag2==1))
-		{
-			if((upSignal!=0)&&(downSignal!=0))
-			{
-				sendspeech4=1;
-				alarmFlag2=0;
-			}			
-		}
-
-		if(SensorCount>=4)//三轴传感器一次触发
-		{
-			ModeFlag=3;//三轴传感器已经有2次触发了，要改变发射模式了
-			alarmFlag=1;//置语音报警位
-			alarmFlag2=0;
-			downFlag=0;
-			upFlag=0;
-			SensorCount=0; //脉冲计数清零
-		}
 	}
-
-	if(ModeFlag==3)
+	else
 	{
-		sendspeech2=1;
-		time0Count_4=0;			//将倒地和抬起的传感器计数置0，相当于一直屏蔽
-		time0Count_5=0;
-
-		alarmCount++;
-		if(alarmCount>=1000) //调节语音的段数
+		if((stolen_count==100)&&(ReceWave==1))
 		{
-			alarmCount=0;//清报警计数器
-			alarmFlag=0;//清报警标志
+			if((downSignal==1)&&(upSignal==1))
+			{
+				if(sendspeech3!=1)
+				{
+					sendspeech2=1;
+				}
+			}
 		}
+		
+		if((stolen_count==220)&&(ReceWave==1))
+		{
+			sendspeech3=1;
+			speech3_count=0;
+			stolenflag=1;
+		}	
 	}
 
-//	//if()//检测倒地和抬起检测的代码
+//	检测倒地和抬起检测的代码
 	if(downUpFlag==1)//开启了抬起倒地检测
 	{
 		if(upSignal==0)//说明有抬起信号并且是第一次，开始计时
 		{
 			time0Count_4++;
-			if(time0Count_4>=200)//说明已经大于0.5S
+			if(time0Count_4>=10)//说明已经大于0.5S
 			{
 				upFlag=1;//置抬起标志
 				downFlag=0;
@@ -712,7 +739,7 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 		if(downSignal==0)//说明有抬起信号，开始计时
 		{
 			time0Count_5++;
-			if(time0Count_5>=200)//说明已经大于0.5S
+			if(time0Count_5>=10)//说明已经大于0.5S
 			{
 				time0Count_5 =0;//计时期清零
 				downFlag=1;//置抬起标志
@@ -732,14 +759,14 @@ void ComMode_1_Data()//发送边码1
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_1;
-	myTxRxData[3]=0x00;
+/*	myTxRxData[3]=0x00;
 	myTxRxData[4]=0x00;
 	myTxRxData[5]=0x00;
 	myTxRxData[6]=0x00;
-
+*/
 	initsignal();
 
-	for(i=0;i<7;i++)
+	for(i=0;i<3;i++)
 	{
 		for(n=0;n<8;n++)
 		{
@@ -771,14 +798,14 @@ void ComMode_2_Data()//发送边码2
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_2;
-	myTxRxData[3]=0x00;
+/*	myTxRxData[3]=0x00;
 	myTxRxData[4]=0x00;
 	myTxRxData[5]=0x00;
 	myTxRxData[6]=0x00;
-
+*/
 	initsignal();
 
-	for(i=0;i<7;i++)
+	for(i=0;i<3;i++)
 	{
 		for(n=0;n<8;n++)
 		{
@@ -809,14 +836,14 @@ void ComMode_3_Data()//发送边码3
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_3;
-	myTxRxData[3]=0x00;
+/*	myTxRxData[3]=0x00;
 	myTxRxData[4]=0x00;
 	myTxRxData[5]=0x00;
 	myTxRxData[6]=0x00;
-
+*/
 	initsignal();
 
-	for(i=0;i<7;i++)
+	for(i=0;i<3;i++)
 	{
 		for(n=0;n<8;n++)
 		{
@@ -846,14 +873,14 @@ void ComMode_4_Data()//发送抬起编码
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_4;
-	myTxRxData[3]=0x00;
+/*	myTxRxData[3]=0x00;
 	myTxRxData[4]=0x00;
 	myTxRxData[5]=0x00;
 	myTxRxData[6]=0x00;
-
+*/
 	initsignal();
 
-	for(i=0;i<7;i++)
+	for(i=0;i<3;i++)
 	{
 		for(n=0;n<8;n++)
 		{
@@ -883,14 +910,14 @@ void ComMode_5_Data()//发送倒地编码
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_5;
-	myTxRxData[3]=0x00;
+/*	myTxRxData[3]=0x00;
 	myTxRxData[4]=0x00;
 	myTxRxData[5]=0x00;
 	myTxRxData[6]=0x00;
-
+*/
 	initsignal();
 
-	for(i=0;i<7;i++)
+	for(i=0;i<3;i++)
 	{
 		for(n=0;n<8;n++)
 		{
@@ -920,14 +947,14 @@ void ComMode_6_Data()//发送倒地编码
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_6;
-	myTxRxData[3]=0x00;
+/*	myTxRxData[3]=0x00;
 	myTxRxData[4]=0x00;
 	myTxRxData[5]=0x00;
 	myTxRxData[6]=0x00;
-
+*/
 	initsignal();
 
-	for(i=0;i<7;i++)
+	for(i=0;i<3;i++)
 	{
 		for(n=0;n<8;n++)
 		{

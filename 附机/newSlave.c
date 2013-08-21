@@ -65,6 +65,7 @@ unsigned int TestFlag=0;	//1¡¢2¡¢3·Ö±ğÎªÃ¿1SºóµÄ¼ÆÊı£¬ÔÚ´®¿ÚµÄ³É¹¦Ö¸ÁîÀï»áÖ´ĞĞ½«
 unsigned char TxRxBuf[28]={0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 //Ò»¸öÍ·×Ö½Ú£¬Ò»¸öµØÖ·×Ö½Ú£¬Ò»¸öÃüÁî×Ö½Ú£¬Á½¸ö±àÂëµØÖ·×Ö½Ú£¬Á½¸ö±àÂë
 unsigned char myTxRxData[7]={0x00,0x00,0x00,0x00,0x00,0x00,0x00};//´¦ÀíÍêºóµÄÍ¨ĞÅÊı¾İµÄ»º³åÇø
+unsigned char myTxRxData2[7]={0x00,0x00,0x00,0x00,0x00,0x00,0x00}; 	 //½ÓÊÕÊı¾İµÄ»º´æ
 
 unsigned int Check=0;		//×÷ÎªAD¼ì²âÖµ
 bit checkFlag=0;			//µçÁ¿¼ì²â±êÖ¾
@@ -78,7 +79,7 @@ unsigned char T1highcount=0;	//¶¨Ê±Æ÷T1ÔÚÃ»ÓĞĞÅºÅµ½À´µÄÊ±ºò£¬¶Ô¸ßµçÆ½¼ÆÊı£¬Ò»µ©³
 bit ADCcheck=0;			//ÖÃ1Ê±£¬Ö´ĞĞÒ»´ÎµçÁ¿×ª»»£¬Ö´ĞĞÍêºó£¬½«ÆäÖÃ0
 bit sendcomm1=0;		//ÖÃ1Ê±£¬Ö´ĞĞÒ»´Î·¢ËÍ±àÂë1£¬Ö´ĞĞÍêºó£¬½«ÆäÖÃ0
 bit sendspeech1=0;		//ÖÃ1Ê±£¬Ö´ĞĞÒ»´ÎÓïÒôÌáÊ¾£¬±íÊ¾³äµçÒÑÂú
-
+unsigned char speech1_count=0;	
 unsigned char powerflag=1;		//µç³ØµçÎ»µÄ±ê¼Ç£¬1±íÊ¾ÏÖÔÚµç³ØÊÇÂúµÄ£¬0±íÊ¾»¹Ã»Âú¡£
 
 
@@ -138,55 +139,60 @@ void main(void)
 	
 	Check=GetADCResult(6);	//ÉÏµçÊ±£¬µç³ØµçÁ¿¼ì²âÒ»´Î
 	
-	PAshutdown=1;
-	SC_Speech(3);		 	//³µËøÒÑ´ò¿ª
-	Delay(100);
-	PAshutdown=0;
-																	   
-	commuFlag=1;			//¿ªÆôÍ¨ĞÅ
+ 	commuFlag=1;			//¿ªÆôÍ¨ĞÅ
 	alarmCount3=0;			//Çå±¨¾¯¼ÆÊıÆ÷
 	alarmFlag3=0;			//Çå±¨¾¯±êÖ¾
 
 	while(1)
 	{
-		if((alarmFlag3==1)&&(alarmCount3<3))		//±àÂë3¿ªÊ¼ÏàÓ¦µÄ±¨¾¯
+		if(alarmFlag3==1)		//±àÂë3¿ªÊ¼ÏàÓ¦µÄ±¨¾¯
 		{
-			alarmCount3++;
-
-			PAshutdown=1;
-			SC_Speech(1);
-			Delay(150);
-			PAshutdown=0;
-			
-			Moto=0;				
-			Delay(10);
-			Moto=1;
+			if(alarmCount3<1)
+			{
+				PAshutdown=1;
+				SC_Speech(5);
+				Delay(150);
+				SC_Speech(6);
+				Delay(80);
+				SC_Speech(7);
+				Delay(120);
+				PAshutdown=0;
+				
+				Moto=0;				
+				Delay(10);
+				Moto=1;
+				alarmCount3++;
+			}
 		}
 
-		if((alarmFlag4==1)&&(alarmCount4<3))		//Ì§Æğ¿ªÊ¼ÏàÓ¦µÄ±¨¾¯
+		if(alarmFlag4==1)		//Ì§Æğ¿ªÊ¼ÏàÓ¦µÄ±¨¾¯
 		{
-			alarmCount4++;
-
-			PAshutdown=1;
-			SC_Speech(5);
-			Delay(180);
-			
-			Moto=0;
-			Delay(10);
-			Moto=1;
+			if(alarmCount4<1)
+			{
+				PAshutdown=1;
+				SC_Speech(4);
+				Delay(180);
+				
+				Moto=0;
+				Delay(10);
+				Moto=1;
+				alarmCount4++;
+			}
 		}
 
-		if((alarmFlag5==1)&&(alarmCount5<3))//µ¹µØ¿ªÊ¼ÏàÓ¦µÄ±¨¾¯
+		if(alarmFlag5==1)//µ¹µØ¿ªÊ¼ÏàÓ¦µÄ±¨¾¯
 		{
-			alarmCount5++;
-
-			PAshutdown=1;
-			SC_Speech(4);
-			Delay(180);
-
-			Moto=0;//¿ªÕğ¶¯
-			Delay(10);
-			Moto=1;
+			if(alarmCount5<1)
+			{
+				PAshutdown=1;
+				SC_Speech(8);
+				Delay(180);
+	
+				Moto=0;//¿ªÕğ¶¯
+				Delay(10);
+				Moto=1;
+				alarmCount5++;
+			}
 		}
 
 		if(ADCcheck==1)				//Ã¿¸ö3s¼ì²âÒ»´ÎµçÁ¿£¬Èç¹ûµç³ØÂúµÄ¾Í¼ì²âÊÇ·ñµÍÁË£¬Èç¹ûÊÇ²»ÂúµÄ¾Í¼ì²âÊÇ·ñ³äÂú¡£
@@ -290,15 +296,26 @@ void timeT1() interrupt 3 				//¶¨Ê±Æ÷1ÖĞ¶Ï½ÓÊÕÊı¾İ
 	if(DataTime==8)//ËµÃ÷Ò»¸ö×Ö½ÚµÄÊı¾İÒÑ¾­½ÓÊÜÍêÈ«
 	{
 		DataTime=0;
-		myTxRxData[count]=RecData;
-		if(count==0&&myTxRxData[0]==CmdHead)
+		myTxRxData2[count]=RecData;
+		if(count==0&&myTxRxData2[0]==CmdHead)
 		{
 			count=1;
 		}
-		else if(count==1&&myTxRxData[1]==MyAddress)
+		else if(count==1&&myTxRxData2[1]==MyAddress)
 		{
 			count=2;
 		}
+		else if(count==2)
+		{
+			receiveFlag=1;
+			count=0;
+		}
+		else 
+		{
+			count=0;
+		}
+
+/*
 		else if(count>=2&&count<=5)
 		{
 			count++;
@@ -312,13 +329,14 @@ void timeT1() interrupt 3 				//¶¨Ê±Æ÷1ÖĞ¶Ï½ÓÊÕÊı¾İ
 		{
 			count=0;
 		}
+*/
 	}
 
 	if(receiveFlag==1)	//ËµÃ÷½ÓÊÕµ½ÁËÊı¾İ£¬¿ªÊ¼´¦Àí
 	{
 		receiveFlag=0;	//Çå½ÓÊÕ±êÖ¾
 		receive_en=0;			//¹Ø±Õ½ÓÊÕ»ú
-		switch(myTxRxData[2])//½âÎöÖ¸Áî
+		switch(myTxRxData2[2])//½âÎöÖ¸Áî
 		{
 			case ComMode_1://½ÓÊÕµ½µÄÊÇÖ÷»ú·¢ËÍ¹ıÀ´µÄ±àÂë1µÄĞÅºÅ£¬ËµÃ÷Ö÷»úÔÚ3MÄÚ£¬ÊÇÕı³£µÄ
 			{	
@@ -348,10 +366,6 @@ void timeT1() interrupt 3 				//¶¨Ê±Æ÷1ÖĞ¶Ï½ÓÊÕÊı¾İ
 				alarmFlag4=0;//Çå±¨¾¯±êÖ¾
 				alarmCount5=0;//Çå±¨¾¯¼ÆÊıÆ÷
 				alarmFlag5=0;//Çå±¨¾¯±êÖ¾
-
-				Moto=0;//¿ªÕğ¶¯
-				Delay(10);
-				Moto=1;
 			}
 			break;
 		
@@ -420,14 +434,14 @@ void ComMode_1_Data()			//·¢ËÍ±àÂë1
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_1;
-	myTxRxData[3]=0x00;
+/*	myTxRxData[3]=0x00;
 	myTxRxData[4]=0x00;
 	myTxRxData[5]=0x00;
 	myTxRxData[6]=0x00;
-
+*/
 	initsignal();
 
-	for(i=0;i<7;i++)
+	for(i=0;i<3;i++)
 	{
 		for(n=0;n<8;n++)
 		{
