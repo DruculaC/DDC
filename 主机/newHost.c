@@ -63,9 +63,6 @@ unsigned int lastAddr=0;//上一次接收到的编码的地址
 
 unsigned char time0Count_1=0;//作为三轴传感器两个脉冲之间的时间间隔计时
 unsigned char time0Count_2=0;//作为三轴传感器的计时
-unsigned char time0Count_6=0;//作为三轴传感器的计时
-unsigned char time0Count_7=0;//作为三轴传感器的计时
-
 unsigned char time0Count_3=0;//作为串口每秒主辅机的信息交互时钟
 unsigned char time0Count_4=0;//作为抬起脉冲的时间间隔计时
 unsigned char time0Count_5=0;//作为倒地脉冲的时间间隔计时
@@ -92,7 +89,9 @@ bit voiceFlag=0;
 bit downUpFlag=0;  //倒地和抬起检测标志
 
 bit downFlag=0;//倒地的标志
+unsigned char downcount=0;
 bit upFlag=0;//抬起的标志
+unsigned char upcount=0;
 bit downFlagSend=0;//倒地发送的标志
 bit upFlagSend=0;//抬起发送的标志
 
@@ -135,9 +134,8 @@ bit magcon2=0;			//置1时，执行一次电磁铁打开操作，执行完后，将其置0
 bit sendspeech1=0;		//置1时，执行一次报语音（被碰警告），执行完后，将其置0
 unsigned char speech1_count=0;
 bit sendspeech2=0;		//置1时，执行一次报语音（警笛音+报警），执行完后，将其置0
-unsigned char speech2_count=0;
 bit sendspeech3=0;		//置1时，执行一次报语音（被碰警告），执行完后，将其置0
-unsigned char speech3_count=0;
+unsigned int speech3_count=0;
 bit sendspeech4=0;		//置1时，执行一次报语音（警笛音+报警），执行完后，将其置0
 bit sendspeech5=0;
 bit sendspeech6=0;
@@ -385,7 +383,7 @@ void main()
 			sendspeech2=0;
 		}
 
-		if((sendspeech3==1)&&(speech3_count<8))
+		if((sendspeech3==1)&&(speech3_count<4))
 		{
 			if(upSignal==0)
 			{
@@ -423,6 +421,7 @@ void main()
 			{
 				speech3_count=0;
 				sendspeech3=0;
+				stolenflag=0;
 			}
 		}
 
@@ -611,7 +610,7 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 	TL0=timer0L;
 	time0Count_3++;
 
-	if(time0Count_3>=60)//串口每3s接受一次的数据的时间标志
+	if(time0Count_3>=40)//串口每3s接受一次的数据的时间标志
 	{
 		if(commuFlag==1)//说明开启了通信
 		{
@@ -641,15 +640,17 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 		
 		ADCcheck=1;		
 		
-		if(downFlag==1)  //倒地后做相应的动作
+		if((downFlag==1)&&(downcount<5))  //倒地后做相应的动作
 		{
 //			sendcomm5=1;
 			ComMode_5_Data(); //向附机发送编码3
+			downcount++;
 		}
-		if(upFlag==1)//抬起后做相应动作
+		if((upFlag==1)&&(upcount<5))		//抬起后做相应动作
 		{
 //			sendcomm4=1;
 			ComMode_4_Data(); //向附机发送编码3
+			upcount++;
 		}
 		if((stolenflag==1)&&(speech3_count<4))
 		{
@@ -728,30 +729,41 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 		if(upSignal==0)//说明有抬起信号并且是第一次，开始计时
 		{
 			time0Count_4++;
-			if(time0Count_4>=10)//说明已经大于0.5S
+			if(time0Count_4==10)//说明已经大于0.5S
 			{
 				upFlag=1;//置抬起标志
 				downFlag=0;
 				alarmFlag=0;
 			}		
 		}
+		else
+		{
+			upFlag=0;
+			upcount=0;
+			time0Count_4=0;
+		}
 
 		if(downSignal==0)//说明有抬起信号，开始计时
 		{
 			time0Count_5++;
-			if(time0Count_5>=10)//说明已经大于0.5S
+			if(time0Count_5==10)//说明已经大于0.5S
 			{
-				time0Count_5 =0;//计时期清零
 				downFlag=1;//置抬起标志
 				upFlag=0;
 				alarmFlag=0;
 			}		
 		}
+		else
+		{
+			downFlag=0;
+			downcount=0;
+			time0Count_5=0;
+		}
 	}
 }
 
 
-void ComMode_1_Data()//发送边码1
+void ComMode_1_Data()		//发送边码1
 {
 	unsigned char i,n;
 	ModeControl_1=0;//30M发射功率				

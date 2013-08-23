@@ -143,11 +143,13 @@ void main(void)
 	alarmCount3=0;			//清报警计数器
 	alarmFlag3=0;			//清报警标志
 
+//	receive_en=1;
+
 	while(1)
 	{
 		if(alarmFlag3==1)		//编码3开始相应的报警
 		{
-			if(alarmCount3<1)
+			if(alarmCount3<2)
 			{
 				PAshutdown=1;
 				SC_Speech(5);
@@ -167,8 +169,7 @@ void main(void)
 
 		if(alarmFlag4==1)		//抬起开始相应的报警
 		{
-			if(alarmCount4<1)
-			{
+
 				PAshutdown=1;
 				SC_Speech(4);
 				Delay(180);
@@ -176,14 +177,11 @@ void main(void)
 				Moto=0;
 				Delay(10);
 				Moto=1;
-				alarmCount4++;
-			}
+				alarmFlag4=0;
 		}
 
 		if(alarmFlag5==1)//倒地开始相应的报警
 		{
-			if(alarmCount5<1)
-			{
 				PAshutdown=1;
 				SC_Speech(8);
 				Delay(180);
@@ -191,8 +189,8 @@ void main(void)
 				Moto=0;//开震动
 				Delay(10);
 				Moto=1;
-				alarmCount5++;
-			}
+
+				alarmFlag5=0;
 		}
 
 		if(ADCcheck==1)				//每个3s检测一次电量，如果电池满的就检测是否低了，如果是不满的就检测是否充满。
@@ -366,6 +364,10 @@ void timeT1() interrupt 3 				//定时器1中断接收数据
 				alarmFlag4=0;//清报警标志
 				alarmCount5=0;//清报警计数器
 				alarmFlag5=0;//清报警标志
+
+				Moto=0;		//开震动
+				Delay(10);
+				Moto=1;
 			}
 			break;
 		
@@ -378,6 +380,10 @@ void timeT1() interrupt 3 				//定时器1中断接收数据
 				alarmFlag3=0;//清报警标志
 				alarmCount5=0;//清报警计数器
 				alarmFlag5=0;//清报警标志
+
+				Moto=0;		//开震动
+				Delay(10);
+				Moto=1;
 			}
 			break;
 
@@ -390,6 +396,10 @@ void timeT1() interrupt 3 				//定时器1中断接收数据
 				alarmFlag3=0;//清报警标志
 				alarmCount4=0;//清报警计数器
 				alarmFlag4=0;//清报警标志
+
+				Moto=0;		//开震动
+				Delay(10);
+				Moto=1;
 			}
 			break;
 
@@ -422,6 +432,16 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 			}
 		}
 		time0Count_3=0;
+	}
+
+	if(alarmCount3>=2)
+	{
+		alarmCount3++;
+		if(alarmCount3==2400)
+		{
+			alarmCount3=0;
+			alarmFlag3=0;
+		}
 	}
 }
 
