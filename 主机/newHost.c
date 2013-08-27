@@ -329,7 +329,7 @@ void main()
 			sendcomm4=0;
 		}
 
-		if(sendcomm5==1)
+		if(sendcomm5==1)																	 
 		{
 			ComMode_5_Data(); //Ïò¸½»ú·¢ËÍ±àÂë3
 			sendcomm5=0;

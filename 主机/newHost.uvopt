@@ -259,10 +259,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>86</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>406</TopLine>
-      <CurrentLine>424</CurrentLine>
+      <TopLine>322</TopLine>
+      <CurrentLine>332</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\newHost.c</PathWithFileName>
       <FilenameWithoutPath>newHost.c</FilenameWithoutPath>
@@ -1910,9 +1910,9 @@
         </Doc>
         <Doc>
           <Name>.\newHost.c</Name>
-          <ColumnNumber>0</ColumnNumber>
-          <TopLine>406</TopLine>
-          <CurrentLine>424</CurrentLine>
+          <ColumnNumber>86</ColumnNumber>
+          <TopLine>322</TopLine>
+          <CurrentLine>332</CurrentLine>
         </Doc>
         <Doc>
           <Name>.\AD.c</Name>

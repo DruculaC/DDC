@@ -1,4 +1,4 @@
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 1   
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 1   
 
 
 C51 COMPILER V9.01, COMPILATION OF MODULE NEWHOST
@@ -62,7 +62,7 @@ line level    source
   52          //sbit VoiceControl=P2^4;//拾音器控制端
   53          
   54          sbit upSignal=P0^4;//抬起信号
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 2   
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 2   
 
   55          sbit downSignal=P0^3;//倒地信号
   56          
@@ -126,7 +126,7 @@ line level    source
              -清0
  113          
  114          //功放开关控制，1为打开功放，0为关闭功放
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 3   
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 3   
 
  115          sbit PAshutdown=P1^4;
  116          
@@ -190,7 +190,7 @@ line level    source
  174          void Delay4(unsigned int t)
  175          {
  176   1              unsigned int i,j;
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 4   
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 4   
 
  177   1              for(i=0;i<t;i++)                
  178   1              for(j=0;j<26;j++);
@@ -254,7 +254,7 @@ line level    source
  236   1              MagentControl_2=1;
  237   1              Delay(50);
  238   1              MagentControl_1=0;//磁铁常态为这种模式
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 5   
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 5   
 
  239   1              MagentControl_2=0;
  240   1              magnetflag=0;
@@ -318,7 +318,7 @@ line level    source
  298   2                      {
  299   3                              Delay(100);
  300   3                              if(det_charge==0)
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 6   
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 6   
 
  301   3                              {
  302   4                                      PAshutdown=1;
@@ -382,7 +382,7 @@ line level    source
  360   4                                      MagentControl_2=0;
  361   4                                      magnetflag=1;
  362   4                              }
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 7   
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 7   
 
  363   3                              magcon2=0;
  364   3                      }
@@ -446,7 +446,7 @@ line level    source
  422   4                                      speech3_count=0;
  423   4                                      sendspeech3=0;
  424   4                                      stolenflag=0;
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 8   
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 8   
 
  425   4                              }
  426   3                      }
@@ -510,7 +510,7 @@ line level    source
  484   1              else//为高电平了
  485   1              {
  486   2                      if(ComFlag==0)//说明有一个低电平
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 9   
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 9   
 
  487   2                      {
  488   3                              ComFlag=1;
@@ -574,7 +574,7 @@ line level    source
  546   2                      else if(count>=2&&count<=5)
  547   2                      {
  548   2                              count++;
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 10  
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 10  
 
  549   2                      }
  550   2                      else if(count==6)
@@ -638,7 +638,7 @@ line level    source
  607          void time0() interrupt 1        //作为整个系统自己的时钟
  608          {
  609   1              TH0=timer0H;//重装载
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 11  
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 11  
 
  610   1              TL0=timer0L;
  611   1              time0Count_3++;
@@ -702,7 +702,7 @@ line level    source
  668   4                                      time0Count_2=0;
  669   4                                      SensorCount++;
  670   4                                      stolen_flag=1;
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 12  
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 12  
 
  671   4                              }
  672   3                      }
@@ -766,7 +766,7 @@ line level    source
  730   2                      {
  731   3                              time0Count_4++;
  732   3                              if(time0Count_4==10)//说明已经大于0.5S
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 13  
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 13  
 
  733   3                              {
  734   4                                      upFlag=1;//置抬起标志
@@ -830,7 +830,7 @@ line level    source
  792   4                                      P10=0;
  793   4                                      Delay4(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
  794   4                              }
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 14  
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 14  
 
  795   3                              P10=1;//常态为高电平
  796   3                              myTxRxData[i]<<=1;
@@ -894,7 +894,7 @@ line level    source
  854   1              myTxRxData[6]=0x00;
  855   1      */
  856   1              initsignal();
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 15  
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 15  
 
  857   1      
  858   1              for(i=0;i<3;i++)
@@ -958,7 +958,7 @@ line level    source
  916          
  917          void ComMode_5_Data()//发送倒地编码
  918          {
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 16  
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 16  
 
  919   1              unsigned char i,n;
  920   1              ModeControl_1=0;//切换为300M发射
@@ -1022,7 +1022,7 @@ line level    source
  978   3                              else//为0的情况
  979   3                              {
  980   4                                      P10=0;
-C51 COMPILER V9.01   NEWHOST                                                               08/23/2013 13:49:14 PAGE 17  
+C51 COMPILER V9.01   NEWHOST                                                               08/24/2013 09:55:22 PAGE 17  
 
  981   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
  982   4                              }
