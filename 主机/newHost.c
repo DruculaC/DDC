@@ -674,7 +674,7 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 		if(stolen_flag==1)
 		{
 			stolen_count++;
-			if(stolen_count>=360)
+			if(stolen_count>=240)
 			{
 				SensorCount=0;
 				time0Count_2=0;
@@ -704,7 +704,7 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 	}
 	else
 	{
-		if((stolen_count==100)&&(ReceWave==1))
+/*		if((stolen_count==100)&&(ReceWave==1))
 		{
 			if((downSignal==1)&&(upSignal==1))
 			{
@@ -714,8 +714,8 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 				}
 			}
 		}
-		
-		if((stolen_count==220)&&(ReceWave==1))
+*/		
+		if((stolen_count==100)&&(ReceWave==1))
 		{
 			sendspeech3=1;
 			speech3_count=0;

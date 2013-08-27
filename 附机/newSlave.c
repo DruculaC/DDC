@@ -437,7 +437,7 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 	if(alarmCount3>=2)
 	{
 		alarmCount3++;
-		if(alarmCount3==2400)
+		if(alarmCount3==1800)
 		{
 			alarmCount3=0;
 			alarmFlag3=0;
