@@ -248,7 +248,7 @@ void main()
 	{
 		if((det_battery==1)&&(turnonflag==0))		   //开车转动钥匙时，执行一次电量转换
 		{
-		 	Delay(30);
+		 	Delay(300);
 			if(det_battery==1)
 			{
 				verifybattery();
@@ -275,7 +275,7 @@ void main()
 		}
 		else if((det_battery==0)&&(turnonflag==1))
 		{
-		 	Delay(30);
+		 	Delay(300);
 			if(det_battery==0)
 			{
 				verifybattery();
@@ -293,7 +293,7 @@ void main()
 				turnonflag=0;
 			}
 		}
-		
+/*		
 		if(det_charge==1)
 		{
 			Delay(100);
@@ -310,31 +310,14 @@ void main()
 				ComMode_6_Data(); //向附机发送编码6，表示电已充满
 			}			  
 		}
-
+*/
 		if(ADCcheck==1)
 		{
 			Check=GetADCResult(6);	//电池电量检测
 			ADCcheck=0;	
 		}
 		
-/*		if(sendcomm1==1)
-		{
-			ComMode_1_Data(); //向附机发送编码3
-			sendcomm1=0;
-		}		
-		
-		if(sendcomm4==1)
-		{
-			ComMode_4_Data(); //向附机发送编码3
-			sendcomm4=0;
-		}
 
-		if(sendcomm5==1)																	 
-		{
-			ComMode_5_Data(); //向附机发送编码3
-			sendcomm5=0;
-		}
-*/
 		if(magcon==1)
 		{
 			if(magnetflag==1)
