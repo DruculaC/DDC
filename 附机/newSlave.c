@@ -144,6 +144,7 @@ void main(void)
 	alarmFlag3=0;			//清报警标志
 
 //	receive_en=1;
+	tran_en=0;
 
 	while(1)
 	{

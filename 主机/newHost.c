@@ -34,7 +34,7 @@
 sbit det_battery=P2^4;			
 
 //设置充电指示
-sbit det_charge=P0^2;
+//sbit det_charge=P0^2;
 //主机的发射部分的控制端口
 //sbit PWMout=P0^1;//发射机的方波输出口，使用外设PWM
 sbit ModeControl_1=P2^6;//发射机模式控制,0亮为30M模式，1灭为300M模式
@@ -63,7 +63,8 @@ unsigned int lastAddr=0;//上一次接收到的编码的地址
 
 unsigned char time0Count_1=0;//作为三轴传感器两个脉冲之间的时间间隔计时
 unsigned char time0Count_2=0;//作为三轴传感器的计时
-unsigned char time0Count_3=0;//作为串口每秒主辅机的信息交互时钟
+unsigned char time0Count_6=0;
+unsigned int time0Count_3=0;//作为串口每秒主辅机的信息交互时钟
 unsigned char time0Count_4=0;//作为抬起脉冲的时间间隔计时
 unsigned char time0Count_5=0;//作为倒地脉冲的时间间隔计时
 
@@ -148,7 +149,7 @@ bit stolenflag=0;		//被盗标志位
 unsigned int stolen_count=0;	//被盗计数的时间
 unsigned char stolen_flag=0;	//检测传感器开始标志
 
-bit turnonflag=0;		//电动车开启关闭标志位，1表示电动车开启了，0表示电动车关闭了
+unsigned char turnonflag=0;		//电动车开启关闭标志位，1表示电动车开启了，0表示电动车关闭了
 unsigned char turnon_speech_flag=0;		//开机语音标志位，用来变换语音。
 
 //函数声明
@@ -208,9 +209,38 @@ void initsignal()
 //	Delay3(80);
 }
 
+void initsignal2()
+{
+	unsigned char k,k1;
+	unsigned char mystartbuffer=0xaa;
+	for(k1=0;k1<3;k1++)
+	{
+		for(k=0;k<8;k++)
+		{
+			if((mystartbuffer&0x80)==0x80)//为1
+			{
+				P10=0;
+				Delay3(80);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+			}
+			else//为0的情况
+			{
+				P10=0;
+				Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+			}
+			P10=1;//常态为高电平
+			mystartbuffer<<=1;
+			Delay3(150);//延时要大于2ms
+		}
+		mystartbuffer=0xaa;
+		Delay3(80);
+	}
+	P10=1;
+//	Delay3(80);
+}
+
 void main()
 {
-	SensorControl=1;		  //上电关闭传感器
+	SensorControl=0;		  //上电关闭传感器
 
 	noVoice();
 	InitT0();
@@ -225,35 +255,40 @@ void main()
 	PT1=1;//定时器1的中断优先级最高
 	EA=1;
 	P10=1;
-	det_charge=1;
+//	det_charge=1;
 
 	BatteryControl=0;	//附机上电的时候置0，即可以充电，电池在没有充满的情况下为低电平
 	myPwm();	//开发射机
 
 	ModeControl_1=0; //发射机模式控制端,开机时为30M模式
 	
-	MagentControl_1=0;//关闭磁铁
-	MagentControl_2=1;
-	Delay(50);
-	MagentControl_1=0;//磁铁常态为这种模式
-	MagentControl_2=0;
+//	MagentControl_1=0;//关闭磁铁
+//	MagentControl_2=1;
+//	Delay(50);
+//	MagentControl_1=0;//磁铁常态为这种模式
+//	MagentControl_2=0;
 	magnetflag=0;
 
 	commuFlag=1; //开启通信
 	tran_en=0;   //关闭无线发射机
 
 	downUpFlag=1;
+	det_battery=1;
 
 	while(1)
 	{
 		if((det_battery==1)&&(turnonflag==0))		   //开车转动钥匙时，执行一次电量转换
 		{
-		 	Delay(300);
+		 	Delay(30);
 			if(det_battery==1)
 			{
 				verifybattery();
+				PAshutdown=1;
+				SC_Speech(7);  
+				Delay(80);
+				PAshutdown=0;
 				
-				if(turnon_speech_flag==0)
+/*				if(turnon_speech_flag==0)
 				{
 					PAshutdown=1;
 					SC_Speech(8);  
@@ -269,13 +304,14 @@ void main()
 					PAshutdown=0;
 					turnon_speech_flag=0;
 				}
-
+*/
 				turnonflag=1;
 			}
 		}
-		else if((det_battery==0)&&(turnonflag==1))
+		
+		if((det_battery==0)&&(turnonflag==1))
 		{
-		 	Delay(300);
+		 	Delay(30);
 			if(det_battery==0)
 			{
 				verifybattery();
@@ -293,38 +329,20 @@ void main()
 				turnonflag=0;
 			}
 		}
-/*		
-		if(det_charge==1)
-		{
-			Delay(100);
-			if(det_charge==0)
-			{
-				PAshutdown=1;
-				SC_Speech(14);
-				Delay(130);
-				PAshutdown=0;
-			}
-			
-			if(Check>=0x3a3)
-			{
-				ComMode_6_Data(); //向附机发送编码6，表示电已充满
-			}			  
-		}
-*/
+
 		if(ADCcheck==1)
 		{
 			Check=GetADCResult(6);	//电池电量检测
 			ADCcheck=0;	
 		}
-		
 
 		if(magcon==1)
 		{
 			if(magnetflag==1)
 			{
-				MagentControl_1=0;//关闭磁铁
-				MagentControl_2=1;
-				Delay(50);
+				MagentControl_1=1;//关闭磁铁
+				MagentControl_2=0;
+				Delay(40);
 				MagentControl_1=0;//磁铁常态为这种模式
 				MagentControl_2=0;
 				magnetflag=0;
@@ -336,9 +354,9 @@ void main()
 		{
 			if(magnetflag==0)
 			{
-				MagentControl_1=1;//开启磁铁
-				MagentControl_2=0;
-				Delay(50);
+				MagentControl_1=0;//开启磁铁
+				MagentControl_2=1;
+				Delay(40);
 				MagentControl_1=0;//磁铁常态为这种模式
 				MagentControl_2=0;
 				magnetflag=1;
@@ -390,12 +408,13 @@ void main()
 			}
 			else
 			{
-			
 				PAshutdown=1;
 				SC_Speech(22);  //关机语言提醒
-				Delay(180);
+				ComMode_3_Data();
+				Delay(100);
 				SC_Speech(23);  //关机语言提醒		
-				Delay(80);
+				ComMode_3_Data();
+				Delay(60);
 				PAshutdown=0;
 				
 			}
@@ -421,22 +440,23 @@ void main()
 			sendspeech3=0;
 		}
 */
-		if(sendspeech7==1)
+		if((sendspeech7==1)&&(speech7_count<1))
 		{
-			if(speech7_count<1)
-			{
+				sendspeech8=0;
+				speech8_count=0;
+				
 				PAshutdown=1;
 				SC_Speech(11);  //关机语言提醒
 				Delay(150);
 				PAshutdown=0;
 				speech7_count++;
-			}
 		}
 
-		if(sendspeech8==1)
+		if((sendspeech8==1)&&(speech8_count<1))
 		{
-			if(speech8_count<1)
-			{
+				sendspeech7=0;
+				speech7_count=0;
+				
 				PAshutdown=1;
 				SC_Speech(12);  
 				Delay(80);
@@ -444,7 +464,7 @@ void main()
 				Delay(80);
 				PAshutdown=0;
 				speech8_count++;
-			}
+				SensorControl=1;	//开启三轴传感器
 		}
 	}
 }
@@ -552,12 +572,12 @@ void timeT1() interrupt 3 //定时器1中断接收数据
 //				sendcomm1=1;
 				stolenflag=0;
 				
-				ComMode_1_Data(); //向附机发送编码3
+				ComMode_1_Data(); 	//向附机发送编码3
 
 				sendspeech7=1;		//编码1后报一句语音
 
-				sendspeech8=0;
-				speech8_count=0;
+//				sendspeech8=0;
+//				speech8_count=0;
 
 				alarmFlag=0;		//关报警标志位
 //				alarmCount=0;		//报警计数次数清零
@@ -593,7 +613,7 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 	TL0=timer0L;
 	time0Count_3++;
 
-	if(time0Count_3>=40)//串口每3s接受一次的数据的时间标志
+	if(time0Count_3>=2000)//串口每3s接受一次的数据的时间标志
 	{
 		if(commuFlag==1)//说明开启了通信
 		{
@@ -607,10 +627,10 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 					magcon=1;		 	//电磁铁锁上
 					sendspeech8=1;		//报附机离开语音
 					
-					sendspeech7=0;
-					speech7_count=0;
+//					sendspeech7=0;
+//					speech7_count=0;
 
-					SensorControl=1;	//开启三轴传感器
+//					SensorControl=1;	//开启三轴传感器
 					downUpFlag=1;		//开启倒地、抬起标志
 					ModeFlag=2;
 
@@ -621,6 +641,8 @@ void time0() interrupt 1	//作为整个系统自己的时钟
  		}
 		time0Count_3=0;
 		
+//		ComMode_1_Data();
+
 		ADCcheck=1;		
 		
 		if((downFlag==1)&&(downcount<5))  //倒地后做相应的动作
@@ -635,29 +657,36 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 			ComMode_4_Data(); //向附机发送编码3
 			upcount++;
 		}
-		if((stolenflag==1)&&(speech3_count<4))
+/*
+	if((stolenflag==1)&&(speech3_count<4))
 		{
 			ComMode_3_Data();	
 		}
+*/
 	}
 
-	if(SensorControl==1)//检测三轴传感器是否打开
+	if(SensorControl==1)	//检测三轴传感器是否打开，并且还没有报警
 	{
-		if(ReceWave==1)
+		if((ReceWave==1)&&(stolenflag==0))
 		{
 			time0Count_2++;
-			if(time0Count_2>=10)
+			if(time0Count_2>=8)				 //每1ms检测一次高电平，如果大于了6ms的高定平，说明有人碰了一下
 			{
 				time0Count_2=0;
 				SensorCount++;
+				speech1_count=0;
 				stolen_flag=1;
 			}
+		}
+		else
+		{
+			time0Count_2=0;
 		}
 		
 		if(stolen_flag==1)
 		{
 			stolen_count++;
-			if(stolen_count>=240)
+			if(stolen_count>=9000)
 			{
 				SensorCount=0;
 				time0Count_2=0;
@@ -687,23 +716,24 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 	}
 	else
 	{
-/*		if((stolen_count==100)&&(ReceWave==1))
+		if(stolen_count>=6000)
 		{
-			if((downSignal==1)&&(upSignal==1))
+			if(ReceWave==1)
 			{
-				if(sendspeech3!=1)
+				time0Count_6++;
+				if(time0Count_6>=6)	
 				{
-					sendspeech2=1;
+					sendspeech3=1;
+					speech3_count=0;
+					stolenflag=1;
+					time0Count_6=0;	
 				}
 			}
-		}
-*/		
-		if((stolen_count==100)&&(ReceWave==1))
-		{
-			sendspeech3=1;
-			speech3_count=0;
-			stolenflag=1;
-		}	
+			else
+			{
+				time0Count_6=0;
+			}
+		}						 
 	}
 
 //	检测倒地和抬起检测的代码
@@ -759,7 +789,7 @@ void ComMode_1_Data()		//发送边码1
 	myTxRxData[5]=0x00;
 	myTxRxData[6]=0x00;
 */
-	initsignal();
+	initsignal2();
 
 	for(i=0;i<3;i++)
 	{
@@ -778,45 +808,6 @@ void ComMode_1_Data()		//发送边码1
 			P10=1;//常态为高电平
 			myTxRxData[i]<<=1;
 			Delay4(50);//延时要大于2ms
-		}
-	}
-	tran_en=0;
-}
-
-void ComMode_2_Data()//发送边码2
-{
-//	unsigned int j;
-
-	unsigned char i,n;
-	ModeControl_1=0;//30M发射功率
-	tran_en=1;
-	myTxRxData[0]=CmdHead;
-	myTxRxData[1]=MyAddress;
-	myTxRxData[2]=ComMode_2;
-/*	myTxRxData[3]=0x00;
-	myTxRxData[4]=0x00;
-	myTxRxData[5]=0x00;
-	myTxRxData[6]=0x00;
-*/
-	initsignal();
-
-	for(i=0;i<3;i++)
-	{
-		for(n=0;n<8;n++)
-		{
-			if((myTxRxData[i]&0x80)==0x80)//为1
-			{
-				P10=0;
-				Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
-			}
-			else//为0的情况
-			{
-				P10=0;
-				Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
-			}
-			P10=1;//常态为高电平
-			myTxRxData[i]<<=1;
-			Delay3(50);//延时要大于2ms
 		}
 	}
 	tran_en=0;
@@ -905,43 +896,6 @@ void ComMode_5_Data()//发送倒地编码
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_5;
-/*	myTxRxData[3]=0x00;
-	myTxRxData[4]=0x00;
-	myTxRxData[5]=0x00;
-	myTxRxData[6]=0x00;
-*/
-	initsignal();
-
-	for(i=0;i<3;i++)
-	{
-		for(n=0;n<8;n++)
-		{
-			if((myTxRxData[i]&0x80)==0x80)//为1
-			{
-				P10=0;
-				Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
-			}
-			else//为0的情况
-			{
-				P10=0;
-				Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
-			}
-			P10=1;//常态为高电平
-			myTxRxData[i]<<=1;
-			Delay3(50);//延时要大于2ms
-		}
-	}
-	tran_en=0;
-}
-
-void ComMode_6_Data()//发送倒地编码
-{
-	unsigned char i,n;
-	ModeControl_1=0;//切换为300M发射
-	tran_en=1;      //打开无线发射机
-	myTxRxData[0]=CmdHead;
-	myTxRxData[1]=MyAddress;
-	myTxRxData[2]=ComMode_6;
 /*	myTxRxData[3]=0x00;
 	myTxRxData[4]=0x00;
 	myTxRxData[5]=0x00;

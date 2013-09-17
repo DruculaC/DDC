@@ -1,10 +1,10 @@
-C51 COMPILER V9.01   PWM                                                                   08/28/2013 10:45:31 PAGE 1   
+C51 COMPILER V9.51   PWM                                                                   09/17/2013 15:38:40 PAGE 1   
 
 
-C51 COMPILER V9.01, COMPILATION OF MODULE PWM
+C51 COMPILER V9.51, COMPILATION OF MODULE PWM
 OBJECT MODULE PLACED IN .\out\PWM.obj
 COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE PWM.c LARGE BROWSE DEBUG OBJECTEXTEND PRINT(.\listing\P
-                    -WM.lst) OBJECT(.\out\PWM.obj)
+                    -WM.lst) TABS(2) OBJECT(.\out\PWM.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   51   2                  PWM_shadow=PWM2_Duty;
   52   2                  PWM2H = HIBYTE(PWM_shadow);// PWM2 Duty (P1.7)
   53   2                  PWM2L = LOBYTE(PWM_shadow);
-C51 COMPILER V9.01   PWM                                                                   08/28/2013 10:45:31 PAGE 2   
+C51 COMPILER V9.51   PWM                                                                   09/17/2013 15:38:40 PAGE 2   
 
   54   2                  break;
   55   2              case E_CHANNEL3:
@@ -79,7 +79,7 @@ line level    source
   66          
   67          void myPwm()
   68          {
-  69   1              PWM_Channel(E_CHANNEL0);           // Select PWM channel.
+  69   1        PWM_Channel(E_CHANNEL0);           // Select PWM channel.
   70   1          Init_PWM();                        // Enable PWM function and set PWM period.  
   71   1          //Enabled_Brake_Function();          // Enable Brake funciton.
   72   1      }

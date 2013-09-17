@@ -1,12 +1,13 @@
-#include "N79E81x.h"
-#include"voice.h"
+#include 	"N79E81x.h"
+#include	"voice.h"
 
 
 
 //延时 X 毫秒
-void delay_ms(unsigned int count)
+void delay_ms(unsigned char count)
 {
-	unsigned int i,j;
+	unsigned char i;
+	unsigned int j;
 	for(i=0;i<count;i++)
 	{
 		for(j=0;j<500;j++);
@@ -17,12 +18,13 @@ void delay_ms(unsigned int count)
 
 
 //延时 X 微秒
-void delay_us(unsigned int count)
+void delay_us(unsigned int count1)
 {
-	unsigned int i,j;
-	for(i=0;i<count;i++)
+	unsigned int i;
+	unsigned char j;
+	for(i=0;i<count1;i++)
 	{
-		for(j=0;j<2;j++);
+		for(j=0;j<20;j++);
 	}
 }
 
@@ -42,9 +44,11 @@ void SC_Speech(unsigned char cnt)
 	for(i=0;i < cnt;i++)
 	{
 		SC_DATA=1; // 数据脉冲高
-		delay_us(350); // 延时 100US
+//		delay_us(350); // 延时 100US
+		delay_us(30);
 		SC_DATA=0; // 数据脉冲低
-		delay_us(350); // 延时 100US
+//		delay_us(350); // 延时 100US
+		delay_us(30);
 	}
 }
 
@@ -53,9 +57,9 @@ void noVoice()
 	P14=0;
 	SC_DATA=0;
 	SC_RST=0;
-	delay_us(1000); // 上电复位防止干扰发声
+	delay_us(100); // 上电复位防止干扰发声
 	SC_RST=1;
-	delay_us(1000);
+	delay_us(100);
 	P14=1;
 }
 
