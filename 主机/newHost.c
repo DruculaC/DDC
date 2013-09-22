@@ -285,7 +285,7 @@ void main()
 				verifybattery();
 				PAshutdown=1;
 				SC_Speech(7);  
-				Delay(80);
+				Delay(160);
 				PAshutdown=0;
 				
 /*				if(turnon_speech_flag==0)
@@ -319,7 +319,7 @@ void main()
 				{
 					PAshutdown=1;
 					SC_Speech(10);  //低于3.6v电量充足提示
-					Delay(130);
+					Delay(100);
 					PAshutdown=0;
 				}
 				PAshutdown=1;
@@ -373,6 +373,7 @@ void main()
 			sendspeech1=0;
 		}
 */
+/*
 		if(sendspeech2==1)
 		{
 			PAshutdown=1;
@@ -383,30 +384,10 @@ void main()
 			PAshutdown=0;
 			sendspeech2=0;
 		}
-
+*/
 		if((sendspeech3==1)&&(speech3_count<4))
 		{
-			if(upSignal==0)
-			{
-				PAshutdown=1;
-				SC_Speech(17);  //关机语言提醒
-				Delay(80);
-				SC_Speech(18);  //关机语言提醒
-				Delay(100);
-				PAshutdown=0;
-//				ComMode_3_Data(); //向附机发送编码3
-			}
-			else if(downSignal==0)
-			{
-				PAshutdown=1;
-				SC_Speech(15);  //关机语言提醒
-				Delay(150);
-				SC_Speech(16);  //关机语言提醒
-				Delay(100);
-				PAshutdown=0;
-//				ComMode_3_Data(); //向附机发送编码3
-			}
-			else
+			if((upSignal==1)&&(downSignal==1))
 			{
 				PAshutdown=1;
 				SC_Speech(22);  //关机语言提醒
@@ -416,7 +397,6 @@ void main()
 				ComMode_3_Data();
 				Delay(60);
 				PAshutdown=0;
-				
 			}
 			speech3_count++;
 			if(speech3_count==4)
@@ -657,6 +637,7 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 			ComMode_4_Data(); //向附机发送编码3
 			upcount++;
 		}
+
 /*
 	if((stolenflag==1)&&(speech3_count<4))
 		{
@@ -686,7 +667,7 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 		if(stolen_flag==1)
 		{
 			stolen_count++;
-			if(stolen_count>=9000)
+			if(stolen_count>=6000)
 			{
 				SensorCount=0;
 				time0Count_2=0;
@@ -716,7 +697,7 @@ void time0() interrupt 1	//作为整个系统自己的时钟
 	}
 	else
 	{
-		if(stolen_count>=6000)
+		if(stolen_count>=3000)
 		{
 			if(ReceWave==1)
 			{
