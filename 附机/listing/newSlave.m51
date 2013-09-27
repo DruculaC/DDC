@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22                                                        09/11/2013  11:43:40  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22                                                        09/23/2013  08:53:49  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
@@ -59,7 +59,7 @@ LINK MAP OF MODULE:  .\out\newSlave (?C_STARTUP)
             CODE    0917H     003CH     INBLOCK      ?PR?INITSIGNAL?NEWSLAVE
             CODE    0953H     002AH     INBLOCK      ?PR?_SC_SPEECH?VOICE
             CODE    097DH     0024H     INBLOCK      ?PR?_SENDNBYTE?UART
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 2
 
 
             CODE    09A1H     0020H     INBLOCK      ?PR?_DELAY3?NEWSLAVE
@@ -119,7 +119,7 @@ SEGMENT                               DATA_GROUP
   +--> ?PR?_DELAY?AD
 
 
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 3
 
 
 
@@ -179,7 +179,7 @@ SYMBOL TABLE OF MODULE:  .\out\newSlave (?C_STARTUP)
   C:0874H         PUBLIC        ComMode_1_Data
   D:0025H         PUBLIC        voiceFlag
   D:0026H         PUBLIC        RecData
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 4
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 4
 
 
   D:00B8H         PUBLIC        IP
@@ -239,7 +239,7 @@ SYMBOL TABLE OF MODULE:  .\out\newSlave (?C_STARTUP)
   -------         DO            
   D:0004H         SYMBOL        i
   D:0002H         SYMBOL        j
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 5
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 5
 
 
   -------         ENDDO         
@@ -299,7 +299,7 @@ SYMBOL TABLE OF MODULE:  .\out\newSlave (?C_STARTUP)
   C:057DH         LINE#         142
   C:057FH         LINE#         143
   C:0584H         LINE#         144
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 6
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 6
 
 
   C:0586H         LINE#         147
@@ -359,7 +359,7 @@ SYMBOL TABLE OF MODULE:  .\out\newSlave (?C_STARTUP)
   C:0643H         LINE#         211
   C:0643H         LINE#         212
   C:0646H         LINE#         213
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 7
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 7
 
 
   C:0648H         LINE#         214
@@ -419,7 +419,7 @@ SYMBOL TABLE OF MODULE:  .\out\newSlave (?C_STARTUP)
   C:0470H         LINE#         275
   C:0472H         LINE#         277
   C:0472H         LINE#         278
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 8
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 8
 
 
   C:0474H         LINE#         279
@@ -479,7 +479,7 @@ SYMBOL TABLE OF MODULE:  .\out\newSlave (?C_STARTUP)
   C:04ECH         LINE#         359
   C:04ECH         LINE#         360
   C:04ECH         LINE#         361
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 9
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 9
 
 
   C:04F2H         LINE#         362
@@ -539,7 +539,7 @@ SYMBOL TABLE OF MODULE:  .\out\newSlave (?C_STARTUP)
   C:07B7H         LINE#         427
   C:07B7H         LINE#         428
   C:07BFH         LINE#         429
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 10
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 10
 
 
   C:07C1H         LINE#         430
@@ -599,7 +599,7 @@ SYMBOL TABLE OF MODULE:  .\out\newSlave (?C_STARTUP)
   -------         MODULE        AD
   C:0000H         SYMBOL        _ICE_DUMMY_
   D:0080H         PUBLIC        P0
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 11
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 11
 
 
   D:0090H         PUBLIC        P1
@@ -659,7 +659,7 @@ SYMBOL TABLE OF MODULE:  .\out\newSlave (?C_STARTUP)
   C:0815H         LINE#         66
   C:0817H         LINE#         68
   C:0819H         LINE#         69
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 12
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 12
 
 
   C:0820H         LINE#         71
@@ -719,7 +719,7 @@ SYMBOL TABLE OF MODULE:  .\out\newSlave (?C_STARTUP)
   -------         PROC          INIT_PWM
   C:0A4AH         LINE#         9
   C:0A4AH         LINE#         10
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 13
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 13
 
 
   C:0A4AH         LINE#         11
@@ -779,7 +779,7 @@ SYMBOL TABLE OF MODULE:  .\out\newSlave (?C_STARTUP)
   D:0089H         PUBLIC        TMOD
   D:0088H         PUBLIC        TCON
   D:008CH         PUBLIC        TH0
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 14
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 14
 
 
   D:008AH         PUBLIC        TL0
@@ -839,7 +839,7 @@ SYMBOL TABLE OF MODULE:  .\out\newSlave (?C_STARTUP)
   -------         ENDPROC       INITUART
   -------         PROC          _SENDDATA
   D:0007H         SYMBOL        dat
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 15
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 15
 
 
   C:0A7AH         LINE#         79
@@ -899,7 +899,7 @@ SYMBOL TABLE OF MODULE:  .\out\newSlave (?C_STARTUP)
   C:09E0H         LINE#         12
   -------         ENDPROC       _DELAY_MS
   -------         PROC          _DELAY_US
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 16
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 16
 
 
   D:0006H         SYMBOL        count
@@ -959,7 +959,7 @@ SYMBOL TABLE OF MODULE:  .\out\newSlave (?C_STARTUP)
   D:00B8H         PUBLIC        IP
   C:0A6EH         PUBLIC        InitT1
   D:00D8H         PUBLIC        WDCON0
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/11/2013  11:43:40  PAGE 17
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/23/2013  08:53:49  PAGE 17
 
 
   D:0098H         PUBLIC        SCON

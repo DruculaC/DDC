@@ -1,11 +1,13 @@
-#include"N79E81x.h"
-#include<intrins.h>
-#include"AD.h"
-#include"UART.h"
-#include"T0.h"
-#include"voice.h"
-#include"pwm.h"
-#include"T1.h"
+
+
+#include "main.h"
+#include "AD.h"
+#include "UART.h"
+#include "T0.h"
+#include "voice.h"
+#include "pwm.h"
+#include "T1.h"
+
 
 //定义通信命令
 #define CmdStart 0x00 //开机命令
