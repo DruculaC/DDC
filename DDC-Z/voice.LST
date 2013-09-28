@@ -1,0 +1,111 @@
+C51 COMPILER V9.51   VOICE                                                                 09/27/2013 11:57:37 PAGE 1   
+
+
+C51 COMPILER V9.51, COMPILATION OF MODULE VOICE
+OBJECT MODULE PLACED IN voice.OBJ
+COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE voice.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /*---------------------------------------------------
+   2                  voice.c (v1.00)
+   3                  
+   4                  语音提示子程序
+   5          ---------------------------------------------------*/
+   6          
+   7          #include "main.h"
+   8          #include "port.h"
+   9          
+  10          #include "voice.h"
+  11          #include "Delay.h"
+  12             
+  13          /*--------------------------------------------------
+  14                  SC_Speech()
+  15                  
+  16                  调用语音芯片，播报语音提示，几次脉冲表示播放第
+  17                  几段语音提示
+  18          ---------------------------------------------------*/
+  19          
+  20          void SC_Speech(unsigned char cnt)
+  21          {
+  22   1              unsigned char i;
+  23   1      //      SC_RST=1;
+  24   1      //      delay_ms(15); //DAC, 大于 32 段为 15MS
+  25   1              SC_RST=0;
+  26   1              delay_ms(40);
+  27   1              SC_RST=1;
+  28   1              delay_ms(40);
+  29   1              for(i=0;i < cnt;i++)
+  30   1              {
+  31   2                      SC_DATA=1; // 数据脉冲高
+  32   2      //              delay_us(350); // 延时 100US
+  33   2                      delay_us(30);
+  34   2                      SC_DATA=0; // 数据脉冲低
+  35   2      //              delay_us(350); // 延时 100US
+  36   2                      delay_us(30);
+  37   2              }
+  38   1      }
+  39          
+  40          /*--------------------------------------------------
+  41                  SC_Speech2()
+  42                  
+  43                  调用语音芯片，播报语音提示，几次脉冲表示播放第
+  44                  几段语音提示
+  45          ---------------------------------------------------*/
+  46          
+  47          void SC_Speech2(unsigned char cnt)
+  48          {
+  49   1              unsigned char i;
+  50   1      //      SC_RST=1;
+  51   1      //      delay_ms(15); //DAC, 大于 32 段为 15MS
+  52   1              SC_RST=0;
+  53   1              delay_ms(40);
+  54   1              SC_RST=1;
+  55   1              delay_ms(40);
+C51 COMPILER V9.51   VOICE                                                                 09/27/2013 11:57:37 PAGE 2   
+
+  56   1              for(i=0;i < cnt;i++)
+  57   1              {
+  58   2                      SC_DATA=1; // 数据脉冲高
+  59   2      //              delay_us(350); // 延时 100US
+  60   2                      delay_us(30);
+  61   2                      SC_DATA=0; // 数据脉冲低
+  62   2      //              delay_us(350); // 延时 100US
+  63   2                      delay_us(30);
+  64   2              }
+  65   1      }
+  66          
+  67          /*-------------------------------------------------
+  68                  noVoice()
+  69                  
+  70                  在上电的时候调用，屏蔽语音的误报
+  71          --------------------------------------------------*/
+  72          
+  73          void noVoice()
+  74          {
+  75   1              P14=0;
+  76   1              SC_DATA=0;
+  77   1              SC_RST=0;
+  78   1              delay_us(100); // 上电复位防止干扰发声
+  79   1              SC_RST=1;
+  80   1              delay_us(100);
+  81   1              P14=1;
+  82   1      }
+  83          
+  84          /*---------------------------------------------------
+  85                  end of file
+  86          ----------------------------------------------------*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    131    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

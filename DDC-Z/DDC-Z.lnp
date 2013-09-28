@@ -1,0 +1,11 @@
+"STARTUP.obj",
+"AD.obj",
+"PWM.obj",
+"T0.obj",
+"T1.obj",
+"voice.obj",
+"Main.obj",
+"Delay.obj",
+"communication.obj",
+"Battery.obj" 
+TO "DDC-Z" 
