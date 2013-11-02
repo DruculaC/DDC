@@ -1,17 +1,17 @@
-C51 COMPILER V9.51   DELAY                                                                 09/27/2013 11:57:38 PAGE 1   
+C51 COMPILER V9.51   DELAY                                                                 11/02/2013 10:00:20 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE DELAY
 OBJECT MODULE PLACED IN Delay.OBJ
-COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE Delay.c BROWSE DEBUG OBJECTEXTEND
+COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE Delay.c BROWSE DEBUG OBJECTEXTEND TABS(3)
 
 line level    source
 
    1          /*---------------------------------------------------
-   2                  Delay.c (v1.00)
-   3                  
-   4                  Delay functions
-   5          ---------------------------------------------------*/   
+   2             Delay.c (v1.00)
+   3             
+   4             Delay functions
+   5          ---------------------------------------------------*/ 
    6          
    7          #include "main.h"
    8          #include "port.h"
@@ -19,85 +19,87 @@ line level    source
   10          #include "Delay.h"
   11          
   12          /*---------------------------------------------------
-  13                  Delay()
-  14                  延迟程序
+  13             Delay()
+  14             延迟程序
   15          --------------------------------------------------*/
   16          
   17          void Delay(unsigned int n)
   18          {
-  19   1              unsigned int x;
-  20   1              while(n--)
-  21   1              {
-  22   2                      x=5000;
-  23   2                      while(x--);
-  24   2              }
+  19   1         unsigned int x;
+  20   1         while(n--)
+  21   1         {
+  22   2            x=5000;
+  23   2            while(x--);
+  24   2         }
   25   1      }
   26          
   27          /*---------------------------------------------------
-  28                  Delay3()
-  29                  延迟程序
+  28             Delay3()
+  29             延迟程序
   30          --------------------------------------------------*/
   31          
   32          void Delay3(unsigned int t)
   33          {
-  34   1              unsigned int i,j;
-  35   1              for(i=0;i<t;i++)                
-  36   1              for(j=0;j<19;j++);
-  37   1      }
-  38          
-  39          /*---------------------------------------------------
-  40                  Delay4()
-  41                  延迟程序
-  42          --------------------------------------------------*/
-  43          
-  44          void Delay4(unsigned int t)
-  45          {
-  46   1              unsigned int i,j;
-  47   1              for(i=0;i<t;i++)                
-  48   1              for(j=0;j<26;j++);
-  49   1      }
-  50                  
-  51          /*--------------------------------------------------
-  52                  delay_ms()
-  53                  
-  54                  延迟约为1ms的子程序
-  55          ----------------------------------------------------*/
-C51 COMPILER V9.51   DELAY                                                                 09/27/2013 11:57:38 PAGE 2   
+  34   1         tWord i;
+  35   1         tByte j;
+  36   1         for(i=0;i<t;i++)     
+  37   1         for(j=0;j<19;j++);
+  38   1      }
+  39          
+  40          /*---------------------------------------------------
+  41             Delay4()
+  42             延迟程序
+  43          --------------------------------------------------*/
+  44          
+  45          void Delay4(unsigned int t)
+  46          {
+  47   1         tWord i;
+  48   1         tByte j;
+  49   1         for(i=0;i<t;i++)     
+  50   1         for(j=0;j<26;j++);
+  51   1      }
+  52             
+  53          /*--------------------------------------------------
+  54             delay_ms()
+  55             
+C51 COMPILER V9.51   DELAY                                                                 11/02/2013 10:00:20 PAGE 2   
 
-  56          
-  57          void delay_ms(unsigned int count)
-  58          {
-  59   1              unsigned int i;
-  60   1              unsigned int j;
-  61   1              for(i=0;i<count;i++)
-  62   1              {
-  63   2                      for(j=0;j<500;j++);
-  64   2              }
-  65   1      }
-  66          
-  67          /*--------------------------------------------------
-  68                  delay_us()
-  69                  
-  70                  延迟约为1us的子程序
-  71          ----------------------------------------------------*/
-  72          
-  73          void delay_us(unsigned int count1)
-  74          {
-  75   1              unsigned int i;
-  76   1              unsigned char j;
-  77   1              for(i=0;i<count1;i++)
-  78   1              {
-  79   2                      for(j=0;j<20;j++);
-  80   2              }
-  81   1      }
-  82          
-  83          /*---------------------------------------------------
-  84                  end of file
-  85          ----------------------------------------------------*/
+  56             延迟约为1ms的子程序
+  57          ----------------------------------------------------*/
+  58          
+  59          void delay_ms(unsigned int count)
+  60          {
+  61   1         unsigned int i;
+  62   1         unsigned int j;
+  63   1         for(i=0;i<count;i++)
+  64   1         {
+  65   2            for(j=0;j<500;j++);
+  66   2         }
+  67   1      }
+  68          
+  69          /*--------------------------------------------------
+  70             delay_us()
+  71             
+  72             延迟约为1us的子程序
+  73          ----------------------------------------------------*/
+  74          
+  75          void delay_us(unsigned int count1)
+  76          {
+  77   1         unsigned int i;
+  78   1         unsigned char j;
+  79   1         for(i=0;i<count1;i++)
+  80   1         {
+  81   2            for(j=0;j<20;j++);
+  82   2         }
+  83   1      }
+  84          
+  85          /*---------------------------------------------------
+  86             end of file
+  87          ----------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    147    ----
+   CODE SIZE        =    131    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

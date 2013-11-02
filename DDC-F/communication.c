@@ -22,8 +22,7 @@ void ComMode_1_Data()
 	{
 	tByte i,n;
 
-	ModeControl_1=0;	//30M发射功率				
-	tran_en=1;	//打开无线发射机
+	Transmitter_EN = 1;		//打开无线发射机
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_1;
@@ -36,20 +35,20 @@ void ComMode_1_Data()
 			{
 			if((myTxRxData[i]&0x80)==0x80)
 				{
-				P10=0;
+				transmit_wire=0;
 				Delay3(120);	
 				}
 			else	
 				{
-				P10=0;
+				transmit_wire=0;
 				Delay3(80);
 				}
-			P10=1;
+			transmit_wire=1;
 			myTxRxData[i]<<=1;
 			Delay3(50);
 			}
 		}
-	tran_en=0;
+	Transmitter_EN = 0;		//关闭发射机
 	}
 
 /*----------------------------------------------------
@@ -70,22 +69,22 @@ void initsignal()
 			{
 			if((mystartbuffer&0x80)==0x80)
 				{
-				P10=0;
+				transmit_wire=0;
 				Delay3(80);	
 				}
 			else
 				{
-				P10=0;
+				transmit_wire=0;
 				Delay3(80);	
 				}
-			P10=1;
+			transmit_wire=1;
 			mystartbuffer<<=1;
 			Delay3(150);	
 			}
 		mystartbuffer=0xaa;
 		Delay3(80);
 		}
-	P10=1;
+	transmit_wire=1;
 	}
 
 /*---------------------------------------------------

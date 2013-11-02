@@ -9,9 +9,8 @@
 
 #include "main.h"
 
-//设置报电量的按钮，当电动车钥匙转动后，报一次电量
-//无论是从0到1，或者是1到0，但语音提示不一样。
-sbit det_battery=P2^4;			
+// P2.4，PIN15，连接到钥匙转动，钥匙转开时，此pin为1，钥匙关闭时，此pin为0
+sbit key_rotate = P2^4;			
 
 //sbit PWMout=P0^1;//发射机的方波输出口，使用外设PWM
 sbit ModeControl_1=P2^6;//发射机模式控制,0亮为30M模式，1灭为300M模式

@@ -1,17 +1,17 @@
-C51 COMPILER V9.51   COMMUNICATION                                                         09/27/2013 11:57:38 PAGE 1   
+C51 COMPILER V9.51   COMMUNICATION                                                         11/02/2013 10:00:20 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE COMMUNICATION
 OBJECT MODULE PLACED IN communication.OBJ
-COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE communication.c BROWSE DEBUG OBJECTEXTEND
+COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE communication.c BROWSE DEBUG OBJECTEXTEND TABS(3)
 
 line level    source
 
    1          /*---------------------------------------------------
-   2                  communication.c (v1.00)
-   3                  
-   4                  通信程序
-   5          ---------------------------------------------------*/   
+   2             communication.c (v1.00)
+   3             
+   4             通信程序
+   5          ---------------------------------------------------*/ 
    6          
    7          #include "main.h"
    8          #include "port.h"
@@ -24,301 +24,301 @@ line level    source
   15          
   16          
   17          /*----------------------------------------------------
-  18                  initsignal()
-  19                  
-  20                  初始化信号程序，接收机在接接收信号的时候，需要有
-  21                  一段代码来使接收机打开，而这一段程序有可能无法识别
-  22                  出来，而是相当于废代码，只占用通信时间。
+  18             initsignal()
+  19             
+  20             初始化信号程序，接收机在接接收信号的时候，需要有
+  21             一段代码来使接收机打开，而这一段程序有可能无法识别
+  22             出来，而是相当于废代码，只占用通信时间。
   23          ----------------------------------------------------*/
   24          
   25          void initsignal()
   26          {
-  27   1              unsigned char k,k1;
-  28   1              unsigned char mystartbuffer=0xaa;
-  29   1              for(k1=0;k1<3;k1++)
-  30   1              {
-  31   2                      for(k=0;k<8;k++)
-  32   2                      {
-  33   3                              if((mystartbuffer&0x80)==0x80)//为1
-  34   3                              {
-  35   4                                      P10=0;
-  36   4                                      Delay3(80);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
-  37   4                              }
-  38   3                              else//为0的情况
-  39   3                              {
-  40   4                                      P10=0;
-  41   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
-  42   4                              }
-  43   3                              P10=1;//常态为高电平
-  44   3                              mystartbuffer<<=1;
-  45   3                              Delay3(150);//延时要大于2ms
-  46   3                      }
-  47   2                      mystartbuffer=0xaa;
-  48   2                      Delay3(80);
-  49   2              }
-  50   1              P10=1;
+  27   1         unsigned char k,k1;
+  28   1         unsigned char mystartbuffer=0xaa;
+  29   1         for(k1=0;k1<3;k1++)
+  30   1         {
+  31   2            for(k=0;k<8;k++)
+  32   2            {
+  33   3               if((mystartbuffer&0x80)==0x80)//为1
+  34   3               {
+  35   4                  P10=0;
+  36   4                  Delay3(80);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+  37   4               }
+  38   3               else//为0的情况
+  39   3               {
+  40   4                  P10=0;
+  41   4                  Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+  42   4               }
+  43   3               P10=1;//常态为高电平
+  44   3               mystartbuffer<<=1;
+  45   3               Delay3(150);//延时要大于2ms
+  46   3            }
+  47   2            mystartbuffer=0xaa;
+  48   2            Delay3(80);
+  49   2         }
+  50   1         P10=1;
   51   1      }
   52          
   53          /*----------------------------------------------------
-  54                  initsignal2()
-  55                  
-C51 COMPILER V9.51   COMMUNICATION                                                         09/27/2013 11:57:38 PAGE 2   
+  54             initsignal2()
+  55             
+C51 COMPILER V9.51   COMMUNICATION                                                         11/02/2013 10:00:20 PAGE 2   
 
-  56                  初始化信号程序，接收机在接接收信号的时候，需要有
-  57                  一段代码来使接收机打开，而这一段程序有可能无法识别
-  58                  出来，而是相当于废代码，只占用通信时间。
+  56             初始化信号程序，接收机在接接收信号的时候，需要有
+  57             一段代码来使接收机打开，而这一段程序有可能无法识别
+  58             出来，而是相当于废代码，只占用通信时间。
   59          ----------------------------------------------------*/
   60          
   61          void initsignal2()
   62          {
-  63   1              unsigned char k,k1;
-  64   1              unsigned char mystartbuffer=0xaa;
-  65   1              for(k1=0;k1<3;k1++)
-  66   1              {
-  67   2                      for(k=0;k<8;k++)
-  68   2                      {
-  69   3                              if((mystartbuffer&0x80)==0x80)//为1
-  70   3                              {
-  71   4                                      P10=0;
-  72   4                                      Delay3(80);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
-  73   4                              }
-  74   3                              else//为0的情况
-  75   3                              {
-  76   4                                      P10=0;
-  77   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
-  78   4                              }
-  79   3                              P10=1;//常态为高电平
-  80   3                              mystartbuffer<<=1;
-  81   3                              Delay3(150);//延时要大于2ms
-  82   3                      }
-  83   2                      mystartbuffer=0xaa;
-  84   2                      Delay3(80);
-  85   2              }
-  86   1              P10=1;
+  63   1         unsigned char k,k1;
+  64   1         unsigned char mystartbuffer=0xaa;
+  65   1         for(k1=0;k1<3;k1++)
+  66   1         {
+  67   2            for(k=0;k<8;k++)
+  68   2            {
+  69   3               if((mystartbuffer&0x80)==0x80)//为1
+  70   3               {
+  71   4                  P10=0;
+  72   4                  Delay3(80);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+  73   4               }
+  74   3               else//为0的情况
+  75   3               {
+  76   4                  P10=0;
+  77   4                  Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+  78   4               }
+  79   3               P10=1;//常态为高电平
+  80   3               mystartbuffer<<=1;
+  81   3               Delay3(150);//延时要大于2ms
+  82   3            }
+  83   2            mystartbuffer=0xaa;
+  84   2            Delay3(80);
+  85   2         }
+  86   1         P10=1;
   87   1      }
   88          
   89          /*----------------------------------------------------
-  90                  initsignal3()
-  91                  
-  92                  初始化信号程序，接收机在接接收信号的时候，需要有
-  93                  一段代码来使接收机打开，而这一段程序有可能无法识别
-  94                  出来，而是相当于废代码，只占用通信时间。
+  90             initsignal3()
+  91             
+  92             初始化信号程序，接收机在接接收信号的时候，需要有
+  93             一段代码来使接收机打开，而这一段程序有可能无法识别
+  94             出来，而是相当于废代码，只占用通信时间。
   95          ----------------------------------------------------*/
   96          
   97          void initsignal3()
   98          {
-  99   1              unsigned char k,k1;
- 100   1              unsigned char mystartbuffer=0xaa;
- 101   1              for(k1=0;k1<3;k1++)
- 102   1              {
- 103   2                      for(k=0;k<8;k++)
- 104   2                      {
- 105   3                              if((mystartbuffer&0x80)==0x80)//为1
- 106   3                              {
- 107   4                                      P10=0;
- 108   4                                      Delay3(80);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
- 109   4                              }
- 110   3                              else//为0的情况
- 111   3                              {
- 112   4                                      P10=0;
- 113   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
- 114   4                              }
- 115   3                              P10=1;//常态为高电平
- 116   3                              mystartbuffer<<=1;
- 117   3                              Delay3(150);//延时要大于2ms
-C51 COMPILER V9.51   COMMUNICATION                                                         09/27/2013 11:57:38 PAGE 3   
+  99   1         unsigned char k,k1;
+ 100   1         unsigned char mystartbuffer=0xaa;
+ 101   1         for(k1=0;k1<3;k1++)
+ 102   1         {
+ 103   2            for(k=0;k<8;k++)
+ 104   2            {
+ 105   3               if((mystartbuffer&0x80)==0x80)//为1
+ 106   3               {
+ 107   4                  P10=0;
+ 108   4                  Delay3(80);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+ 109   4               }
+ 110   3               else//为0的情况
+ 111   3               {
+ 112   4                  P10=0;
+ 113   4                  Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+ 114   4               }
+ 115   3               P10=1;//常态为高电平
+ 116   3               mystartbuffer<<=1;
+ 117   3               Delay3(150);//延时要大于2ms
+C51 COMPILER V9.51   COMMUNICATION                                                         11/02/2013 10:00:20 PAGE 3   
 
- 118   3                      }
- 119   2                      mystartbuffer=0xaa;
- 120   2                      Delay3(80);
- 121   2              }
- 122   1              P10=1;
+ 118   3            }
+ 119   2            mystartbuffer=0xaa;
+ 120   2            Delay3(80);
+ 121   2         }
+ 122   1         P10=1;
  123   1      }
  124          
  125          /*--------------------------------------------------
- 126                  ComMode_1_Data()
- 127                  
- 128                  主机接收到编码1信号后，会反馈一个编码1信号给附机
- 129                  以表示主机在附机附近。
+ 126             ComMode_1_Data()
+ 127             
+ 128             主机接收到编码1信号后，会反馈一个编码1信号给附机
+ 129             以表示主机在附机附近。
  130          ---------------------------------------------------*/
  131          
  132          void ComMode_1_Data()   
  133          {
- 134   1              unsigned char i,n;
- 135   1              ModeControl_1=0;                                
- 136   1              tran_en=1;
- 137   1              myTxRxData[0]=CmdHead;
- 138   1              myTxRxData[1]=MyAddress;
- 139   1              myTxRxData[2]=ComMode_1;
- 140   1      /*      myTxRxData[3]=0x00;
- 141   1              myTxRxData[4]=0x00;
- 142   1              myTxRxData[5]=0x00;
- 143   1              myTxRxData[6]=0x00;
+ 134   1         unsigned char i,n;
+ 135   1         ModeControl_1=0;           
+ 136   1         tran_en=1;
+ 137   1         myTxRxData[0]=CmdHead;
+ 138   1         myTxRxData[1]=MyAddress;
+ 139   1         myTxRxData[2]=ComMode_1;
+ 140   1      /* myTxRxData[3]=0x00;
+ 141   1         myTxRxData[4]=0x00;
+ 142   1         myTxRxData[5]=0x00;
+ 143   1         myTxRxData[6]=0x00;
  144   1      */
- 145   1              initsignal2();
+ 145   1         initsignal2();
  146   1      
- 147   1              for(i=0;i<3;i++)
- 148   1              {
- 149   2                      for(n=0;n<8;n++)
- 150   2                      {
- 151   3                              if((myTxRxData[i]&0x80)==0x80)//为1
- 152   3                              {
- 153   4                                      P10=0;
- 154   4                                      Delay4(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
- 155   4                              }
- 156   3                              else//为0的情况
- 157   3                              {
- 158   4                                      P10=0;
- 159   4                                      Delay4(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
- 160   4                              }
- 161   3                              P10=1;//常态为高电平
- 162   3                              myTxRxData[i]<<=1;
- 163   3                              Delay4(50);//延时要大于2ms
- 164   3                      }
- 165   2              }
- 166   1              tran_en=0;
+ 147   1         for(i=0;i<3;i++)
+ 148   1         {
+ 149   2            for(n=0;n<8;n++)
+ 150   2            {
+ 151   3               if((myTxRxData[i]&0x80)==0x80)//为1
+ 152   3               {
+ 153   4                  P10=0;
+ 154   4                  Delay4(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+ 155   4               }
+ 156   3               else//为0的情况
+ 157   3               {
+ 158   4                  P10=0;
+ 159   4                  Delay4(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+ 160   4               }
+ 161   3               P10=1;//常态为高电平
+ 162   3               myTxRxData[i]<<=1;
+ 163   3               Delay4(50);//延时要大于2ms
+ 164   3            }
+ 165   2         }
+ 166   1         tran_en=0;
  167   1      }
  168          
  169          /*----------------------------------------------------------
- 170                  ComMode_3_Data()
- 171                  
- 172                  被盗报警信号，让附机语音提示“电动车被盗“
+ 170             ComMode_3_Data()
+ 171             
+ 172             被盗报警信号，让附机语音提示“电动车被盗“
  173          ----------------------------------------------------------*/
  174          
  175          void ComMode_3_Data()
  176          {
- 177   1      //      unsigned int j;
- 178   1              unsigned char i,n;
- 179   1              ModeControl_1=1;//切换为300M发射
-C51 COMPILER V9.51   COMMUNICATION                                                         09/27/2013 11:57:38 PAGE 4   
+ 177   1      // unsigned int j;
+ 178   1         unsigned char i,n;
+ 179   1         ModeControl_1=1;//切换为300M发射
+C51 COMPILER V9.51   COMMUNICATION                                                         11/02/2013 10:00:20 PAGE 4   
 
- 180   1              tran_en=1;
- 181   1              myTxRxData[0]=CmdHead;
- 182   1              myTxRxData[1]=MyAddress;
- 183   1              myTxRxData[2]=ComMode_3;
- 184   1      /*      myTxRxData[3]=0x00;
- 185   1              myTxRxData[4]=0x00;
- 186   1              myTxRxData[5]=0x00;
- 187   1              myTxRxData[6]=0x00;
+ 180   1         tran_en=1;
+ 181   1         myTxRxData[0]=CmdHead;
+ 182   1         myTxRxData[1]=MyAddress;
+ 183   1         myTxRxData[2]=ComMode_3;
+ 184   1      /* myTxRxData[3]=0x00;
+ 185   1         myTxRxData[4]=0x00;
+ 186   1         myTxRxData[5]=0x00;
+ 187   1         myTxRxData[6]=0x00;
  188   1      */
- 189   1              initsignal();
+ 189   1         initsignal();
  190   1      
- 191   1              for(i=0;i<3;i++)
- 192   1              {
- 193   2                      for(n=0;n<8;n++)
- 194   2                      {
- 195   3                              if((myTxRxData[i]&0x80)==0x80)//为1
- 196   3                              {
- 197   4                                      P10=0;
- 198   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
- 199   4                              }
- 200   3                              else//为0的情况
- 201   3                              {
- 202   4                                      P10=0;
- 203   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
- 204   4                              }
- 205   3                              P10=1;//常态为高电平
- 206   3                              myTxRxData[i]<<=1;
- 207   3                              Delay3(50);//延时要大于2ms
- 208   3                      }
- 209   2              }
- 210   1              tran_en=0;
+ 191   1         for(i=0;i<3;i++)
+ 192   1         {
+ 193   2            for(n=0;n<8;n++)
+ 194   2            {
+ 195   3               if((myTxRxData[i]&0x80)==0x80)//为1
+ 196   3               {
+ 197   4                  P10=0;
+ 198   4                  Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+ 199   4               }
+ 200   3               else//为0的情况
+ 201   3               {
+ 202   4                  P10=0;
+ 203   4                  Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+ 204   4               }
+ 205   3               P10=1;//常态为高电平
+ 206   3               myTxRxData[i]<<=1;
+ 207   3               Delay3(50);//延时要大于2ms
+ 208   3            }
+ 209   2         }
+ 210   1         tran_en=0;
  211   1      }
  212          
  213          /*--------------------------------------------------------
- 214                  ComMode_4_Data()
- 215                  
- 216                  发信号给附机，让其语音提示“电动车被抬起”
+ 214             ComMode_4_Data()
+ 215             
+ 216             发信号给附机，让其语音提示“电动车被抬起”
  217          ---------------------------------------------------------*/
  218          
  219          void ComMode_4_Data()//发送抬起编码
  220          {
- 221   1              unsigned char i,n;
- 222   1              ModeControl_1=0;//切换为300M发射
- 223   1              tran_en=1;
- 224   1              myTxRxData[0]=CmdHead;
- 225   1              myTxRxData[1]=MyAddress;
- 226   1              myTxRxData[2]=ComMode_4;
- 227   1      /*      myTxRxData[3]=0x00;
- 228   1              myTxRxData[4]=0x00;
- 229   1              myTxRxData[5]=0x00;
- 230   1              myTxRxData[6]=0x00;
+ 221   1         unsigned char i,n;
+ 222   1         ModeControl_1=0;//切换为300M发射
+ 223   1         tran_en=1;
+ 224   1         myTxRxData[0]=CmdHead;
+ 225   1         myTxRxData[1]=MyAddress;
+ 226   1         myTxRxData[2]=ComMode_4;
+ 227   1      /* myTxRxData[3]=0x00;
+ 228   1         myTxRxData[4]=0x00;
+ 229   1         myTxRxData[5]=0x00;
+ 230   1         myTxRxData[6]=0x00;
  231   1      */
- 232   1              initsignal3();
+ 232   1         initsignal3();
  233   1      
- 234   1              for(i=0;i<3;i++)
- 235   1              {
- 236   2                      for(n=0;n<8;n++)
- 237   2                      {
- 238   3                              if((myTxRxData[i]&0x80)==0x80)//为1
- 239   3                              {
- 240   4                                      P10=0;
- 241   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
-C51 COMPILER V9.51   COMMUNICATION                                                         09/27/2013 11:57:38 PAGE 5   
+ 234   1         for(i=0;i<3;i++)
+ 235   1         {
+ 236   2            for(n=0;n<8;n++)
+ 237   2            {
+ 238   3               if((myTxRxData[i]&0x80)==0x80)//为1
+ 239   3               {
+ 240   4                  P10=0;
+ 241   4                  Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+C51 COMPILER V9.51   COMMUNICATION                                                         11/02/2013 10:00:20 PAGE 5   
 
- 242   4                              }
- 243   3                              else//为0的情况
- 244   3                              {
- 245   4                                      P10=0;
- 246   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
- 247   4                              }
- 248   3                              P10=1;//常态为高电平
- 249   3                              myTxRxData[i]<<=1;
- 250   3                              Delay3(50);//延时要大于2ms
- 251   3                      }
- 252   2              }
- 253   1              tran_en=0;
+ 242   4               }
+ 243   3               else//为0的情况
+ 244   3               {
+ 245   4                  P10=0;
+ 246   4                  Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+ 247   4               }
+ 248   3               P10=1;//常态为高电平
+ 249   3               myTxRxData[i]<<=1;
+ 250   3               Delay3(50);//延时要大于2ms
+ 251   3            }
+ 252   2         }
+ 253   1         tran_en=0;
  254   1      }
  255          
  256          /*-----------------------------------------------------------
- 257                  ComMode_5_Data()
- 258                  
- 259                  发信号给附机，让其语音提示“电动车倒地了”
+ 257             ComMode_5_Data()
+ 258             
+ 259             发信号给附机，让其语音提示“电动车倒地了”
  260          ------------------------------------------------------------*/
  261          
  262          void ComMode_5_Data()//发送倒地编码
  263          {
- 264   1              unsigned char i,n;
- 265   1              ModeControl_1=0;//切换为300M发射
- 266   1              tran_en=1;      //打开无线发射机
- 267   1              myTxRxData[0]=CmdHead;
- 268   1              myTxRxData[1]=MyAddress;
- 269   1              myTxRxData[2]=ComMode_5;
- 270   1      /*      myTxRxData[3]=0x00;
- 271   1              myTxRxData[4]=0x00;
- 272   1              myTxRxData[5]=0x00;
- 273   1              myTxRxData[6]=0x00;
+ 264   1         unsigned char i,n;
+ 265   1         ModeControl_1=0;//切换为300M发射
+ 266   1         tran_en=1;      //打开无线发射机
+ 267   1         myTxRxData[0]=CmdHead;
+ 268   1         myTxRxData[1]=MyAddress;
+ 269   1         myTxRxData[2]=ComMode_5;
+ 270   1      /* myTxRxData[3]=0x00;
+ 271   1         myTxRxData[4]=0x00;
+ 272   1         myTxRxData[5]=0x00;
+ 273   1         myTxRxData[6]=0x00;
  274   1      */
- 275   1              initsignal3();
+ 275   1         initsignal3();
  276   1      
- 277   1              for(i=0;i<3;i++)
- 278   1              {
- 279   2                      for(n=0;n<8;n++)
- 280   2                      {
- 281   3                              if((myTxRxData[i]&0x80)==0x80)//为1
- 282   3                              {
- 283   4                                      P10=0;
- 284   4                                      Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
- 285   4                              }
- 286   3                              else//为0的情况
- 287   3                              {
- 288   4                                      P10=0;
- 289   4                                      Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
- 290   4                              }
- 291   3                              P10=1;//常态为高电平
- 292   3                              myTxRxData[i]<<=1;
- 293   3                              Delay3(50);//延时要大于2ms
- 294   3                      }
- 295   2              }
- 296   1              tran_en=0;
+ 277   1         for(i=0;i<3;i++)
+ 278   1         {
+ 279   2            for(n=0;n<8;n++)
+ 280   2            {
+ 281   3               if((myTxRxData[i]&0x80)==0x80)//为1
+ 282   3               {
+ 283   4                  P10=0;
+ 284   4                  Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
+ 285   4               }
+ 286   3               else//为0的情况
+ 287   3               {
+ 288   4                  P10=0;
+ 289   4                  Delay3(80);//延时2ms，由于定时器占用问题，只能用这种延时来实现
+ 290   4               }
+ 291   3               P10=1;//常态为高电平
+ 292   3               myTxRxData[i]<<=1;
+ 293   3               Delay3(50);//延时要大于2ms
+ 294   3            }
+ 295   2         }
+ 296   1         tran_en=0;
  297   1      }
  298          
  299          /*---------------------------------------------------
- 300                  end of file
+ 300             end of file
  301          ----------------------------------------------------*/
 
 
-C51 COMPILER V9.51   COMMUNICATION                                                         09/27/2013 11:57:38 PAGE 6   
+C51 COMPILER V9.51   COMMUNICATION                                                         11/02/2013 10:00:20 PAGE 6   
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =    554    ----

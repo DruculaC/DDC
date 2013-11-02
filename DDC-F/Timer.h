@@ -1,32 +1,21 @@
 /*-----------------------------------------------------
-	T0.h (v1.00)
+	Timer.h (v1.00)
 	
-	header file for T0.c
+	header file for Timer.c
 -----------------------------------------------------*/
 
-#ifndef _T0_H
-#define _T0_H
+#ifndef _TIMER_H
+#define _TIMER_H
 
 //-----public constants-------------------------------
 
-#define timer0H 0x24  //设置定时器的时间，公式65536-timer*FOSC/12，然后来进行填充
-#define timer0L 0x45  //现在这个设置在13.5M的晶振下为0.05s，50ms
 
 //-----public function prototype----------------------
 
-void InitT0();//初始化定时器0
+void InitTimer(const tByte Tick_ms_T0, Tick_us_T1);
 
 #endif
 											
 /*---------------------------------------------------
 	end of file
 ----------------------------------------------------*/
-
-
-
-
-
-
-
-
-

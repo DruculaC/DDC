@@ -1,17 +1,17 @@
-C51 COMPILER V9.51   BATTERY                                                               09/27/2013 11:57:38 PAGE 1   
+C51 COMPILER V9.51   BATTERY                                                               11/02/2013 10:00:21 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE BATTERY
 OBJECT MODULE PLACED IN Battery.OBJ
-COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE Battery.c BROWSE DEBUG OBJECTEXTEND
+COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE Battery.c BROWSE DEBUG OBJECTEXTEND TABS(3)
 
 line level    source
 
    1          /*---------------------------------------------------
-   2                  Battery.c (v1.00)
-   3                  
-   4                  电池电量判断
-   5          ---------------------------------------------------*/   
+   2             Battery.c (v1.00)
+   3             
+   4             电池电量判断
+   5          ---------------------------------------------------*/ 
    6          
    7          #include "main.h"
    8          #include "port.h"
@@ -24,54 +24,54 @@ line level    source
   15          
   16          
   17          /*----------------------------------------------------
-  18                  verifybattery()
-  19                  
-  20                  判断电池电量，然后进行电量提示
+  18             verifybattery()
+  19             
+  20             判断电池电量，然后进行电量提示
   21          -----------------------------------------------------*/
   22          
   23          void verifybattery(unsigned int Check2)
-  24          {                                                                         
-  25   1              if((Check2>=0x3a3))//设置比较电压，此处以4.96V为基准，大于47.4V（4.5V）
-  26   1              {
-  27   2                      PAshutdown=1;
-  28   2                      SC_Speech(6);   //4V电量充足提示
-  29   2                      Delay(130);
-  30   2                      PAshutdown=0;
-  31   2              }
-  32   1          else if((Check2<0x3a0)&&(Check2>=0x37c))            //小于47.4，大于45（4.31V）
-  33   1              {
-  34   2                      PAshutdown=1;
-  35   2                      SC_Speech(5);  //3.8V电量充足提示
-  36   2                      Delay(130);
-  37   2                      PAshutdown=0;
-  38   2              }
-  39   1              else if((Check2<0x378)&&(Check2>=0x359))                 //小于45，大于43（4.14V）
-  40   1              {
-  41   2                      PAshutdown=1;
-  42   2                      SC_Speech(4);  //3.6V电量充足提示
-  43   2                      Delay(130);
-  44   2                      PAshutdown=0;
-  45   2              }
-  46   1              else if((Check2<0x355)&&(Check2>=0x327))                 //小于43，大于40（3.9V）
-  47   1              {
-  48   2                      PAshutdown=1;
-  49   2                      SC_Speech(3);  //低于3.6v电量充足提示
-  50   2                      Delay(130);
-  51   2                      PAshutdown=0;
-  52   2              }
-  53   1              else if((Check2<0x323)&&(Check2>=0x304))                  //小于40，大于38（3.73V）
-  54   1              {
-  55   2                      PAshutdown=1;
-C51 COMPILER V9.51   BATTERY                                                               09/27/2013 11:57:38 PAGE 2   
+  24          {                            
+  25   1         if((Check2>=0x3a3))//设置比较电压，此处以4.96V为基准，大于47.4V（4.5V）
+  26   1         {
+  27   2            PAshutdown=1;
+  28   2            SC_Speech(6);     //4V电量充足提示
+  29   2            Delay(130);
+  30   2            PAshutdown=0;
+  31   2         }
+  32   1          else if((Check2<0x3a0)&&(Check2>=0x37c))    //小于47.4，大于45（4.31V）
+  33   1         {
+  34   2            PAshutdown=1;
+  35   2            SC_Speech(5);  //3.8V电量充足提示
+  36   2            Delay(130);
+  37   2            PAshutdown=0;
+  38   2         }
+  39   1         else if((Check2<0x378)&&(Check2>=0x359))      //小于45，大于43（4.14V）
+  40   1         {
+  41   2            PAshutdown=1;
+  42   2            SC_Speech(4);  //3.6V电量充足提示
+  43   2            Delay(130);
+  44   2            PAshutdown=0;
+  45   2         }
+  46   1         else if((Check2<0x355)&&(Check2>=0x327))      //小于43，大于40（3.9V）
+  47   1         {
+  48   2            PAshutdown=1;
+  49   2            SC_Speech(3);  //低于3.6v电量充足提示
+  50   2            Delay(130);
+  51   2            PAshutdown=0;
+  52   2         }
+  53   1         else if((Check2<0x323)&&(Check2>=0x304))       //小于40，大于38（3.73V）
+  54   1         {
+  55   2            PAshutdown=1;
+C51 COMPILER V9.51   BATTERY                                                               11/02/2013 10:00:21 PAGE 2   
 
-  56   2                      SC_Speech(2);  //低于3.6v电量充足提示
-  57   2                      Delay(130);
-  58   2                      PAshutdown=0;
-  59   2              }
+  56   2            SC_Speech(2);  //低于3.6v电量充足提示
+  57   2            Delay(130);
+  58   2            PAshutdown=0;
+  59   2         }
   60   1      }
   61          
   62          /*---------------------------------------------------
-  63                  end of file
+  63             end of file
   64          ----------------------------------------------------*/
 
 

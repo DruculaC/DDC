@@ -1,17 +1,17 @@
-C51 COMPILER V9.51   DELAY                                                                 09/27/2013 10:58:46 PAGE 1   
+C51 COMPILER V9.51   DELAY                                                                 11/01/2013 17:05:51 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE DELAY
 OBJECT MODULE PLACED IN Delay.OBJ
-COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE Delay.c ROM(COMPACT) BROWSE DEBUG OBJECTEXTEND
+COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE Delay.c ROM(COMPACT) BROWSE DEBUG OBJECTEXTEND TABS(3)
 
 line level    source
 
    1          /*---------------------------------------------------
-   2                  Delay.c (v1.00)
-   3                  
-   4                  Delay functions
-   5          ---------------------------------------------------*/   
+   2             Delay.c (v1.00)
+   3             
+   4             Delay functions
+   5          ---------------------------------------------------*/ 
    6          
    7          #include "main.h"
    8          #include "port.h"
@@ -19,68 +19,68 @@ line level    source
   10          #include "Delay.h"
   11          
   12          /*---------------------------------------------------
-  13                  Delay(tWord n)
-  14                  
-  15                  延迟程序
-  16          ----------------------------------------------------*/  
+  13             Delay(tWord n)
+  14             
+  15             延迟程序
+  16          ----------------------------------------------------*/   
   17          
   18          void Delay(tWord n)
-  19                  {
-  20   1              tWord x;
-  21   1              while(n--)
-  22   1                      {
-  23   2                      x=5000;
-  24   2                      while(x--);
-  25   2                      }
-  26   1              }
+  19             {
+  20   1         tWord x;
+  21   1         while(n--)
+  22   1            {
+  23   2            x=5000;
+  24   2            while(x--);
+  25   2            }
+  26   1         }
   27          
   28          /*---------------------------------------------------
-  29                  Delay3()
-  30                  延迟程序
+  29             Delay3()
+  30             延迟程序
   31          --------------------------------------------------*/
   32          
-  33          void Delay3(tWord t)            //t=1时，延迟100us左右
-  34                  {
-  35   1              tWord i;
-  36   1              tByte j;
-  37   1              for(i=0;i<t;i++)                                                
-  38   1              for(j=0;j<23;j++);
-  39   1              }
-  40                  
+  33          void Delay3(tWord t)    //t=1时，延迟100us左右
+  34             {
+  35   1         tWord i;
+  36   1         tByte j;
+  37   1         for(i=0;i<t;i++)                                     
+  38   1         for(j=0;j<23;j++);
+  39   1         }
+  40             
   41          /*--------------------------------------------------
-  42                  delay_ms()
-  43                  
-  44                  延迟约为1ms的子程序
+  42             delay_ms()
+  43             
+  44             延迟约为1ms的子程序
   45          ----------------------------------------------------*/
   46          
   47          void delay_ms(unsigned int count)
-  48                  {
-  49   1              unsigned int i,j;
-  50   1              for(i=0;i<count;i++)
-  51   1                      {
-  52   2                      for(j=0;j<600;j++);
-  53   2                      }
-  54   1              }
+  48             {
+  49   1         unsigned int i,j;
+  50   1         for(i=0;i<count;i++)
+  51   1            {
+  52   2            for(j=0;j<600;j++);
+  53   2            }
+  54   1         }
   55          
-C51 COMPILER V9.51   DELAY                                                                 09/27/2013 10:58:46 PAGE 2   
+C51 COMPILER V9.51   DELAY                                                                 11/01/2013 17:05:51 PAGE 2   
 
   56          /*--------------------------------------------------
-  57                  delay_us()
-  58                  
-  59                  延迟约为1us的子程序
+  57             delay_us()
+  58             
+  59             延迟约为1us的子程序
   60          ----------------------------------------------------*/
   61          
   62          void delay_us(unsigned int count)
-  63                  {
-  64   1              unsigned int i,j;
-  65   1              for(i=0;i<count;i++)
-  66   1                      {
-  67   2                      for(j=0;j<2;j++);
-  68   2                      }
-  69   1              }
+  63             {
+  64   1         unsigned int i,j;
+  65   1         for(i=0;i<count;i++)
+  66   1            {
+  67   2            for(j=0;j<2;j++);
+  68   2            }
+  69   1         }
   70          
   71          /*---------------------------------------------------
-  72                  end of file
+  72             end of file
   73          ----------------------------------------------------*/
 
 

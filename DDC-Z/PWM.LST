@@ -1,16 +1,16 @@
-C51 COMPILER V9.51   PWM                                                                   09/27/2013 11:57:37 PAGE 1   
+C51 COMPILER V9.51   PWM                                                                   11/02/2013 10:00:18 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE PWM
 OBJECT MODULE PLACED IN PWM.OBJ
-COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE PWM.c BROWSE DEBUG OBJECTEXTEND
+COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE PWM.c BROWSE DEBUG OBJECTEXTEND TABS(3)
 
 line level    source
 
    1          /*---------------------------------------------------
-   2                  pwm.c (v1.00)
-   3                  
-   4                  方波输出功能
+   2             pwm.c (v1.00)
+   3             
+   4             方波输出功能
    5          ---------------------------------------------------*/
    6          
    7          #include "main.h"
@@ -21,9 +21,9 @@ line level    source
   12          UINT16 PWM_shadow;
   13          
   14          /*---------------------------------------------------
-  15                  Init_PWM()
-  16                  
-  17                  初始化方波输出功能
+  15             Init_PWM()
+  16             
+  17             初始化方波输出功能
   18          ----------------------------------------------------*/
   19          
   20          void Init_PWM(void)
@@ -36,12 +36,12 @@ line level    source
   27   1      }
   28          
   29          /*---------------------------------------------------
-  30                  PWM_Channel()
-  31                  
-  32                  选择PWM方波输出的通道
+  30             PWM_Channel()
+  31             
+  32             选择PWM方波输出的通道
   33          ----------------------------------------------------*/
   34          
-  35          void PWM_Channel(E_PWMCNL_SEL Channel)   //选择PWM输出通道
+  35          void PWM_Channel(E_PWMCNL_SEL Channel)  //选择PWM输出通道
   36          {
   37   1          switch(Channel)
   38   1          {
@@ -62,7 +62,7 @@ line level    source
   53   2                  break;
   54   2              case E_CHANNEL3:
   55   2                  PWM_shadow=PWM3_Duty;
-C51 COMPILER V9.51   PWM                                                                   09/27/2013 11:57:37 PAGE 2   
+C51 COMPILER V9.51   PWM                                                                   11/02/2013 10:00:18 PAGE 2   
 
   56   2                  PWM3H = HIBYTE(PWM_shadow);// PWM3 Duty (P0.0)
   57   2                  PWM3L = LOBYTE(PWM_shadow);
@@ -71,20 +71,20 @@ line level    source
   60   1      }
   61          
   62          /*-------------------------------------------------------
-  63                  myPwm()
-  64                  
-  65                  方波输出打开
+  63             myPwm()
+  64             
+  65             方波输出打开
   66          --------------------------------------------------------*/
   67          
   68          void myPwm()
   69          {
-  70   1              PWM_Channel(E_CHANNEL0);           // Select PWM channel.
+  70   1         PWM_Channel(E_CHANNEL0);           // Select PWM channel.
   71   1          Init_PWM();                        // Enable PWM function and set PWM period.  
   72   1          //Enabled_Brake_Function();          // Enable Brake funciton.
   73   1      }
   74          
   75          /*---------------------------------------------------
-  76                  end of file
+  76             end of file
   77          ----------------------------------------------------*/ 
 
 

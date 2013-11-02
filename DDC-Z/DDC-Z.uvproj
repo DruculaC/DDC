@@ -366,16 +366,6 @@
               <FilePath>.\PWM.c</FilePath>
             </File>
             <File>
-              <FileName>T0.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\T0.c</FilePath>
-            </File>
-            <File>
-              <FileName>T1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\T1.c</FilePath>
-            </File>
-            <File>
               <FileName>voice.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\voice.c</FilePath>
@@ -399,6 +389,16 @@
               <FileName>Battery.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Battery.c</FilePath>
+            </File>
+            <File>
+              <FileName>Other.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Other.c</FilePath>
+            </File>
+            <File>
+              <FileName>Timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Timer.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -1,13 +1,13 @@
-/*---------------------------------------------------
+/*------------------------------------------------------------------
 	main.h (v1.00)
 	
 	'project header' (see chap 5)
----------------------------------------------------*/
+-------------------------------------------------------------------*/
 
 #ifndef _MAIN_H
 #define _MAIN_H
 
-//--------header file--------------------------------
+//--------header file------------------------------------------------
 
 // must include the appropriate microcontroller header file here
 #include "N79E81x.h"
@@ -23,13 +23,13 @@
 // 2 - Dallas 420, etc
 #define OSC_PER_INST (12)
 
-//---------------------------------------------------
+//-------------------------------------------------------------------
 // should not need to edit the sections below
-//---------------------------------------------------
+//-------------------------------------------------------------------
 
 // typedefs
 typedef unsigned char tByte;
-typedef unsigned int tWord;
+typedef unsigned int  tWord;
 typedef unsigned long tLong;
 
 // Interrupts

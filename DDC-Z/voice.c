@@ -9,6 +9,7 @@
 
 #include "voice.h"
 #include "Delay.h"
+#include "communication.h"
    
 /*--------------------------------------------------
 	SC_Speech()
@@ -81,6 +82,97 @@ void noVoice()
 	P14=1;
 }
 
+/*----------------------------------------------------
+	key_rotate_on_speech()
+	钥匙转动到on的时候，语音提示
+-----------------------------------------------------*/
+void key_rotate_on_speech(void)
+	{
+	PAshutdown=1;
+	SC_Speech(7);  
+	Delay(160);
+	PAshutdown=0;
+	}
+	
+/*-----------------------------------------------------
+	key_rotate_off_speech()
+	钥匙转动到off的时候，语音提示
+------------------------------------------------------*/
+void key_rotate_off_speech(void)
+	{
+	PAshutdown=1;
+	SC_Speech(9);
+	Delay(130);
+	PAshutdown=0;
+	}
+
+/*----------------------------------------------------
+	motorBAT_low_speech()
+	电瓶电量低于最小限定值，语音提示。
+-----------------------------------------------------*/
+void motorBAT_low_speech(void)
+	{
+	PAshutdown=1;
+	SC_Speech(10);
+	Delay(100);
+	PAshutdown=0;
+	}
+	
+/*----------------------------------------------------
+	stolen_alarm_speech()
+	判断为被盗的时候，发出报警语音
+----------------------------------------------------*/
+void stolen_alarm_speech(void)
+	{
+	PAshutdown=1;
+	SC_Speech(22); 
+	ComMode_3_Data();
+	Delay(100);
+	SC_Speech(23); 
+	ComMode_3_Data();
+	Delay(60);
+	PAshutdown=0; 
+	}
+
+/*----------------------------------------------------
+	slave_nearby_speech()
+	主机接到附机信号后，表明主机知道附机在附近，此时
+	报一段语音。
+-----------------------------------------------------*/
+void slave_nearby_speech(void)
+	{
+	PAshutdown=1;
+	SC_Speech(11); 
+	Delay(150);
+	PAshutdown=0;
+	}
+
+/*----------------------------------------------------
+	slave_away_speech()
+	主机接不到附机信号后，表明主机认为附机离开了，此时
+	报一段语音
+-----------------------------------------------------*/
+void slave_away_speech(void)
+	{
+	PAshutdown=1;
+	SC_Speech(12);  
+	Delay(80);
+	SC_Speech(13);
+	Delay(80);
+	PAshutdown=0;
+	}
+
+/*----------------------------------------------------
+	host_touch_speech()
+	第一次碰主机，会有一句提示语音
+--------------------------------------------------------*/
+void host_touch_speech(void)
+	{
+	PAshutdown=1;
+	SC_Speech2(17);  //关机语言提醒
+	Delay(80);
+	PAshutdown=0;
+	}
 /*---------------------------------------------------
 	end of file
 ----------------------------------------------------*/

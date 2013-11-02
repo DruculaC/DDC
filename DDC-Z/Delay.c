@@ -31,7 +31,8 @@ void Delay(unsigned int n)
 
 void Delay3(unsigned int t)
 {
-	unsigned int i,j;
+	tWord i;
+	tByte j;
 	for(i=0;i<t;i++)		
 	for(j=0;j<19;j++);
 }
@@ -43,7 +44,8 @@ void Delay3(unsigned int t)
 
 void Delay4(unsigned int t)
 {
-	unsigned int i,j;
+	tWord i;
+	tByte j;
 	for(i=0;i<t;i++)		
 	for(j=0;j<26;j++);
 }

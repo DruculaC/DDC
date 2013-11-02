@@ -67,7 +67,7 @@ void PWM_Channel(E_PWMCNL_SEL Channel)	 //选择PWM输出通道
 void myPwm()
 	{
 	PWM_Channel(E_CHANNEL0);           // Select PWM channel.
-    Init_PWM();                        // Enable PWM function and set PWM period.  
+   Init_PWM();                        // Enable PWM function and set PWM period.  
 	}
 
 /*---------------------------------------------------

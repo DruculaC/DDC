@@ -1,10 +1,10 @@
 "STARTUP.obj",
 "AD.obj",
 "pwm.obj",
-"T0.obj",
-"T1.obj",
 "voice.obj",
 "main.obj",
 "Delay.obj",
-"communication.obj" 
+"communication.obj",
+"Other.obj",
+"Timer.obj" 
 TO "DDC-F" 
