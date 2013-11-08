@@ -132,8 +132,8 @@ void initsignal3()
 void ComMode_1_Data()	
 {
 	unsigned char i,n;
-	ModeControl_1=0;				
-	tran_en=1;
+	transmiter_power=0;				
+	transmiter_EN=1;
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_1;
@@ -163,7 +163,7 @@ void ComMode_1_Data()
 			Delay4(50);//延时要大于2ms
 		}
 	}
-	tran_en=0;
+	transmiter_EN=0;
 }
 
 /*----------------------------------------------------------
@@ -176,8 +176,8 @@ void ComMode_3_Data()
 {
 //	unsigned int j;
 	unsigned char i,n;
-	ModeControl_1=1;//切换为300M发射
-	tran_en=1;
+	transmiter_power=1;//切换为300M发射
+	transmiter_EN=1;
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_3;
@@ -207,7 +207,7 @@ void ComMode_3_Data()
 			Delay3(50);//延时要大于2ms
 		}
 	}
-	tran_en=0;
+	transmiter_EN=0;
 }
 
 /*--------------------------------------------------------
@@ -219,8 +219,8 @@ void ComMode_3_Data()
 void ComMode_4_Data()//发送抬起编码
 {
 	unsigned char i,n;
-	ModeControl_1=0;//切换为300M发射
-	tran_en=1;
+	transmiter_power=0;//切换为300M发射
+	transmiter_EN=1;
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_4;
@@ -250,7 +250,7 @@ void ComMode_4_Data()//发送抬起编码
 			Delay3(50);//延时要大于2ms
 		}
 	}
-	tran_en=0;
+	transmiter_EN=0;
 }
 
 /*-----------------------------------------------------------
@@ -262,8 +262,8 @@ void ComMode_4_Data()//发送抬起编码
 void ComMode_5_Data()//发送倒地编码
 {
 	unsigned char i,n;
-	ModeControl_1=0;//切换为300M发射
-	tran_en=1;      //打开无线发射机
+	transmiter_power=0;//切换为300M发射
+	transmiter_EN=1;      //打开无线发射机
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_5;
@@ -293,7 +293,7 @@ void ComMode_5_Data()//发送倒地编码
 			Delay3(50);//延时要大于2ms
 		}
 	}
-	tran_en=0;
+	transmiter_EN=0;
 }
 
 /*---------------------------------------------------

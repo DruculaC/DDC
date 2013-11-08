@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   MAIN                                                                  11/02/2013 10:00:20 PAGE 1   
+C51 COMPILER V9.51   MAIN                                                                  11/04/2013 10:31:59 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE MAIN
@@ -42,141 +42,139 @@ line level    source
   33          bit magnet_ACW_flag=0;
   34          tByte slave_nearby_speech_count=0;
   35          tByte slave_away_speech_count=0;
-  36          bit key_rotated_on_flag=0;    //电动车开启关闭标志位，1表示电动车开启了，0表示电动车关闭了
+  36          bit key_rotated_on_flag=0;       //电动车开启关闭标志位，1表示电动车开启了，0表示电动车关闭了
   37          tWord ADC_check_result = 0;      //作为AD检测值
   38          
   39          void main()
   40          {
   41   1         InitTimer(1,100);
   42   1         
-  43   1         SensorControl=0;       //上电关闭传感器
+  43   1         sensor_EN=0;
   44   1      
   45   1         noVoice();
   46   1         myPwm(); //开发射机
   47   1      
-  48   1         PAshutdown=0;     //将功放关闭
+  48   1         voice_EN=0;    //将功放关闭
   49   1      
-  50   1         upSignal=1;
-  51   1         downSignal=1;
+  50   1         raised_sensor_detect=1;
+  51   1         fell_sensor_detect=1;
   52   1      
   53   1         P10=1;
   54   1      
-  55   1         BatteryControl=0; //附机上电的时候置0，即可以充电，电池在没有充满的情况下为低电平
-C51 COMPILER V9.51   MAIN                                                                  11/02/2013 10:00:20 PAGE 2   
+  55   1         transmiter_power=0; //发射机模式控制端,开机时为30M模式
+C51 COMPILER V9.51   MAIN                                                                  11/04/2013 10:31:59 PAGE 2   
 
-  56   1      
-  57   1         ModeControl_1=0; //发射机模式控制端,开机时为30M模式
-  58   1         
-  59   1         magnet_ACW_flag=0;
-  60   1      
-  61   1         comm_whole_control=1; //开启通信
-  62   1         tran_en=0;   //关闭无线发射机
-  63   1      
-  64   1         position_sensor_EN=1;
-  65   1         key_rotate = 1;
-  66   1      
-  67   1         while(1)
-  68   1         {
-  69   2            if((key_rotate==1)&&(key_rotated_on_flag==0))         //开车转动钥匙时，执行一次电量转换
-  70   2            {
-  71   3               Delay(30);
-  72   3               if(key_rotate==1)
-  73   3               {
-  74   4                  verifybattery(ADC_check_result);
-  75   4                  key_rotate_on_speech();
-  76   4                  key_rotated_on_flag=1;
-  77   4               }
-  78   3            }
-  79   2            
-  80   2            if((key_rotate==0)&&(key_rotated_on_flag==1))
-  81   2            {
-  82   3               Delay(30);
-  83   3               if(key_rotate==0)
-  84   3               {
-  85   4                  verifybattery(ADC_check_result);
-  86   4                  if((ADC_check_result<0x300))                   //小于38V报警，小于5公里了
-  87   4                     {
-  88   5                     motorBAT_low_speech();
-  89   5                     }
-  90   4                     
-  91   4                  key_rotate_off_speech();
-  92   4                  key_rotated_on_flag=0;
-  93   4               }
-  94   3            }
-  95   2      
-  96   2            if(battery_check==1)
-  97   2            {
-  98   3               ADC_check_result=GetADCResult(6);   //电池电量检测
-  99   3               battery_check=0;  
- 100   3            }
- 101   2      
- 102   2            if(magnet_CW_EN==1)
- 103   2            {
- 104   3               if(magnet_ACW_flag==1)
- 105   3               {
- 106   4                  magnet_CW();
- 107   4                  magnet_ACW_flag=0;
- 108   4               }
- 109   3               magnet_CW_EN=0;
- 110   3            }
- 111   2      
- 112   2            if(magnet_ACW_EN==1)
- 113   2            {
- 114   3               if(magnet_ACW_flag==0)
- 115   3               {
- 116   4                  magnet_ACW();
- 117   4                  magnet_ACW_flag=1;
-C51 COMPILER V9.51   MAIN                                                                  11/02/2013 10:00:20 PAGE 3   
+  56   1         
+  57   1         magnet_ACW_flag=0;
+  58   1      
+  59   1         comm_whole_control=1; //开启通信
+  60   1         transmiter_EN=0;
+  61   1      
+  62   1         position_sensor_EN=1;
+  63   1         key_rotate = 1;
+  64   1      
+  65   1         while(1)
+  66   1         {
+  67   2            if((key_rotate==1)&&(key_rotated_on_flag==0))         //开车转动钥匙时，执行一次电量转换
+  68   2            {
+  69   3               Delay(30);
+  70   3               if(key_rotate==1)
+  71   3               {
+  72   4                  verifybattery(ADC_check_result);
+  73   4                  key_rotate_on_speech();
+  74   4                  key_rotated_on_flag=1;
+  75   4               }
+  76   3            }
+  77   2            
+  78   2            if((key_rotate==0)&&(key_rotated_on_flag==1))
+  79   2            {
+  80   3               Delay(30);
+  81   3               if(key_rotate==0)
+  82   3               {
+  83   4                  verifybattery(ADC_check_result);
+  84   4                  if((ADC_check_result<0x300))                   //小于38V报警，小于5公里了
+  85   4                     {
+  86   5                     motorBAT_low_speech();
+  87   5                     }
+  88   4                     
+  89   4                  key_rotate_off_speech();
+  90   4                  key_rotated_on_flag=0;
+  91   4               }
+  92   3            }
+  93   2      
+  94   2            if(battery_check==1)
+  95   2            {
+  96   3               ADC_check_result=GetADCResult(6);   //电池电量检测
+  97   3               battery_check=0;  
+  98   3            }
+  99   2      
+ 100   2            if(magnet_CW_EN==1)
+ 101   2            {
+ 102   3               if(magnet_ACW_flag==1)
+ 103   3               {
+ 104   4                  magnet_CW();
+ 105   4                  magnet_ACW_flag=0;
+ 106   4               }
+ 107   3               magnet_CW_EN=0;
+ 108   3            }
+ 109   2      
+ 110   2            if(magnet_ACW_EN==1)
+ 111   2            {
+ 112   3               if(magnet_ACW_flag==0)
+ 113   3               {
+ 114   4                  magnet_ACW();
+ 115   4                  magnet_ACW_flag=1;
+ 116   4               }
+ 117   3               magnet_ACW_EN=0;
+C51 COMPILER V9.51   MAIN                                                                  11/04/2013 10:31:59 PAGE 3   
 
- 118   4               }
- 119   3               magnet_ACW_EN=0;
- 120   3            }
- 121   2      
- 122   2            if((host_stolen_speech_EN==1)&&(host_stolen_speech_count<4))
- 123   2            {
- 124   3               if((upSignal==1)&&(downSignal==1))
- 125   3                  {
- 126   4                  stolen_alarm_speech();
- 127   4                  }
- 128   3               host_stolen_speech_count++;
- 129   3               if(host_stolen_speech_count==4)
- 130   3               {
- 131   4                  host_stolen_speech_count=0;
- 132   4                  host_stolen_speech_EN=0;
- 133   4                  stolen_alarm_flag=0;
- 134   4               }
- 135   3            }
- 136   2      
- 137   2            if((slave_nearby_speech_EN==1)&&(slave_nearby_speech_count<1))
- 138   2            {
- 139   3                  slave_away_speech_EN=0;
- 140   3                  slave_away_speech_count=0;
- 141   3                  slave_nearby_speech();
- 142   3                  slave_nearby_speech_count++;
- 143   3            }
- 144   2      
- 145   2            if((slave_away_speech_EN==1)&&(slave_away_speech_count<1))
- 146   2            {
- 147   3                  slave_nearby_speech_EN=0;
- 148   3                  slave_nearby_speech_count=0;
+ 118   3            }
+ 119   2      
+ 120   2            if((host_stolen_speech_EN==1)&&(host_stolen_speech_count<4))
+ 121   2            {
+ 122   3               if((raised_sensor_detect==1)&&(fell_sensor_detect==1))
+ 123   3                  {
+ 124   4                  stolen_alarm_speech();
+ 125   4                  }
+ 126   3               host_stolen_speech_count++;
+ 127   3               if(host_stolen_speech_count==4)
+ 128   3               {
+ 129   4                  host_stolen_speech_count=0;
+ 130   4                  host_stolen_speech_EN=0;
+ 131   4                  stolen_alarm_flag=0;
+ 132   4               }
+ 133   3            }
+ 134   2      
+ 135   2            if((slave_nearby_speech_EN==1)&&(slave_nearby_speech_count<1))
+ 136   2            {
+ 137   3                  slave_away_speech_EN=0;
+ 138   3                  slave_away_speech_count=0;
+ 139   3                  slave_nearby_speech();
+ 140   3                  slave_nearby_speech_count++;
+ 141   3            }
+ 142   2      
+ 143   2            if((slave_away_speech_EN==1)&&(slave_away_speech_count<1))
+ 144   2            {
+ 145   3                  slave_nearby_speech_EN=0;
+ 146   3                  slave_nearby_speech_count=0;
+ 147   3                  
+ 148   3                  slave_away_speech();
  149   3                  
- 150   3                  slave_away_speech();
- 151   3                  
- 152   3                  slave_away_speech_count++;
- 153   3                  SensorControl=1;  //开启三轴传感器
- 154   3            }
- 155   2         }
- 156   1      }
+ 150   3                  slave_away_speech_count++;
+ 151   3                  sensor_EN=1;   //开启三轴传感器
+ 152   3            }
+ 153   2         }
+ 154   1      }
+ 155          
+ 156          
  157          
- 158          
- 159          
- 160          /*---------------------------------------------------
- 161             end of file
- 162          ----------------------------------------------------*/
+ 158          /*---------------------------------------------------
+ 159             end of file
+ 160          ----------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    241    ----
+   CODE SIZE        =    239    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

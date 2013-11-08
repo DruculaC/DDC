@@ -40,26 +40,24 @@ void main()
 {
 	InitTimer(1,100);
 	
-	SensorControl=0;		  //上电关闭传感器
+	sensor_EN=0;
 
 	noVoice();
 	myPwm();	//开发射机
 
-	PAshutdown=0;		//将功放关闭
+	voice_EN=0;		//将功放关闭
 
-	upSignal=1;
-	downSignal=1;
+	raised_sensor_detect=1;
+	fell_sensor_detect=1;
 
 	P10=1;
 
-	BatteryControl=0;	//附机上电的时候置0，即可以充电，电池在没有充满的情况下为低电平
-
-	ModeControl_1=0; //发射机模式控制端,开机时为30M模式
+	transmiter_power=0; //发射机模式控制端,开机时为30M模式
 	
 	magnet_ACW_flag=0;
 
 	comm_whole_control=1; //开启通信
-	tran_en=0;   //关闭无线发射机
+	transmiter_EN=0;
 
 	position_sensor_EN=1;
 	key_rotate = 1;
@@ -121,7 +119,7 @@ void main()
 
 		if((host_stolen_speech_EN==1)&&(host_stolen_speech_count<4))
 		{
-			if((upSignal==1)&&(downSignal==1))
+			if((raised_sensor_detect==1)&&(fell_sensor_detect==1))
 				{
 				stolen_alarm_speech();
 				}
@@ -150,7 +148,7 @@ void main()
 				slave_away_speech();
 				
 				slave_away_speech_count++;
-				SensorControl=1;	//开启三轴传感器
+				sensor_EN=1;	//开启三轴传感器
 		}
 	}
 }

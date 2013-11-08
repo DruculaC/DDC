@@ -88,10 +88,10 @@ void noVoice()
 -----------------------------------------------------*/
 void key_rotate_on_speech(void)
 	{
-	PAshutdown=1;
+	voice_EN=1;
 	SC_Speech(7);  
 	Delay(160);
-	PAshutdown=0;
+	voice_EN=0;
 	}
 	
 /*-----------------------------------------------------
@@ -100,10 +100,10 @@ void key_rotate_on_speech(void)
 ------------------------------------------------------*/
 void key_rotate_off_speech(void)
 	{
-	PAshutdown=1;
+	voice_EN=1;
 	SC_Speech(9);
 	Delay(130);
-	PAshutdown=0;
+	voice_EN=0;
 	}
 
 /*----------------------------------------------------
@@ -112,10 +112,10 @@ void key_rotate_off_speech(void)
 -----------------------------------------------------*/
 void motorBAT_low_speech(void)
 	{
-	PAshutdown=1;
+	voice_EN=1;
 	SC_Speech(10);
 	Delay(100);
-	PAshutdown=0;
+	voice_EN=0;
 	}
 	
 /*----------------------------------------------------
@@ -124,14 +124,14 @@ void motorBAT_low_speech(void)
 ----------------------------------------------------*/
 void stolen_alarm_speech(void)
 	{
-	PAshutdown=1;
+	voice_EN=1;
 	SC_Speech(22); 
 	ComMode_3_Data();
 	Delay(100);
 	SC_Speech(23); 
 	ComMode_3_Data();
 	Delay(60);
-	PAshutdown=0; 
+	voice_EN=0; 
 	}
 
 /*----------------------------------------------------
@@ -141,10 +141,10 @@ void stolen_alarm_speech(void)
 -----------------------------------------------------*/
 void slave_nearby_speech(void)
 	{
-	PAshutdown=1;
+	voice_EN=1;
 	SC_Speech(11); 
 	Delay(150);
-	PAshutdown=0;
+	voice_EN=0;
 	}
 
 /*----------------------------------------------------
@@ -154,12 +154,12 @@ void slave_nearby_speech(void)
 -----------------------------------------------------*/
 void slave_away_speech(void)
 	{
-	PAshutdown=1;
+	voice_EN=1;
 	SC_Speech(12);  
 	Delay(80);
 	SC_Speech(13);
 	Delay(80);
-	PAshutdown=0;
+	voice_EN=0;
 	}
 
 /*----------------------------------------------------
@@ -168,10 +168,10 @@ void slave_away_speech(void)
 --------------------------------------------------------*/
 void host_touch_speech(void)
 	{
-	PAshutdown=1;
+	voice_EN=1;
 	SC_Speech2(17);  //πÿª˙”Ô—‘Ã·–—
 	Delay(80);
-	PAshutdown=0;
+	voice_EN=0;
 	}
 /*---------------------------------------------------
 	end of file

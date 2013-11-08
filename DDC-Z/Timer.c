@@ -101,9 +101,9 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 		}
 	}
 
-	if(SensorControl==1)	//检测三轴传感器是否打开，并且还没有报警
+	if(sensor_EN==1)	//检测三轴传感器是否打开，并且还没有报警
 	{
-		if((ReceWave==1)&&(stolen_alarm_flag==0))
+		if((sensor_detect==1)&&(stolen_alarm_flag==0))
 		{
 			sensor_1ststage_count++;
 			if(sensor_1ststage_count>=8)				 //每1ms检测一次高电平，如果大于了6ms的高定平，说明有人碰了一下
@@ -137,7 +137,7 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 	{
 		if((host_touch_speech_count<1)&&(host_stolen_speech_EN!=1))
 		{
-			if((downSignal==1)&&(upSignal==1))
+			if((fell_sensor_detect==1)&&(raised_sensor_detect==1))
 			{
 				host_touch_speech();
 				host_touch_speech_count++;
@@ -148,7 +148,7 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 	{
 		if(sensor_2ndstage_time>=3000)
 		{
-			if(ReceWave==1)
+			if(sensor_detect==1)
 			{
 				sensor_2ndstage_LV_time++;
 				if(sensor_2ndstage_LV_time>=6)	
@@ -169,7 +169,7 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 //	检测倒地和抬起检测的代码
 	if(position_sensor_EN==1)//开启了抬起倒地检测
 	{
-		if(upSignal==0)//说明有抬起信号并且是第一次，开始计时
+		if(raised_sensor_detect==0)//说明有抬起信号并且是第一次，开始计时
 		{
 			raise_wire_time++;
 			if(raise_wire_time==10)//说明已经大于0.5S
@@ -185,7 +185,7 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 			raise_wire_time=0;
 		}
 
-		if(downSignal==0)
+		if(fell_sensor_detect==0)
 		{
 			fell_wire_time++;
 			if(fell_wire_time==10)//说明已经大于0.5S
@@ -301,7 +301,7 @@ void timerT1() interrupt interrupt_timer_1_overflow
 				slave_nearby_speech_EN=1;		//编码1后报一句语音
 
 
-				SensorControl=0;	//三轴传感器
+				sensor_EN=0;	//三轴传感器
 				position_sensor_EN=0; 		//关倒地、抬起检测
 				fell_flag=0;
 				raised_flag=0;
