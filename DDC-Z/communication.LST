@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   COMMUNICATION                                                         11/04/2013 10:31:59 PAGE 1   
+C51 COMPILER V9.51   COMMUNICATION                                                         11/14/2013 10:15:20 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE COMMUNICATION
@@ -62,7 +62,7 @@ line level    source
   53          /*----------------------------------------------------
   54             initsignal2()
   55             
-C51 COMPILER V9.51   COMMUNICATION                                                         11/04/2013 10:31:59 PAGE 2   
+C51 COMPILER V9.51   COMMUNICATION                                                         11/14/2013 10:15:20 PAGE 2   
 
   56             初始化信号程序，接收机在接接收信号的时候，需要有
   57             一段代码来使接收机打开，而这一段程序有可能无法识别
@@ -126,7 +126,7 @@ line level    source
  115   3               P10=1;//常态为高电平
  116   3               mystartbuffer<<=1;
  117   3               Delay3(150);//延时要大于2ms
-C51 COMPILER V9.51   COMMUNICATION                                                         11/04/2013 10:31:59 PAGE 3   
+C51 COMPILER V9.51   COMMUNICATION                                                         11/14/2013 10:15:20 PAGE 3   
 
  118   3            }
  119   2            mystartbuffer=0xaa;
@@ -190,7 +190,7 @@ line level    source
  177   1      // unsigned int j;
  178   1         unsigned char i,n;
  179   1         transmiter_power=1;//切换为300M发射
-C51 COMPILER V9.51   COMMUNICATION                                                         11/04/2013 10:31:59 PAGE 4   
+C51 COMPILER V9.51   COMMUNICATION                                                         11/14/2013 10:15:20 PAGE 4   
 
  180   1         transmiter_EN=1;
  181   1         myTxRxData[0]=CmdHead;
@@ -254,7 +254,7 @@ line level    source
  239   3               {
  240   4                  P10=0;
  241   4                  Delay3(120);//延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
-C51 COMPILER V9.51   COMMUNICATION                                                         11/04/2013 10:31:59 PAGE 5   
+C51 COMPILER V9.51   COMMUNICATION                                                         11/14/2013 10:15:20 PAGE 5   
 
  242   4               }
  243   3               else//为0的情况
@@ -318,7 +318,7 @@ line level    source
  301          ----------------------------------------------------*/
 
 
-C51 COMPILER V9.51   COMMUNICATION                                                         11/04/2013 10:31:59 PAGE 6   
+C51 COMPILER V9.51   COMMUNICATION                                                         11/14/2013 10:15:20 PAGE 6   
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =    554    ----

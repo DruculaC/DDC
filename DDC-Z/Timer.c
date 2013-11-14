@@ -103,7 +103,7 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 
 	if(sensor_EN==1)	//检测三轴传感器是否打开，并且还没有报警
 	{
-		if((sensor_detect==1)&&(stolen_alarm_flag==0))
+		if((sensor_detect==0)&&(stolen_alarm_flag==0))
 		{
 			sensor_1ststage_count++;
 			if(sensor_1ststage_count>=8)				 //每1ms检测一次高电平，如果大于了6ms的高定平，说明有人碰了一下
@@ -148,7 +148,7 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 	{
 		if(sensor_2ndstage_time>=3000)
 		{
-			if(sensor_detect==1)
+			if(sensor_detect==0)
 			{
 				sensor_2ndstage_LV_time++;
 				if(sensor_2ndstage_LV_time>=6)	

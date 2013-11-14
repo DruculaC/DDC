@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   VOICE                                                                 11/01/2013 17:05:51 PAGE 1   
+C51 COMPILER V9.51   VOICE                                                                 11/14/2013 10:54:21 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE VOICE
@@ -62,7 +62,7 @@ line level    source
   53             被盗之后的报警语音，附机接收到主机的被盗信号，发出语音提示
   54          ---------------------------------------------------------------*/
   55          void Alarm_stolen_speech(void)
-C51 COMPILER V9.51   VOICE                                                                 11/01/2013 17:05:51 PAGE 2   
+C51 COMPILER V9.51   VOICE                                                                 11/14/2013 10:54:21 PAGE 2   
 
   56             {
   57   1         Voice_EN = 1;
@@ -126,7 +126,7 @@ line level    source
  115          /*---------------------------------------------------------------
  116             Host_battery_high_alarm_speech()
  117             当主机电充满后，发送信号给附机，附机收到后，语音提示主机充满电
-C51 COMPILER V9.51   VOICE                                                                 11/01/2013 17:05:51 PAGE 3   
+C51 COMPILER V9.51   VOICE                                                                 11/14/2013 10:54:21 PAGE 3   
 
  118             了。
  119          ---------------------------------------------------------------*/

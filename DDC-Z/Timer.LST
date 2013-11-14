@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   TIMER                                                                 11/04/2013 10:31:59 PAGE 1   
+C51 COMPILER V9.51   TIMER                                                                 11/14/2013 10:15:20 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE TIMER
@@ -62,7 +62,7 @@ line level    source
   50          tByte raise_wire_time=0;         //抬起检测线，检测低电平的时间
   51          tByte sensor_2ndstage_LV_time=0;    //传感器进入第二阶段检测时，计算低电平的时间
   52          
-C51 COMPILER V9.51   TIMER                                                                 11/04/2013 10:31:59 PAGE 2   
+C51 COMPILER V9.51   TIMER                                                                 11/14/2013 10:15:20 PAGE 2   
 
   53          
   54          /*------------------------------------------------------------------
@@ -118,7 +118,7 @@ line level    source
  103   1      
  104   1         if(sensor_EN==1)  //检测三轴传感器是否打开，并且还没有报警
  105   1         {
- 106   2            if((sensor_detect==1)&&(stolen_alarm_flag==0))
+ 106   2            if((sensor_detect==0)&&(stolen_alarm_flag==0))
  107   2            {
  108   3               sensor_1ststage_count++;
  109   3               if(sensor_1ststage_count>=8)            //每1ms检测一次高电平，如果大于了6ms的高定平，说明有人碰了一下
@@ -126,7 +126,7 @@ line level    source
  111   4                  sensor_1ststage_count=0;
  112   4                  sensor_trigger_count++;
  113   4                  host_touch_speech_count=0;
-C51 COMPILER V9.51   TIMER                                                                 11/04/2013 10:31:59 PAGE 3   
+C51 COMPILER V9.51   TIMER                                                                 11/14/2013 10:15:20 PAGE 3   
 
  114   4                  host_touched_flag=1;
  115   4               }
@@ -165,7 +165,7 @@ line level    source
  148   1         {
  149   2            if(sensor_2ndstage_time>=3000)
  150   2            {
- 151   3               if(sensor_detect==1)
+ 151   3               if(sensor_detect==0)
  152   3               {
  153   4                  sensor_2ndstage_LV_time++;
  154   4                  if(sensor_2ndstage_LV_time>=6)   
@@ -190,7 +190,7 @@ line level    source
  173   2            {
  174   3               raise_wire_time++;
  175   3               if(raise_wire_time==10)//说明已经大于0.5S
-C51 COMPILER V9.51   TIMER                                                                 11/04/2013 10:31:59 PAGE 4   
+C51 COMPILER V9.51   TIMER                                                                 11/14/2013 10:15:20 PAGE 4   
 
  176   3               {
  177   4                  raised_flag=1;//置抬起标志
@@ -254,7 +254,7 @@ line level    source
  235   4                  one_receive_byte<<=1;
  236   4                  one_receive_byte &= 0xfe;
  237   4                  one_receive_byte_count++;
-C51 COMPILER V9.51   TIMER                                                                 11/04/2013 10:31:59 PAGE 5   
+C51 COMPILER V9.51   TIMER                                                                 11/14/2013 10:15:20 PAGE 5   
 
  238   4                  receive_HV_count=0;
  239   4               }
@@ -318,7 +318,7 @@ line level    source
  296   3               {
  297   4                  stolen_alarm_flag=0;
  298   4                  
-C51 COMPILER V9.51   TIMER                                                                 11/04/2013 10:31:59 PAGE 6   
+C51 COMPILER V9.51   TIMER                                                                 11/14/2013 10:15:20 PAGE 6   
 
  299   4                  ComMode_1_Data();    //向附机发送编码3
  300   4      
@@ -382,7 +382,7 @@ line level    source
  358   1         ET0 = 1;
  359   1         TR0 = 1;
  360   1         ET1 = 1;
-C51 COMPILER V9.51   TIMER                                                                 11/04/2013 10:31:59 PAGE 7   
+C51 COMPILER V9.51   TIMER                                                                 11/14/2013 10:15:20 PAGE 7   
 
  361   1         TR1 = 1;
  362   1         PT1 = 1;       

@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22                                                        11/04/2013  10:31:59  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22                                                        11/14/2013  10:15:20  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
@@ -59,7 +59,7 @@ LINK MAP OF MODULE:  DDC-Z (?C_STARTUP)
             CODE    05D7H     0077H     UNIT         ?C_INITSEG
             CODE    064EH     0074H     UNIT         ?PR?_GETADCRESULT?AD
             CODE    06C2H     0072H     UNIT         ?PR?_INITTIMER?TIMER
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 2
 
 
             CODE    0734H     0059H     UNIT         ?PR?COMMODE_1_DATA?COMMUNICATION
@@ -119,7 +119,7 @@ SEGMENT                                    DATA_GROUP
 
 ?PR?_INITTIMER?TIMER                     0008H    000AH
 
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 3
 
 
 ?PR?NOVOICE?VOICE                        -----    -----
@@ -179,7 +179,7 @@ SEGMENT                                    DATA_GROUP
 
 ?PR?TIMER0?TIMER                         -----    -----
   +--> ?PR?COMMODE_5_DATA?COMMUNICATION
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 4
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 4
 
 
   +--> ?PR?COMMODE_4_DATA?COMMUNICATION
@@ -239,7 +239,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   N:0100H         SYMBOL        PBPSTACKTOP
   N:0000H         SYMBOL        PDATALEN
   N:0000H         SYMBOL        PDATASTART
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 5
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 5
 
 
   N:0000H         SYMBOL        PPAGE
@@ -299,7 +299,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   C:0655H         LINE#         23
   C:0655H         LINE#         24
   C:0658H         LINE#         26
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 6
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 6
 
 
   C:065AH         LINE#         27
@@ -359,7 +359,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   D:00D5H         PUBLIC        PWM2H
   D:00D6H         PUBLIC        PWM3H
   D:00DAH         PUBLIC        PWM0L
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 7
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 7
 
 
   D:00DBH         PUBLIC        PWM1L
@@ -419,7 +419,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   D:00A0H         PUBLIC        P2
   D:00B0H         PUBLIC        P3
   C:09DDH         PUBLIC        _SC_Speech2
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 8
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 8
 
 
   B:0090H.4       PUBLIC        voice_EN
@@ -479,7 +479,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   C:09F1H         LINE#         57
   C:09FBH         LINE#         58
   C:09FBH         LINE#         59
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 9
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 9
 
 
   C:09FDH         LINE#         61
@@ -539,7 +539,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   C:0A2BH         LINE#         133
   C:0A32H         LINE#         134
   C:0A34H         LINE#         135
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 10
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 10
 
 
   -------         ENDPROC       STOLEN_ALARM_SPEECH
@@ -599,7 +599,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   B:0080H.4       PUBLIC        raised_sensor_detect
   D:00F8H         PUBLIC        ADCCON0
   D:00C0H         PUBLIC        I2CON
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 11
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 11
 
 
   B:0021H.6       PUBLIC        key_rotated_on_flag
@@ -659,7 +659,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   C:0444H         LINE#         101
   C:0444H         LINE#         102
   C:0447H         LINE#         103
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 12
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 12
 
 
   C:0447H         LINE#         104
@@ -719,7 +719,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   D:00B8H         PUBLIC        IP
   C:0AA6H         PUBLIC        _Delay3
   C:0ABEH         PUBLIC        _Delay4
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 13
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 13
 
 
   D:00D8H         PUBLIC        WDCON0
@@ -779,7 +779,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   C:0A35H         LINE#         59
   C:0A35H         LINE#         60
   C:0A35H         LINE#         63
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 14
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 14
 
 
   C:0A3FH         LINE#         64
@@ -839,7 +839,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   C:08E2H         LINE#         25
   C:08E2H         LINE#         26
   C:08E2H         LINE#         28
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 15
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 15
 
 
   C:08E5H         LINE#         29
@@ -899,7 +899,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   -------         ENDPROC       INITSIGNAL2
   -------         PROC          INITSIGNAL3
   -------         DO            
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 16
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 16
 
 
   D:0014H         SYMBOL        k
@@ -959,7 +959,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   C:075BH         LINE#         159
   C:0762H         LINE#         160
   C:0762H         LINE#         161
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 17
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 17
 
 
   C:0764H         LINE#         162
@@ -1019,7 +1019,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   C:07F6H         LINE#         234
   C:07F9H         LINE#         235
   C:07F9H         LINE#         236
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 18
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 18
 
 
   C:07FCH         LINE#         237
@@ -1079,7 +1079,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   -------         MODULE        BATTERY
   C:0000H         SYMBOL        _ICE_DUMMY_
   D:0080H         PUBLIC        P0
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 19
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 19
 
 
   D:0090H         PUBLIC        P1
@@ -1139,7 +1139,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   C:054AH         LINE#         60
   -------         ENDPROC       _VERIFYBATTERY
   -------         ENDMOD        BATTERY
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 20
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 20
 
 
 
@@ -1199,7 +1199,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   B:0020H.2       PUBLIC        stolen_alarm_flag
   B:0020H.3       PUBLIC        host_stolen_speech_EN
   D:00A8H         PUBLIC        IE
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 21
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 21
 
 
   D:0023H         PUBLIC        host_touched_flag
@@ -1259,7 +1259,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   B:0021H.4       PUBLIC        raised_flag
   D:0042H         PUBLIC        raised_alarm_count
   D:00D0H         PUBLIC        PSW
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 22
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 22
 
 
   B:0080H.7       PUBLIC        sensor_detect
@@ -1319,7 +1319,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   C:00C6H         LINE#         125
   C:00CFH         LINE#         126
   C:00CFH         LINE#         127
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 23
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 23
 
 
   C:00D2H         LINE#         128
@@ -1379,7 +1379,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   C:0140H         LINE#         189
   C:0140H         LINE#         190
   C:0142H         LINE#         191
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 24
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 24
 
 
   C:0147H         LINE#         192
@@ -1439,7 +1439,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   C:0336H         LINE#         261
   C:0338H         LINE#         262
   C:033BH         LINE#         263
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 25
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 25
 
 
   C:033BH         LINE#         264
@@ -1499,7 +1499,7 @@ SYMBOL TABLE OF MODULE:  DDC-Z (?C_STARTUP)
   -------         ENDPROC       TIMERT1
   -------         PROC          _INITTIMER
   D:0007H         SYMBOL        Tick_ms_T0
-BL51 BANKED LINKER/LOCATER V6.22                                                      11/04/2013  10:31:59  PAGE 26
+BL51 BANKED LINKER/LOCATER V6.22                                                      11/14/2013  10:15:20  PAGE 26
 
 
   D:0008H         SYMBOL        Tick_us_T1
