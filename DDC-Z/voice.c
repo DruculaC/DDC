@@ -89,8 +89,8 @@ void noVoice()
 void key_rotate_on_speech(void)
 	{
 	voice_EN=1;
-	SC_Speech(7);  
-	Delay(160);
+	SC_Speech(18);  
+	Delay(100);
 	voice_EN=0;
 	}
 	
@@ -101,8 +101,8 @@ void key_rotate_on_speech(void)
 void key_rotate_off_speech(void)
 	{
 	voice_EN=1;
-	SC_Speech(9);
-	Delay(130);
+	SC_Speech(22);
+	Delay(80);
 	voice_EN=0;
 	}
 
@@ -113,8 +113,8 @@ void key_rotate_off_speech(void)
 void motorBAT_low_speech(void)
 	{
 	voice_EN=1;
-	SC_Speech(10);
-	Delay(100);
+	SC_Speech(8);
+	Delay(80);
 	voice_EN=0;
 	}
 	
@@ -125,10 +125,10 @@ void motorBAT_low_speech(void)
 void stolen_alarm_speech(void)
 	{
 	voice_EN=1;
-	SC_Speech(22); 
+	SC_Speech(27); 
 	ComMode_3_Data();
-	Delay(100);
-	SC_Speech(23); 
+	Delay(120);
+	SC_Speech(31); 
 	ComMode_3_Data();
 	Delay(60);
 	voice_EN=0; 
@@ -142,7 +142,7 @@ void stolen_alarm_speech(void)
 void slave_nearby_speech(void)
 	{
 	voice_EN=1;
-	SC_Speech(11); 
+	SC_Speech(21); 
 	Delay(150);
 	voice_EN=0;
 	}
@@ -155,9 +155,7 @@ void slave_nearby_speech(void)
 void slave_away_speech(void)
 	{
 	voice_EN=1;
-	SC_Speech(12);  
-	Delay(80);
-	SC_Speech(13);
+	SC_Speech(22);  
 	Delay(80);
 	voice_EN=0;
 	}
@@ -169,8 +167,8 @@ void slave_away_speech(void)
 void host_touch_speech(void)
 	{
 	voice_EN=1;
-	SC_Speech2(17);  //πÿª˙”Ô—‘Ã·–—
-	Delay(80);
+	SC_Speech2(2);  
+	Delay(60);
 	voice_EN=0;
 	}
 /*---------------------------------------------------

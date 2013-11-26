@@ -69,15 +69,17 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 		{
 			leave_count++;
 
-			if(leave_count>=4&&slave_away==0)//说明没有接收到数据已经有3次了，附机已经出了3M，现在就要加大功率，切换到模式2,30M再看能不能接收到数据
+			if((leave_count>=4&&slave_away==0))
 			{
 				leave_count=5;
-
-				magnet_CW_EN=1;		 	//电磁铁锁上
-				slave_away_speech_EN=1;		//报附机离开语音
 				
-				position_sensor_EN=1;		//开启倒地、抬起标志
-				slave_away=1;
+				if(key_rotate==0)
+					{
+						magnet_CW_EN=1;		 	//电磁铁锁上
+						slave_away_speech_EN=1;		//报附机离开语音
+						position_sensor_EN=1;		//开启倒地、抬起标志
+						slave_away=1;
+					}
 
 				sensor_trigger_count=0;
 				sensor_1ststage_count=0;
@@ -106,7 +108,7 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 		if((sensor_detect==0)&&(stolen_alarm_flag==0))
 		{
 			sensor_1ststage_count++;
-			if(sensor_1ststage_count>=8)				 //每1ms检测一次高电平，如果大于了6ms的高定平，说明有人碰了一下
+			if(sensor_1ststage_count>=2)				 //每1ms检测一次高电平，如果大于了6ms的高定平，说明有人碰了一下
 			{
 				sensor_1ststage_count=0;
 				sensor_trigger_count++;
@@ -146,12 +148,12 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 	}
 	else
 	{
-		if(sensor_2ndstage_time>=3000)
+		if(sensor_2ndstage_time>=300)
 		{
 			if(sensor_detect==0)
 			{
 				sensor_2ndstage_LV_time++;
-				if(sensor_2ndstage_LV_time>=6)	
+				if(sensor_2ndstage_LV_time>=2)	
 				{
 					host_stolen_speech_EN=1;
 					host_stolen_speech_count=0;
@@ -303,7 +305,7 @@ void timerT1() interrupt interrupt_timer_1_overflow
 
 				sensor_EN=0;	//三轴传感器
 				position_sensor_EN=0; 		//关倒地、抬起检测
-				fell_flag=0;
+				fell_flag=0;  
 				raised_flag=0;
 				magnet_ACW_EN=1;			//打开电磁铁
 				

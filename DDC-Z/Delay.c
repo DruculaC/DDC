@@ -34,7 +34,7 @@ void Delay3(unsigned int t)
 	tWord i;
 	tByte j;
 	for(i=0;i<t;i++)		
-	for(j=0;j<19;j++);
+	for(j=0;j<21;j++);
 }
 
 /*---------------------------------------------------
@@ -42,12 +42,12 @@ void Delay3(unsigned int t)
 	ÑÓ³Ù³ÌÐò
 --------------------------------------------------*/
 
-void Delay4(unsigned int t)
+void Delay4(tWord t)
 {
 	tWord i;
 	tByte j;
 	for(i=0;i<t;i++)		
-	for(j=0;j<26;j++);
+	for(j=0;j<34;j++);
 }
 	
 /*--------------------------------------------------

@@ -56,11 +56,9 @@ void Alarm_stolen_speech(void)
 	{
 	Voice_EN = 1;
 	SC_Speech(5);
-	Delay(150);
-	SC_Speech(6);
-	Delay(80);
-	SC_Speech(7);
-	Delay(120);
+	Delay(100);
+	SC_Speech(12);
+	Delay(50);
 	Voice_EN = 0;
 	}
 	
@@ -71,8 +69,8 @@ void Alarm_stolen_speech(void)
 void Alarm_raised_speech(void)
 	{
 	Voice_EN = 1;
-	SC_Speech(4);
-	Delay(180);
+	SC_Speech(3);
+	Delay(140);
 	Voice_EN = 0;
 	}
 	
@@ -83,8 +81,8 @@ void Alarm_raised_speech(void)
 void Alarm_fell_speech(void)
 	{
 	Voice_EN = 1;
-	SC_Speech(8);
-	Delay(180);
+	SC_Speech(2);
+	Delay(120);
 	Voice_EN = 0;
 	}
 	
@@ -95,7 +93,7 @@ void Alarm_fell_speech(void)
 void Battery_low_alarm_speech(void)
 	{
 		Voice_EN = 1;
-		SC_Speech(9);
+		SC_Speech(10);
 		Delay(120);
 		Voice_EN = 0;
 	}
@@ -107,7 +105,7 @@ void Battery_low_alarm_speech(void)
 void Battery_high_alarm_speech(void)
 	{
 	Voice_EN = 1;
-	SC_Speech(2);
+	SC_Speech(7);
 	Delay(120);
 	Voice_EN = 0;
 	}
@@ -120,9 +118,7 @@ void Battery_high_alarm_speech(void)
 void Host_battery_high_alarm_speech(void)
 	{
 		Voice_EN = 1;
-		SC_Speech(2);  
-		Delay(80);
-		SC_Speech(3);  
+		SC_Speech(7);  
 		Delay(80);
 		Voice_EN = 0;
 	}

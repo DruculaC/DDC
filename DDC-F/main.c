@@ -78,12 +78,13 @@ void main(void)
 			ADC_check_result = GetADCResult(6);	//电池电量检测
 			battery_check = 0;
 			
-			if((battery_HV_flag == 1)&&(ADC_check_result <= 0x35a))
-			{
+//			if((battery_HV_flag == 1)&&(ADC_check_result <= 0x35a))
+			if((battery_HV_flag == 1)&&(ADC_check_result <= 0x333))
+         {
 				battery_HV_flag = 0;
 				Battery_low_alarm_speech();		//电量不足语音提示
 			}
-			else if((battery_HV_flag == 0)&&(ADC_check_result >= 0x377))
+			else if((battery_HV_flag == 0)&&(ADC_check_result >= 0x35a))
 			{
 				battery_HV_flag = 1;
 				Battery_high_alarm_speech();
@@ -92,7 +93,7 @@ void main(void)
 
 		if(transmit_comm1_flag == 1)
 		{
-			Receiver_EN = 0;		//打开接收机
+			Receiver_EN = 0;		//关闭接收机
 			ComMode_1_Data();	//发送模式1信号
 			Receiver_EN = 1;		//打开接收机
 			transmit_comm1_flag = 0;

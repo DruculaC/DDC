@@ -14,7 +14,7 @@
 #include <intrins.h>
 
 // oscillator / resonator frequency (in Hz)
-#define OSC_FREQ (13500000UL)
+#define OSC_FREQ (11059200UL)
 
 // number of oscillations per instruction (12, etc)
 // 12 - original 8051/8052 and numerous modern versions

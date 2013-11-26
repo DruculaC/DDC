@@ -16,7 +16,7 @@ sbit Receiver_EN = P1^3;
 
 //----- main.c ------ communication.c ----------------------------
 
-// P1.0，PIN18，发射信号的输出线
+// P1.0，PIN18，发射机使能，1打开发射机，0关闭发射机 
 sbit Transmitter_EN = P1^0;			
 
 // ----- Other.C -------------------------------------------------
@@ -37,7 +37,7 @@ sbit SC_DATA = P2^1;
 // P1.1，PIN17，接收信号的输入线
 sbit receive_wire = P1^1;
 
-// P2.7，PIN28，发射机使能，1打开发射机，0关闭发射机
+// P2.7，PIN28，   发射信号的输出线
 sbit transmit_wire = P2^7;
 
 #endif

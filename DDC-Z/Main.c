@@ -33,7 +33,7 @@ extern bit slave_nearby_speech_EN;       //ÅĞ¶Ï¸½½ü¿¿½üºó£¬ÓïÒôÌáÊ¾£¬ÔÚmainÀïÃæ²
 bit magnet_ACW_flag=0;
 tByte slave_nearby_speech_count=0;
 tByte slave_away_speech_count=0;
-bit key_rotated_on_flag=0;			//µç¶¯³µ¿ªÆô¹Ø±Õ±êÖ¾Î»£¬1±íÊ¾µç¶¯³µ¿ªÆôÁË£¬0±íÊ¾µç¶¯³µ¹Ø±ÕÁË
+tByte key_rotated_on_flag=0;			//µç¶¯³µ¿ªÆô¹Ø±Õ±êÖ¾Î»£¬1±íÊ¾µç¶¯³µ¿ªÆôÁË£¬0±íÊ¾µç¶¯³µ¹Ø±ÕÁË
 tWord ADC_check_result = 0;		//×÷ÎªAD¼ì²âÖµ
 
 void main()
@@ -60,29 +60,31 @@ void main()
 	transmiter_EN=0;
 
 	position_sensor_EN=1;
-	key_rotate = 1;
-
+   magnet_CW();
+//	P2M1 |= 0x10;
+//	P2M2 &= 0xef;
+	
 	while(1)
 	{
 		if((key_rotate==1)&&(key_rotated_on_flag==0))		   //¿ª³µ×ª¶¯Ô¿³×Ê±£¬Ö´ĞĞÒ»´ÎµçÁ¿×ª»»
 		{
-		 	Delay(30);
+		 	Delay(5);
 			if(key_rotate==1)
 			{
+				key_rotated_on_flag = 1;
+            key_rotate_on_speech();
 				verifybattery(ADC_check_result);
-				key_rotate_on_speech();
-            key_rotated_on_flag=1;
 			}
 		}
 		
 		if((key_rotate==0)&&(key_rotated_on_flag==1))
 		{
-		 	Delay(30);
+		 	Delay(5);
 			if(key_rotate==0)
 			{
 				verifybattery(ADC_check_result);
 				if((ADC_check_result<0x300))						  //Ğ¡ÓÚ38V±¨¾¯£¬Ğ¡ÓÚ5¹«ÀïÁË
-					{
+				{
 					motorBAT_low_speech();
 					}
 					

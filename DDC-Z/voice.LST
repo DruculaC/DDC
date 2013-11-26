@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   VOICE                                                                 11/14/2013 10:15:19 PAGE 1   
+C51 COMPILER V9.51   VOICE                                                                 11/26/2013 12:20:38 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE VOICE
@@ -62,7 +62,7 @@ line level    source
   53   1         SC_RST=0;
   54   1         delay_ms(40);
   55   1         SC_RST=1;
-C51 COMPILER V9.51   VOICE                                                                 11/14/2013 10:15:19 PAGE 2   
+C51 COMPILER V9.51   VOICE                                                                 11/26/2013 12:20:38 PAGE 2   
 
   56   1         delay_ms(40);
   57   1         for(i=0;i < cnt;i++)
@@ -100,8 +100,8 @@ line level    source
   89          void key_rotate_on_speech(void)
   90             {
   91   1         voice_EN=1;
-  92   1         SC_Speech(7);  
-  93   1         Delay(160);
+  92   1         SC_Speech(18);  
+  93   1         Delay(100);
   94   1         voice_EN=0;
   95   1         }
   96             
@@ -112,8 +112,8 @@ line level    source
  101          void key_rotate_off_speech(void)
  102             {
  103   1         voice_EN=1;
- 104   1         SC_Speech(9);
- 105   1         Delay(130);
+ 104   1         SC_Speech(22);
+ 105   1         Delay(80);
  106   1         voice_EN=0;
  107   1         }
  108          
@@ -124,9 +124,9 @@ line level    source
  113          void motorBAT_low_speech(void)
  114             {
  115   1         voice_EN=1;
- 116   1         SC_Speech(10);
- 117   1         Delay(100);
-C51 COMPILER V9.51   VOICE                                                                 11/14/2013 10:15:19 PAGE 3   
+ 116   1         SC_Speech(8);
+ 117   1         Delay(80);
+C51 COMPILER V9.51   VOICE                                                                 11/26/2013 12:20:38 PAGE 3   
 
  118   1         voice_EN=0;
  119   1         }
@@ -138,10 +138,10 @@ line level    source
  125          void stolen_alarm_speech(void)
  126             {
  127   1         voice_EN=1;
- 128   1         SC_Speech(22); 
+ 128   1         SC_Speech(27); 
  129   1         ComMode_3_Data();
- 130   1         Delay(100);
- 131   1         SC_Speech(23); 
+ 130   1         Delay(120);
+ 131   1         SC_Speech(31); 
  132   1         ComMode_3_Data();
  133   1         Delay(60);
  134   1         voice_EN=0; 
@@ -155,7 +155,7 @@ line level    source
  142          void slave_nearby_speech(void)
  143             {
  144   1         voice_EN=1;
- 145   1         SC_Speech(11); 
+ 145   1         SC_Speech(21); 
  146   1         Delay(150);
  147   1         voice_EN=0;
  148   1         }
@@ -168,33 +168,31 @@ line level    source
  155          void slave_away_speech(void)
  156             {
  157   1         voice_EN=1;
- 158   1         SC_Speech(12);  
+ 158   1         SC_Speech(22);  
  159   1         Delay(80);
- 160   1         SC_Speech(13);
- 161   1         Delay(80);
- 162   1         voice_EN=0;
- 163   1         }
- 164          
- 165          /*----------------------------------------------------
- 166             host_touch_speech()
- 167             第一次碰主机，会有一句提示语音
- 168          --------------------------------------------------------*/
- 169          void host_touch_speech(void)
- 170             {
- 171   1         voice_EN=1;
- 172   1         SC_Speech2(17);  //关机语言提醒
- 173   1         Delay(80);
- 174   1         voice_EN=0;
- 175   1         }
- 176          /*---------------------------------------------------
- 177             end of file
- 178          ----------------------------------------------------*/
-
-C51 COMPILER V9.51   VOICE                                                                 11/14/2013 10:15:19 PAGE 4   
+ 160   1         voice_EN=0;
+ 161   1         }
+ 162          
+ 163          /*----------------------------------------------------
+ 164             host_touch_speech()
+ 165             第一次碰主机，会有一句提示语音
+ 166          --------------------------------------------------------*/
+ 167          void host_touch_speech(void)
+ 168             {
+ 169   1         voice_EN=1;
+ 170   1         SC_Speech2(2);  
+ 171   1         Delay(60);
+ 172   1         voice_EN=0;
+ 173   1         }
+ 174          /*---------------------------------------------------
+ 175             end of file
+ 176          ----------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    280    ----
+C51 COMPILER V9.51   VOICE                                                                 11/26/2013 12:20:38 PAGE 4   
+
+   CODE SIZE        =    268    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
