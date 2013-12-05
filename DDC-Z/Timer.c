@@ -22,6 +22,10 @@ bit magnet_ACW_EN=0;						//电磁铁逆时针转动使能，转动一次后复位为0
 bit comm_whole_control=0;				//通信总开关，0关闭通信，1打开通信
 tWord host_stolen_speech_count=0;   //判断主机被盗后，语音提示的次数
 bit slave_nearby_speech_EN=0;       //判断附近靠近后，语音提示，在main里面操作
+bit host_stolen_alarm1_EN = 0;      //判断为被盗报警后的第一段语音使能
+bit host_stolen_alarm2_EN = 0;      //判断为被盗报警后的第二段语音使能
+tByte host_stolen_alarm1_count = 0;		//判断为被盗报警后的第一段语音次数
+tByte host_stolen_alarm2_count = 0;		//判断为被盗报警后的第二段语音次数
 
 // ------ Private variable definitions -----------------------------
 tByte timer0_8H, timer0_8L, timer1_8H, timer1_8L;	//定时器0和1的定时数据
@@ -29,7 +33,7 @@ tByte timer0_8H, timer0_8L, timer1_8H, timer1_8L;	//定时器0和1的定时数据
 tByte host_touch_speech_count=0;
 tByte sensor_trigger_count=0;	//传感器触发计数
 tByte host_touched_flag=0;			//主机被触碰后置1，进行后面的传感器判断
-tWord sensor_2ndstage_time=0;		//传感器第一阶段后流逝时间的计数
+tWord sensor_2ndstage_time=0;		//传感器进入第二阶段后流逝时间的计数
 tByte sensor_1ststage_count=0;	//传感器第一阶段判断低电平的计数
 tByte raised_alarm_count = 0;    //主机被抬起后，向附机发出报警信号的次数
 bit raised_flag=0;					//判断主机被抬起后，置1
@@ -49,7 +53,16 @@ tByte receive_LV_count = 0;		//每次timer1溢出时判断接收线如果为LV，则计数加1，以
 tByte fell_wire_time=0;          //倒地检测线，检测低电平的时间
 tByte raise_wire_time=0;			//抬起检测线，检测低电平的时间
 tByte sensor_2ndstage_LV_time=0; 	//传感器进入第二阶段检测时，计算低电平的时间
-
+tByte sensor_2ndstage_count = 0;		//传感器进入第二阶段检测时，计算低电平的时间
+tByte host_2ndtouch_speech_count = 0;		//主机被第二次触碰后，语音提示的次数
+tWord sensor_3rdstage_time = 0;			//传感器进入第三阶段的时间，
+tByte sensor_3rdstage_effcount = 0;		//传感器进入第三阶段后，有效触碰次数的计数
+tByte sensor_3rdstage_count = 0;			//传感器进入第三阶段后，低电平的计数
+tWord sensor_3rdstage_interval = 0;		//传感器在第三阶段中，每次有效低电平计数之间的时间间隔。在这期间的低电平不认为有效。
+bit host_touch_speech_EN = 0;				//第一次触碰后语音使能
+bit host_2ndtouch_speech_EN = 0;			//第二次触碰后语音使能
+bit raised_fell_flag = 0;					//倒地或者抬起触发后，此标志位置1
+tWord raised_fell_number = 0;				//倒地或者抬起出发后，计数，到达一定数值后，将其与标志位一起清零。
 
 /*------------------------------------------------------------------
 	timerT0()
@@ -73,9 +86,9 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 			{
 				leave_count=5;
 				
-				if(key_rotate==0)
+				if(key_rotate == 0)
 					{
-						magnet_CW_EN=1;		 	//电磁铁锁上
+						magnet_ACW_EN=1;		 	//电磁铁锁上
 						slave_away_speech_EN=1;		//报附机离开语音
 						position_sensor_EN=1;		//开启倒地、抬起标志
 						slave_away=1;
@@ -97,87 +110,156 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 		}
 		if((raised_flag==1)&&(raised_alarm_count<5))		//抬起后做相应动作
 		{
-//			sendcomm4=1;
 			ComMode_4_Data(); //向附机发送编码3
 			raised_alarm_count++;
 		}
 	}
 
-	if(sensor_EN==1)	//检测三轴传感器是否打开，并且还没有报警
-	{
-		if((sensor_detect==0)&&(stolen_alarm_flag==0))
+	if(sensor_EN==1)		//检测三轴传感器是否打开
 		{
-			sensor_1ststage_count++;
-			if(sensor_1ststage_count>=2)				 //每1ms检测一次高电平，如果大于了6ms的高定平，说明有人碰了一下
+		switch(sensor_trigger_count)
 			{
-				sensor_1ststage_count=0;
-				sensor_trigger_count++;
-				host_touch_speech_count=0;
-				host_touched_flag=1;
-			}
-		}
-		else
-		{
-			sensor_1ststage_count=0;
-		}
-		
-		if(host_touched_flag==1)
-		{
-			sensor_2ndstage_time++;
-			if(sensor_2ndstage_time>=6000)
-			{
-				sensor_trigger_count=0;
-				sensor_1ststage_count=0;
-				sensor_2ndstage_time=0;
-				host_touched_flag=0;
-				host_touch_speech_count=0;
-			}
-		}
-	}
-
-	if(sensor_trigger_count==1)
-	{
-		if((host_touch_speech_count<1)&&(host_stolen_speech_EN!=1))
-		{
-			if((fell_sensor_detect==1)&&(raised_sensor_detect==1))
-			{
-				host_touch_speech();
-				host_touch_speech_count++;
-			}
-		}
-	}
-	else
-	{
-		if(sensor_2ndstage_time>=300)
-		{
-			if(sensor_detect==0)
-			{
-				sensor_2ndstage_LV_time++;
-				if(sensor_2ndstage_LV_time>=2)	
+			case 0:
 				{
-					host_stolen_speech_EN=1;
-					host_stolen_speech_count=0;
-					stolen_alarm_flag=1;
-					sensor_2ndstage_LV_time=0;	
+				if((sensor_detect == 0)&&(stolen_alarm_flag == 0))		//检测传感器时候有报警信号进来，并且没有判定为被盗。即在被盗报警的时候，不进行此检测
+					{
+					sensor_1ststage_count++;
+					if(sensor_1ststage_count>=2)				 //每1ms检测一次高电平，如果大于了2ms的高定平，说明有人碰了一下
+						{
+						sensor_1ststage_count=0;
+						sensor_trigger_count = 1;
+						host_touch_speech_EN = 1;
+						}
+					}
+				else
+					{
+					sensor_1ststage_count = 0;
+					}
 				}
+			break;
+			
+			case 1:
+				{
+				if(sensor_detect == 0)
+					{
+					sensor_2ndstage_count++;
+					if(sensor_2ndstage_count >= 2)
+						{
+						sensor_2ndstage_count = 0;
+						sensor_trigger_count = 2;
+						host_2ndtouch_speech_EN = 1;
+						host_2ndtouch_speech_count = 0;
+						}
+					}
+				else
+					{
+					sensor_2ndstage_count = 0;
+					}
+				
+				sensor_2ndstage_time++;
+				if(sensor_2ndstage_time >= 4000)
+					{
+					sensor_trigger_count = 0;
+					sensor_2ndstage_count = 0;
+					sensor_1ststage_count = 0;
+					sensor_2ndstage_time = 0;
+					}
+				}
+			break;
+			
+			case 2:
+				{
+				if(++sensor_3rdstage_interval >= 700)
+					{
+					if(sensor_detect == 0)
+						{
+						sensor_3rdstage_count++;
+						if(sensor_3rdstage_count >= 3)
+							{
+							sensor_3rdstage_count = 0;
+							sensor_3rdstage_interval = 0;
+							sensor_3rdstage_effcount++;
+							}
+						}
+					else
+						{
+						sensor_3rdstage_count = 0;
+						}
+					}
+				
+				sensor_3rdstage_time++;
+				if((sensor_3rdstage_time <= 4000)&&(sensor_3rdstage_effcount >= 3))
+					{
+					if(raised_fell_flag == 0)
+						{
+						host_stolen_alarm1_EN = 1;
+						}
+					}
+				
+				if((sensor_3rdstage_time <= 6000)&&(sensor_3rdstage_effcount >= 4))
+					{
+					if(raised_fell_flag == 0)
+						{
+						host_stolen_alarm2_EN = 1;						
+						}
+					}
+				if(sensor_3rdstage_time >8000)
+					{
+					sensor_trigger_count = 0;
+					sensor_1ststage_count = 0;
+					sensor_2ndstage_count = 0;
+					sensor_2ndstage_time = 0;
+					sensor_3rdstage_time = 0;
+					sensor_3rdstage_interval = 800;
+					sensor_3rdstage_count = 0;
+					sensor_3rdstage_effcount = 0;
+					}
+				}
+			break;
 			}
-			else
+		}
+	
+	
+	if((host_touch_speech_EN == 1)&&(host_touch_speech_count < 1))
+		{
+		if(raised_fell_flag == 0)
 			{
-				sensor_2ndstage_LV_time=0;
+			host_touch_speech();
 			}
-		}						 
-	}
+			
+		if(++host_touch_speech_count >= 1)
+			{
+			host_touch_speech_count = 0;
+			host_touch_speech_EN = 0;
+			}
+		}
+	
+	if((host_2ndtouch_speech_EN == 1)&&(host_2ndtouch_speech_count < 1))
+		{
+		if(raised_fell_flag == 0)
+			{
+			host_2ndtouch_speech();
+			}
+			
+		if(++host_2ndtouch_speech_count >= 1)
+			{
+			host_2ndtouch_speech_count = 0;
+			host_2ndtouch_speech_EN = 0;
+			}
+		}
+	
 
 //	检测倒地和抬起检测的代码
-	if(position_sensor_EN==1)//开启了抬起倒地检测
+	if(position_sensor_EN==1)			//开启了抬起倒地检测
 	{
-		if(raised_sensor_detect==0)//说明有抬起信号并且是第一次，开始计时
+		if(raised_sensor_detect==0)	//说明有抬起信号并且是第一次，开始计时
 		{
 			raise_wire_time++;
-			if(raise_wire_time==10)//说明已经大于0.5S
+			if(raise_wire_time==10)	//说明已经大于0.5S
 			{
-				raised_flag=1;//置抬起标志
+				raised_flag=1;				//置抬起标志
 				fell_flag=0;
+				raised_fell_flag = 1;
 			}		
 		}
 		else
@@ -185,15 +267,17 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 			raised_flag=0;
 			raised_alarm_count=0;
 			raise_wire_time=0;
+			raised_fell_flag = 0;
 		}
 
 		if(fell_sensor_detect==0)
 		{
 			fell_wire_time++;
-			if(fell_wire_time==10)//说明已经大于0.5S
+			if(fell_wire_time==10)		//说明已经大于0.5s
 			{
-				fell_flag=1;//置抬起标志
+				fell_flag=1;				//置抬起标志
 				raised_flag=0;
+				raised_fell_flag = 1;
 			}		
 		}
 		else
@@ -201,8 +285,18 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 			fell_flag=0;
 			fell_alarm_count=0;
 			fell_wire_time=0;
+			raised_fell_flag = 0;
 		}
 	}
+	
+	if(raised_fell_flag == 1)
+		{
+      if(++raised_fell_number >= 5000)
+			{
+			raised_fell_flag = 0;
+			raised_fell_number = 0;
+			}
+		}
 }
 
 
@@ -270,7 +364,7 @@ void timerT1() interrupt interrupt_timer_1_overflow
 	{
 		one_receive_byte_count=0;
 		received_data_buffer[data_count]=one_receive_byte;
-		if(data_count==0&&received_data_buffer[0]==CmdHead)
+		if(data_count==0&&received_data_buffer[0] == CmdHead)
 		{
 			data_count=1;
 		}
@@ -296,26 +390,30 @@ void timerT1() interrupt interrupt_timer_1_overflow
 		{
 			case ComMode_1:  		//附机发送过来的只用模式1，说明现在是正常的，数据部分为数组的第一和第二个字节，为密码表内的这个编码的开始字节的那个地址，然后填充数据帧，把密码表的数据发送出去
 			{
-				stolen_alarm_flag=0;
-				
 				ComMode_1_Data(); 	//向附机发送编码3
 
 				slave_nearby_speech_EN=1;		//编码1后报一句语音
-
 
 				sensor_EN=0;	//三轴传感器
 				position_sensor_EN=0; 		//关倒地、抬起检测
 				fell_flag=0;  
 				raised_flag=0;
-				magnet_ACW_EN=1;			//打开电磁铁
+				magnet_CW_EN=1;			//打开电磁铁
 				
-				sensor_trigger_count=0;
-				sensor_1ststage_count=0;
-				sensor_2ndstage_time=0;
-				host_touched_flag=0;
-				host_stolen_speech_EN=0;
-				host_stolen_speech_count=0;
-
+				sensor_trigger_count = 0;
+				sensor_1ststage_count = 0;
+				sensor_2ndstage_count = 0;
+				sensor_2ndstage_time = 0;
+				sensor_3rdstage_time = 0;
+				sensor_3rdstage_interval = 0;
+				sensor_3rdstage_count = 0;
+				sensor_3rdstage_effcount = 0;
+            stolen_alarm_flag = 0;
+				host_stolen_alarm1_EN = 0;
+				host_stolen_alarm1_count = 0;
+				host_stolen_alarm2_EN = 0;
+				host_stolen_alarm2_count = 0;
+				
 				leave_count=0;	
 				if(slave_away==1)
 				{

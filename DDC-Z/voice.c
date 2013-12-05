@@ -10,6 +10,9 @@
 #include "voice.h"
 #include "Delay.h"
 #include "communication.h"
+
+/*------ private variable --------------------------*/
+tByte key_rotate_on_speech_number = 1;
    
 /*--------------------------------------------------
 	SC_Speech()
@@ -18,11 +21,9 @@
 	几段语音提示
 ---------------------------------------------------*/
 
-void SC_Speech(unsigned char cnt)
+void SC_Speech(tByte cnt)
 {
-	unsigned char i;
-//	SC_RST=1;
-//	delay_ms(15); //DAC, 大于 32 段为 15MS
+	tByte i;
 	SC_RST=0;
 	delay_ms(40);
 	SC_RST=1;
@@ -30,11 +31,9 @@ void SC_Speech(unsigned char cnt)
 	for(i=0;i < cnt;i++)
 	{
 		SC_DATA=1; // 数据脉冲高
-//		delay_us(350); // 延时 100US
-		delay_us(30);
+		delay_us(250);
 		SC_DATA=0; // 数据脉冲低
-//		delay_us(350); // 延时 100US
-		delay_us(30);
+		delay_us(250);
 	}
 }
 
@@ -45,11 +44,9 @@ void SC_Speech(unsigned char cnt)
 	几段语音提示
 ---------------------------------------------------*/
 
-void SC_Speech2(unsigned char cnt)
+void SC_Speech2(tByte cnt)
 {
-	unsigned char i;
-//	SC_RST=1;
-//	delay_ms(15); //DAC, 大于 32 段为 15MS
+	tByte i;
 	SC_RST=0;
 	delay_ms(40);
 	SC_RST=1;
@@ -57,11 +54,9 @@ void SC_Speech2(unsigned char cnt)
 	for(i=0;i < cnt;i++)
 	{
 		SC_DATA=1; // 数据脉冲高
-//		delay_us(350); // 延时 100US
-		delay_us(30);
+		delay_us(250);
 		SC_DATA=0; // 数据脉冲低
-//		delay_us(350); // 延时 100US
-		delay_us(30);
+		delay_us(250);
 	}
 }
 
@@ -88,10 +83,48 @@ void noVoice()
 -----------------------------------------------------*/
 void key_rotate_on_speech(void)
 	{
-	voice_EN=1;
-	SC_Speech(18);  
-	Delay(100);
-	voice_EN=0;
+	switch(key_rotate_on_speech_number)
+		{
+		case 1:
+			{
+			voice_EN=1;
+			SC_Speech(10);  
+			Delay(20);
+			SC_Speech(11);  
+			Delay(20);
+			SC_Speech(6);  
+			Delay(80);
+			voice_EN=0;
+         key_rotate_on_speech_number = 2;
+			}
+		break;
+		
+		case 2:
+			{
+			voice_EN=1;
+			SC_Speech(10);  
+			Delay(20);
+			SC_Speech(8);  
+			Delay(60);
+			voice_EN=0;
+         key_rotate_on_speech_number = 3;			
+			}
+		break;
+		
+		case 3:
+			{
+			voice_EN=1;
+			SC_Speech(10);  
+			Delay(20);
+			SC_Speech(11);  
+			Delay(20);
+			SC_Speech(7);  
+			Delay(60);
+			voice_EN=0;
+         key_rotate_on_speech_number = 1;			
+			}
+		break;
+		}
 	}
 	
 /*-----------------------------------------------------
@@ -101,8 +134,8 @@ void key_rotate_on_speech(void)
 void key_rotate_off_speech(void)
 	{
 	voice_EN=1;
-	SC_Speech(22);
-	Delay(80);
+	SC_Speech(9);
+	Delay(60);
 	voice_EN=0;
 	}
 
@@ -113,50 +146,8 @@ void key_rotate_off_speech(void)
 void motorBAT_low_speech(void)
 	{
 	voice_EN=1;
-	SC_Speech(8);
-	Delay(80);
-	voice_EN=0;
-	}
-	
-/*----------------------------------------------------
-	stolen_alarm_speech()
-	判断为被盗的时候，发出报警语音
-----------------------------------------------------*/
-void stolen_alarm_speech(void)
-	{
-	voice_EN=1;
-	SC_Speech(27); 
-	ComMode_3_Data();
-	Delay(120);
-	SC_Speech(31); 
-	ComMode_3_Data();
+	SC_Speech(5);
 	Delay(60);
-	voice_EN=0; 
-	}
-
-/*----------------------------------------------------
-	slave_nearby_speech()
-	主机接到附机信号后，表明主机知道附机在附近，此时
-	报一段语音。
------------------------------------------------------*/
-void slave_nearby_speech(void)
-	{
-	voice_EN=1;
-	SC_Speech(21); 
-	Delay(150);
-	voice_EN=0;
-	}
-
-/*----------------------------------------------------
-	slave_away_speech()
-	主机接不到附机信号后，表明主机认为附机离开了，此时
-	报一段语音
------------------------------------------------------*/
-void slave_away_speech(void)
-	{
-	voice_EN=1;
-	SC_Speech(22);  
-	Delay(80);
 	voice_EN=0;
 	}
 
@@ -171,6 +162,79 @@ void host_touch_speech(void)
 	Delay(60);
 	voice_EN=0;
 	}
+
+/*-----------------------------------------------------
+	host_2ndtouch_speech()
+	第二次触碰主机，再报一个提示语音
+-------------------------------------------------------*/
+void host_2ndtouch_speech(void)
+	{
+	voice_EN=1;
+	SC_Speech2(14);  
+	Delay(150);
+	voice_EN=0;
+	}
+	
+/*----------------------------------------------------
+	stolen_alarm_speech()
+	判断为被盗的时候，发出报警语音第一段
+----------------------------------------------------*/
+void stolen_alarm_speech1(void)
+	{
+	voice_EN=1;
+	SC_Speech(15); 
+	ComMode_3_Data();
+	Delay(120);
+	SC_Speech(13); 
+	ComMode_3_Data();
+	Delay(60);
+	voice_EN=0; 
+	}
+
+/*----------------------------------------------------
+	stolen_alarm_speech()
+	判断为被盗的时候，发出报警语音第二段
+----------------------------------------------------*/
+void stolen_alarm_speech2(void)
+	{
+	voice_EN=1;
+	SC_Speech(3); 
+	ComMode_3_Data();
+	Delay(120);
+	SC_Speech(13); 
+	ComMode_3_Data();
+	Delay(60);
+	voice_EN=0; 
+	}
+
+/*----------------------------------------------------
+	slave_nearby_speech()
+	主机接到附机信号后，表明主机知道附机在附近，此时
+	报一段语音。
+-----------------------------------------------------*/
+void slave_nearby_speech(void)
+	{
+	voice_EN=1;
+	SC_Speech(16); 
+	Delay(50);
+	voice_EN=0;
+	}
+
+/*----------------------------------------------------
+	slave_away_speech()
+	主机接不到附机信号后，表明主机认为附机离开了，此时
+	报一段语音
+-----------------------------------------------------*/
+void slave_away_speech(void)
+	{
+	voice_EN=1;
+	SC_Speech(17);  
+	Delay(50);
+	SC_Speech(4);  
+	Delay(60);
+	voice_EN=0;
+	}
+
 /*---------------------------------------------------
 	end of file
 ----------------------------------------------------*/

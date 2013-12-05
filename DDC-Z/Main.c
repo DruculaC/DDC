@@ -28,6 +28,10 @@ extern bit comm_whole_control;				//通信总开关，0关闭通信，1打开通信
 extern tWord host_stolen_speech_count;    //判断主机被盗后，语音提示的次数
 extern bit magnet_ACW_EN;						//电磁铁逆时针转动使能，转动一次后复位为0
 extern bit slave_nearby_speech_EN;       //判断附近靠近后，语音提示，在main里面操作
+extern bit host_stolen_alarm1_EN;      //判断为被盗报警后的第一段语音使能
+extern bit host_stolen_alarm2_EN;      //判断为被盗报警后的第二段语音使能
+extern tByte host_stolen_alarm1_count;		//判断为被盗报警后的第一段语音次数
+extern tByte host_stolen_alarm2_count;		//判断为被盗报警后的第二段语音次数
 
 /*------- Private variable declarations --------------------------*/
 bit magnet_ACW_flag=0;
@@ -60,7 +64,7 @@ void main()
 	transmiter_EN=0;
 
 	position_sensor_EN=1;
-   magnet_CW();
+   magnet_ACW();
 //	P2M1 |= 0x10;
 //	P2M2 &= 0xef;
 	
@@ -71,9 +75,9 @@ void main()
 		 	Delay(5);
 			if(key_rotate==1)
 			{
+            verifybattery(ADC_check_result);						//检查电瓶的电压，然后
+				key_rotate_on_speech();
 				key_rotated_on_flag = 1;
-            key_rotate_on_speech();
-				verifybattery(ADC_check_result);
 			}
 		}
 		
@@ -82,13 +86,8 @@ void main()
 		 	Delay(5);
 			if(key_rotate==0)
 			{
-				verifybattery(ADC_check_result);
-				if((ADC_check_result<0x300))						  //小于38V报警，小于5公里了
-				{
-					motorBAT_low_speech();
-					}
-					
 				key_rotate_off_speech();
+				verifybattery(ADC_check_result);
 				key_rotated_on_flag=0;
 			}
 		}
@@ -119,20 +118,32 @@ void main()
 			magnet_ACW_EN=0;
 		}
 
-		if((host_stolen_speech_EN==1)&&(host_stolen_speech_count<4))
-		{
-			if((raised_sensor_detect==1)&&(fell_sensor_detect==1))
-				{
-				stolen_alarm_speech();
-				}
-			host_stolen_speech_count++;
-			if(host_stolen_speech_count==4)
+		if((host_stolen_alarm1_EN == 1)&&(host_stolen_alarm1_count < 2))
 			{
-				host_stolen_speech_count=0;
-				host_stolen_speech_EN=0;
-				stolen_alarm_flag=0;
+			stolen_alarm_flag = 1;
+			stolen_alarm_speech1();
+			host_stolen_alarm1_count++;
+			if(host_stolen_alarm1_count >=2)
+				{
+				host_stolen_alarm1_count = 0;
+				host_stolen_alarm1_EN = 0;
+				stolen_alarm_flag = 0;
+				}
 			}
-		}
+		
+		if((host_stolen_alarm2_EN == 1)&&(host_stolen_alarm2_count < 2))
+			{
+			stolen_alarm_flag = 1;
+			stolen_alarm_speech2();
+			host_stolen_alarm2_count++;
+			if(host_stolen_alarm2_count >=2)
+				{
+				host_stolen_alarm2_count = 0;
+				host_stolen_alarm2_EN = 0;
+				stolen_alarm_flag = 0;
+				}
+
+			}
 
 		if((slave_nearby_speech_EN==1)&&(slave_nearby_speech_count<1))
 		{

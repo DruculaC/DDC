@@ -11,8 +11,8 @@
 #include "voice.h"
 #include "Delay.h"
 
-/*---------------------------------------------------*/
-
+/*------ public variable -----------------------------------*/
+extern tByte key_rotated_on_flag;
 
 /*----------------------------------------------------
 	verifybattery()
@@ -57,6 +57,10 @@ void verifybattery(tWord Check2)
 		Delay(130);
 		voice_EN=0;
 	}
+	else if((Check2<0x300)&&(key_rotated_on_flag==1))
+		{
+		motorBAT_low_speech();
+		}
 }
 
 /*---------------------------------------------------

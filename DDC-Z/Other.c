@@ -18,7 +18,7 @@ void magnet_CW(void)
 	{
 	MagentControl_1=0;//关闭磁铁
 	MagentControl_2=1;
-	Delay(13);
+	Delay(73);
 	MagentControl_1=0;//磁铁常态为这种模式
 	MagentControl_2=0;
 	}
@@ -31,7 +31,7 @@ void magnet_ACW(void)
 	{
 	MagentControl_1=1;//开启磁铁
 	MagentControl_2=0;
-	Delay(13);
+	Delay(73);
 	MagentControl_1=0;//磁铁常态为这种模式
 	MagentControl_2=0;
 	}
