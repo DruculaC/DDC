@@ -142,7 +142,6 @@ void main()
 				host_stolen_alarm2_EN = 0;
 				stolen_alarm_flag = 0;
 				}
-
 			}
 
 		if((slave_nearby_speech_EN==1)&&(slave_nearby_speech_count<1))

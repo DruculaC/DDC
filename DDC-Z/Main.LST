@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   MAIN                                                                  12/04/2013 11:18:55 PAGE 1   
+C51 COMPILER V9.51   MAIN                                                                  12/05/2013 14:04:14 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
   53   1      
   54   1         raised_sensor_detect=1;
   55   1         fell_sensor_detect=1;
-C51 COMPILER V9.51   MAIN                                                                  12/04/2013 11:18:55 PAGE 2   
+C51 COMPILER V9.51   MAIN                                                                  12/05/2013 14:04:14 PAGE 2   
 
   56   1      
   57   1         P10=1;
@@ -126,7 +126,7 @@ line level    source
  115   4                  magnet_ACW();
  116   4                  magnet_ACW_flag=1;
  117   4               }
-C51 COMPILER V9.51   MAIN                                                                  12/04/2013 11:18:55 PAGE 3   
+C51 COMPILER V9.51   MAIN                                                                  12/05/2013 14:04:14 PAGE 3   
 
  118   3               magnet_ACW_EN=0;
  119   3            }
@@ -155,44 +155,43 @@ line level    source
  142   4                  host_stolen_alarm2_EN = 0;
  143   4                  stolen_alarm_flag = 0;
  144   4                  }
- 145   3      
- 146   3               }
- 147   2      
- 148   2            if((slave_nearby_speech_EN==1)&&(slave_nearby_speech_count<1))
- 149   2            {
- 150   3                  slave_away_speech_EN=0;
- 151   3                  slave_away_speech_count=0;
- 152   3                  slave_nearby_speech();
- 153   3                  slave_nearby_speech_count++;
- 154   3            }
- 155   2      
- 156   2            if((slave_away_speech_EN==1)&&(slave_away_speech_count<1))
- 157   2            {
- 158   3                  slave_nearby_speech_EN=0;
- 159   3                  slave_nearby_speech_count=0;
- 160   3                  
- 161   3                  slave_away_speech();
- 162   3                  
- 163   3                  slave_away_speech_count++;
- 164   3                  sensor_EN=1;   //开启三轴传感器
- 165   3            }
- 166   2         }
- 167   1      }
+ 145   3               }
+ 146   2      
+ 147   2            if((slave_nearby_speech_EN==1)&&(slave_nearby_speech_count<1))
+ 148   2            {
+ 149   3                  slave_away_speech_EN=0;
+ 150   3                  slave_away_speech_count=0;
+ 151   3                  slave_nearby_speech();
+ 152   3                  slave_nearby_speech_count++;
+ 153   3            }
+ 154   2      
+ 155   2            if((slave_away_speech_EN==1)&&(slave_away_speech_count<1))
+ 156   2            {
+ 157   3                  slave_nearby_speech_EN=0;
+ 158   3                  slave_nearby_speech_count=0;
+ 159   3                  
+ 160   3                  slave_away_speech();
+ 161   3                  
+ 162   3                  slave_away_speech_count++;
+ 163   3                  sensor_EN=1;   //开启三轴传感器
+ 164   3            }
+ 165   2         }
+ 166   1      }
+ 167          
  168          
  169          
- 170          
- 171          /*---------------------------------------------------
- 172             end of file
- 173          ----------------------------------------------------*/
+ 170          /*---------------------------------------------------
+ 171             end of file
+ 172          ----------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =    251    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
-C51 COMPILER V9.51   MAIN                                                                  12/04/2013 11:18:55 PAGE 4   
-
    PDATA SIZE       =   ----    ----
+C51 COMPILER V9.51   MAIN                                                                  12/05/2013 14:04:14 PAGE 4   
+
    DATA SIZE        =      5    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =      1    ----

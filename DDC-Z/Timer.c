@@ -63,6 +63,7 @@ bit host_touch_speech_EN = 0;				//第一次触碰后语音使能
 bit host_2ndtouch_speech_EN = 0;			//第二次触碰后语音使能
 bit raised_fell_flag = 0;					//倒地或者抬起触发后，此标志位置1
 tWord raised_fell_number = 0;				//倒地或者抬起出发后，计数，到达一定数值后，将其与标志位一起清零。
+bit raised_fell_once_flag = 0;			//raised_fell_flag是否曾经标志过，如果标志过则置1.然后主机被恢复倒地或者恢复抬起时，此标志位复位。
 
 /*------------------------------------------------------------------
 	timerT0()
@@ -115,136 +116,115 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 		}
 	}
 
-	if(sensor_EN==1)		//检测三轴传感器是否打开
+	if(raised_fell_flag == 0)
 		{
-		switch(sensor_trigger_count)
+		if(sensor_EN==1)		//检测三轴传感器是否打开
 			{
-			case 0:
+			switch(sensor_trigger_count)
 				{
-				if((sensor_detect == 0)&&(stolen_alarm_flag == 0))		//检测传感器时候有报警信号进来，并且没有判定为被盗。即在被盗报警的时候，不进行此检测
+				case 0:
 					{
-					sensor_1ststage_count++;
-					if(sensor_1ststage_count>=2)				 //每1ms检测一次高电平，如果大于了2ms的高定平，说明有人碰了一下
+					if((sensor_detect == 0)&&(stolen_alarm_flag == 0))		//检测传感器时候有报警信号进来，并且没有判定为被盗。即在被盗报警的时候，不进行此检测
 						{
-						sensor_1ststage_count=0;
-						sensor_trigger_count = 1;
-						host_touch_speech_EN = 1;
+						sensor_1ststage_count++;
+						if(sensor_1ststage_count>=2)				 //每1ms检测一次高电平，如果大于了2ms的高定平，说明有人碰了一下
+							{
+							sensor_1ststage_count=0;
+							sensor_trigger_count = 1;
+							host_touch_speech_EN = 1;
+							}
+						}
+					else
+						{
+						sensor_1ststage_count = 0;
 						}
 					}
-				else
+				break;
+				
+				case 1:
 					{
-					sensor_1ststage_count = 0;
-					}
-				}
-			break;
-			
-			case 1:
-				{
-				if(sensor_detect == 0)
-					{
-					sensor_2ndstage_count++;
-					if(sensor_2ndstage_count >= 2)
+					if(sensor_detect == 0)
+						{
+						sensor_2ndstage_count++;
+						if(sensor_2ndstage_count >= 2)
+							{
+							sensor_2ndstage_count = 0;
+							sensor_trigger_count = 2;
+							host_2ndtouch_speech_EN = 1;
+							host_2ndtouch_speech_count = 0;
+							}
+						}
+					else
 						{
 						sensor_2ndstage_count = 0;
-						sensor_trigger_count = 2;
-						host_2ndtouch_speech_EN = 1;
-						host_2ndtouch_speech_count = 0;
+						}
+					
+					sensor_2ndstage_time++;
+					if(sensor_2ndstage_time >= 4000)
+						{
+						sensor_trigger_count = 0;
+						sensor_2ndstage_count = 0;
+						sensor_1ststage_count = 0;
+						sensor_2ndstage_time = 0;
 						}
 					}
-				else
-					{
-					sensor_2ndstage_count = 0;
-					}
+				break;
 				
-				sensor_2ndstage_time++;
-				if(sensor_2ndstage_time >= 4000)
-					{
-					sensor_trigger_count = 0;
-					sensor_2ndstage_count = 0;
-					sensor_1ststage_count = 0;
-					sensor_2ndstage_time = 0;
-					}
-				}
-			break;
-			
-			case 2:
-				{
-				if(++sensor_3rdstage_interval >= 700)
+				case 2:
 					{
 					if(sensor_detect == 0)
 						{
 						sensor_3rdstage_count++;
-						if(sensor_3rdstage_count >= 3)
+						if(sensor_3rdstage_count >= 2)
 							{
 							sensor_3rdstage_count = 0;
-							sensor_3rdstage_interval = 0;
-							sensor_3rdstage_effcount++;
+							host_stolen_alarm1_EN = 1;
+							host_stolen_alarm2_EN = 1;						
 							}
 						}
 					else
 						{
 						sensor_3rdstage_count = 0;
 						}
-					}
-				
-				sensor_3rdstage_time++;
-				if((sensor_3rdstage_time <= 4000)&&(sensor_3rdstage_effcount >= 3))
-					{
-					if(raised_fell_flag == 0)
+					
+					sensor_3rdstage_time++;
+					if(sensor_3rdstage_time >= 4000)
 						{
-						host_stolen_alarm1_EN = 1;
+						sensor_trigger_count = 0;
+						sensor_1ststage_count = 0;
+						sensor_2ndstage_count = 0;
+						sensor_2ndstage_time = 0;
+						sensor_3rdstage_time = 0;
+						sensor_3rdstage_interval = 800;
+						sensor_3rdstage_count = 0;
+						sensor_3rdstage_effcount = 0;					
 						}
 					}
-				
-				if((sensor_3rdstage_time <= 6000)&&(sensor_3rdstage_effcount >= 4))
-					{
-					if(raised_fell_flag == 0)
-						{
-						host_stolen_alarm2_EN = 1;						
-						}
-					}
-				if(sensor_3rdstage_time >8000)
-					{
-					sensor_trigger_count = 0;
-					sensor_1ststage_count = 0;
-					sensor_2ndstage_count = 0;
-					sensor_2ndstage_time = 0;
-					sensor_3rdstage_time = 0;
-					sensor_3rdstage_interval = 800;
-					sensor_3rdstage_count = 0;
-					sensor_3rdstage_effcount = 0;
-					}
+				break;
 				}
-			break;
 			}
-		}
-	
-	
-	if((host_touch_speech_EN == 1)&&(host_touch_speech_count < 1))
-		{
-		if(raised_fell_flag == 0)
+		
+		
+		if((host_touch_speech_EN == 1)&&(host_touch_speech_count < 1))
 			{
 			host_touch_speech();
+				
+			if(++host_touch_speech_count >= 1)
+				{
+				host_touch_speech_count = 0;
+				host_touch_speech_EN = 0;
+				}
 			}
-			
-		if(++host_touch_speech_count >= 1)
-			{
-			host_touch_speech_count = 0;
-			host_touch_speech_EN = 0;
-			}
-		}
-	
-	if((host_2ndtouch_speech_EN == 1)&&(host_2ndtouch_speech_count < 1))
-		{
-		if(raised_fell_flag == 0)
+		
+		if((host_2ndtouch_speech_EN == 1)&&(host_2ndtouch_speech_count < 1))
 			{
 			host_2ndtouch_speech();
-			}
-			
-		if(++host_2ndtouch_speech_count >= 1)
-			{
-			host_2ndtouch_speech_count = 0;
-			host_2ndtouch_speech_EN = 0;
+				
+			if(++host_2ndtouch_speech_count >= 1)
+				{
+				host_2ndtouch_speech_count = 0;
+				host_2ndtouch_speech_EN = 0;
+				}
 			}
 		}
 	
@@ -252,14 +232,17 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 //	检测倒地和抬起检测的代码
 	if(position_sensor_EN==1)			//开启了抬起倒地检测
 	{
-		if(raised_sensor_detect==0)	//说明有抬起信号并且是第一次，开始计时
+		if(raised_sensor_detect == 0)	//说明有抬起信号并且是第一次，开始计时
 		{
 			raise_wire_time++;
 			if(raise_wire_time==10)	//说明已经大于0.5S
 			{
 				raised_flag=1;				//置抬起标志
 				fell_flag=0;
-				raised_fell_flag = 1;
+				if(raised_fell_once_flag == 0)
+					{
+					raised_fell_flag = 1;					
+					}
 			}		
 		}
 		else
@@ -277,7 +260,10 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 			{
 				fell_flag=1;				//置抬起标志
 				raised_flag=0;
-				raised_fell_flag = 1;
+				if(raised_fell_once_flag == 0)
+					{
+					raised_fell_flag = 1;					
+					}
 			}		
 		}
 		else
@@ -291,10 +277,21 @@ void timer0() interrupt interrupt_timer_0_overflow	//作为整个系统自己的时钟
 	
 	if(raised_fell_flag == 1)
 		{
-      if(++raised_fell_number >= 5000)
+		raised_fell_number++;
+		if(raised_fell_number >= 10000)
 			{
 			raised_fell_flag = 0;
 			raised_fell_number = 0;
+			raised_fell_once_flag = 1;
+			
+			sensor_trigger_count = 0;
+			sensor_1ststage_count = 0;
+			sensor_2ndstage_count = 0;
+			sensor_2ndstage_time = 0;
+			sensor_3rdstage_time = 0;
+			sensor_3rdstage_interval = 800;
+			sensor_3rdstage_count = 0;
+			sensor_3rdstage_effcount = 0;					
 			}
 		}
 }
@@ -413,6 +410,8 @@ void timerT1() interrupt interrupt_timer_1_overflow
 				host_stolen_alarm1_count = 0;
 				host_stolen_alarm2_EN = 0;
 				host_stolen_alarm2_count = 0;
+				
+				raised_fell_flag = 0;
 				
 				leave_count=0;	
 				if(slave_away==1)
