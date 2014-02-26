@@ -12,28 +12,30 @@
 
 /*-------------------------------------------------------
 	magnet_CW()
-	电磁铁正转，顺时针
+	电磁铁正转，顺时针，将锁打开
 --------------------------------------------------------*/
 void magnet_CW(void)
 	{
-	MagentControl_1=0;//关闭磁铁
-	MagentControl_2=1;
-	Delay(73);
-	MagentControl_1=0;//磁铁常态为这种模式
-	MagentControl_2=0;
+	MagentControl_1 = 0;
+	MagentControl_2 = 1;
+	magnet_delay();
+	MagentControl_1 = 1;
+	MagentControl_2 = 1;
+	motor_lock = 0;
 	}
 
 /*-------------------------------------------------------
 	magnet_ACW()
-	电磁铁反转，逆时针
+	电磁铁反转，逆时针，将锁关闭
 --------------------------------------------------------*/
 void magnet_ACW(void)
 	{
-	MagentControl_1=1;//开启磁铁
-	MagentControl_2=0;
-	Delay(73);
-	MagentControl_1=0;//磁铁常态为这种模式
-	MagentControl_2=0;
+	motor_lock = 1;
+	MagentControl_1 = 1;
+	MagentControl_2 = 0;
+	magnet_delay();
+	MagentControl_1 = 1;
+	MagentControl_2 = 1;
 	}
 /*---------------------------------------------------
 	end of file

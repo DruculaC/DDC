@@ -35,7 +35,7 @@ void Delay3(tWord t)		//t=1时，延迟100us左右
 	tWord i;
 	tByte j;
 	for(i=0;i<t;i++)		                                
-	for(j=0;j<23;j++);
+	for(j=0;j<42;j++);
 	}
 	
 /*--------------------------------------------------
@@ -44,14 +44,14 @@ void Delay3(tWord t)		//t=1时，延迟100us左右
 	延迟约为1ms的子程序
 ----------------------------------------------------*/
 
-void delay_ms(unsigned int count)
-	{
-	unsigned int i,j;
+void delay_ms(tWord count)
+{
+	tWord i, j;
 	for(i=0;i<count;i++)
-		{
-		for(j=0;j<600;j++);
-		}
+	{
+		for(j=0;j<100;j++);
 	}
+}
 
 /*--------------------------------------------------
 	delay_us()
@@ -59,12 +59,13 @@ void delay_ms(unsigned int count)
 	延迟约为1us的子程序
 ----------------------------------------------------*/
 
-void delay_us(unsigned int count)
+void delay_us(tWord count1)
 	{
-	unsigned int i,j;
-	for(i=0;i<count;i++)
+	tWord i;
+	tByte j;
+	for(i=0;i<count1;i++)
 		{
-		for(j=0;j<2;j++);
+		for(j=0;j<4;j++);
 		}
 	}
 

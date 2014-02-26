@@ -10,6 +10,9 @@
 #include "Timer.h"
 #include "communication.h"
 #include "Other.h"
+#include "voice.h"
+#include "AD.h"
+#include "delay.h"
 
 // ------ Public variable declarations -----------------------------
 bit fell_alarm_flag = 0;			//µ¹µØ±¨¾¯±êÖ¾
@@ -22,9 +25,11 @@ bit stolen_alarm_flag = 0;		//±»µÁ±¨¾¯±êÖ¾
 tWord stolen_alarm_count = 0;	//±»µÁ±¨¾¯Ñ­»·´ÎÊı
 
 bit transmit_comm1_flag = 0;		//Ã¿¸ôÒ»¶ÎÊ±¼ä½«ÆäÖÃ1£¬ÔòÔÚmainº¯ÊıÖĞ·¢ÉäÊı¾İ£¬¾Í²»»áÓ°Ïìtimer0µÄ¼ÆÊ±£¬·¢ÉäÍêºó½«ÆäÖÃ0.
-bit comm_whole_control = 0;		//Í¨ĞÅ×Ü¿ª¹Ø£¬0¹Ø±ÕÍ¨ĞÅ£¬1´ò¿ªÍ¨ĞÅ
 bit battery_check = 0;				//ÖÃ1Ê±£¬Ö´ĞĞÒ»´ÎµçÁ¿×ª»»£¬Ö´ĞĞÍêºó£¬½«ÆäÖÃ0
 bit Host_battery_high_flag = 0;		//ÖÃ1Ê±£¬Ö´ĞĞÒ»´ÎÓïÒôÌáÊ¾£¬±íÊ¾³äµçÒÑÂú
+
+extern tWord ADC_check_result;		//×÷ÎªAD¼ì²âÖµ
+extern bit battery_HV_flag;			//µç³ØµçÎ»µÄ±ê¼Ç£¬1±íÊ¾ÏÖÔÚµç³ØÊÇÂúµÄ£¬0±íÊ¾»¹Ã»Âú¡£
 
 
 // ------ Private variable definitions -----------------------------
@@ -40,6 +45,7 @@ tByte one_receive_byte_count = 0;			//one_receive_byteÓĞ8Î»£¬´Ë¼ÆÊı±íÃ÷½ÓÊÕµ½µÚ¼
 bit receive_wire_flag = 1;		//½ÓÊÕÍ¨ĞÅÏßµÄ±êÖ¾Î»£¬1±íÃ÷¸ßµçÆ½£¬0±íÃ÷µÍµçÆ½£¬Ã¿´Îtimer1Òç³öÊ±£¬ÅĞ¶ÏP1.1Ò»´Î¡£ÒÔ´ËÀ´±íÃ÷ÊÇ·ñÎªÒ»´ÎÕıÈ·µÄÏÂ½µÑØ
 tByte receive_HV_count = 0;		//¶¨Ê±Æ÷T1ÔÚÃ»ÓĞĞÅºÅµ½À´µÄÊ±ºò£¬¶Ô¸ßµçÆ½¼ÆÊı£¬Ò»µ©³¬¹ıÄ³¸öÖµ£¬Ôò½«one_receive_byte_countÇå0
 tByte receive_LV_count = 0;		//Ã¿´Îtimer1Òç³öÊ±ÅĞ¶Ï½ÓÊÕÏßÈç¹ûÎªLV£¬Ôò¼ÆÊı¼Ó1£¬ÒÔ´ËÀ´±íÃ÷µÍµçÆ½µÄÊ±¼ä
+bit battery_stolen_EN = 0;       // ×÷Îª¸½»ú½Óµ½µç³Ø±»µÁĞÅºÅºó£¬±¨¾¯µÄÊ¹ÄÜ
 
 /*------------------------------------------------------------------
 	timerT0()
@@ -47,72 +53,127 @@ tByte receive_LV_count = 0;		//Ã¿´Îtimer1Òç³öÊ±ÅĞ¶Ï½ÓÊÕÏßÈç¹ûÎªLV£¬Ôò¼ÆÊı¼Ó1£¬ÒÔ
 --------------------------------------------------------------------*/
 
 void timer0() interrupt interrupt_timer_0_overflow
-{
+	{
+	// ÖØ×°ÔÚ¶¨Ê±Æ÷µÄÊ±¼äÉèÖÃ
 	TH0 = timer0_8H;
 	TL0 = timer0_8L;
 
-	timer0_count++;
-
-	if(timer0_count >= 60)		//´®¿ÚÃ¿1S·¢ËÍÒ»´ÎµÄÊı¾İµÄÊ±¼ä±êÖ¾
-	{
-		battery_check = 1;
-		if(comm_whole_control == 1)		//ËµÃ÷¿ªÆôÁËÍ¨ĞÅ
+	// ÉèÖÃÒ»¸öÃ¿3sµÄ²Ù×÷
+	if(++timer0_count >= 60)		
 		{
-			leave_count++;
-			transmit_comm1_flag = 1;
-			if(leave_count >= 4)		//ËµÃ÷ÒÑ¾­³öÁË300MÁË¡£ÊÕ²»µ½ÈÎºÎĞÅºÅÁË£¬Òª×ö±¨¾¯
+      // Ã¿¸ö3s×öÒ»´ÎµçÁ¿¼ì²â£¬²¢½øĞĞÏà¹ØµÄµçÁ¿ÌáÊ¾
+		ADC_check_result = GetADCResult(6);
+		
+
+		
+		// ÅĞ¶Ïµç³ØµçÑ¹£¬Èç¹ûĞ¡ÓÚ3.4VÇÒÔ­ÏÈ±¨¹ı¸ßµçÑ¹Ê±£¬Ôò±¨µçÁ¿²»×ã¡£Èç¹ûµçÑ¹´óÓÚ4.2VÇÒÓëÔ­ÏÈ±¨¹ıµçÁ¿²»×ãÊ±£¬ÔòÌáÊ¾µçÑ¹¹ı¸ß
+		if((battery_HV_flag == 1)&&(ADC_check_result <= 0x333))
 			{
-				leave_count = 5;
+			// ´ËÎ»ÖÃ0£¬±íÊ¾µçÁ¿¹ıµÍ
+			battery_HV_flag = 0;
+			Battery_low_alarm_speech();		
 			}
-		}
-		timer0_count = 0;
-	}
+		else if((battery_HV_flag == 0)&&(ADC_check_result >= 0x35a))
+			{
+			// ´ËÎ»ÖÃ1£¬±íÊ¾µçÁ¿¹ı¸ß
+			battery_HV_flag = 1;
+			Battery_high_alarm_speech();
+			}	
 
-	if(stolen_alarm_count >= 2)
-	{
-		stolen_alarm_count++;
-		if(stolen_alarm_count == 1800)
+		// ½«¼ÆÊıÇå0
+		timer0_count = 0;
+//		battery_stolen_EN	= 1;
+		}
+
+ 	// Ö÷»ú±»µÁ±¨¾¯
+	if(stolen_alarm_flag == 1)		
 		{
-			stolen_alarm_count = 0;
-			stolen_alarm_flag = 0;
+		// Ö÷»ú±»µÁ±¨¾¯´ÎÊı£¬Ã¿±¨Ò»´Î¼Ó1£¬Èç¹û´óÓÚ2´Î£¬Ôò¼ÌĞø¼Ó1£¬µ½Ò»¶¨Ê±¼äºó£¬½«flagºÍcountÇå0.ÒÔ´ËÀ´±£Ö¤¸½»úÃ¿´Î±¨¾¯ºó£¬ÔÚ¶ÌÊ±¼äÄÚ
+		// ÔÙ´ÎÊÕµ½±¨¾¯ĞÅºÅ£¬¾Í²»»á±¨¾¯ÁË¡£
+		if(++stolen_alarm_count < 3)
+			{			
+			// ÓïÒôÌáÊ¾£¬Âí´ïÕñ¶¯
+			Alarm_stolen_speech();		
+			Moto_Vibration();          
+			}
+		else
+			{
+			if(stolen_alarm_count >= 1200)
+				{
+				stolen_alarm_count = 0;
+				stolen_alarm_flag = 0;
+				}
+			}
+		}	
+
+	// Ì§ÆğĞÅºÅ±¨¾¯£¬Ã¿´Î±¨ÍêºóÇå0£¬Èç¹ûÔÙ´Î½Óµ½Ôò¼ÌĞø±¨¡£Ò»°ãÀ´Ëµ£¬Ö÷»úÃ¿´ÎÌ§ÆğÖ»·¢4±é¡£
+	if(raised_alarm_flag == 1)	
+		{
+		Alarm_raised_speech();		
+		Moto_Vibration();         
+		raised_alarm_flag = 0;
+		}
+
+	// µ¹µØĞÅºÅ±¨¾¯£¬Ã¿´Î±¨ÍêºóÇå0£¬Èç¹ûÔÙ´Î½Óµ½Ôò¼ÌĞø±¨¡£Ò»°ãÀ´Ëµ£¬Ö÷»úÃ¿´Îµ¹µØÖ»·¢4±é¡£
+	if(fell_alarm_flag == 1)
+		{
+		Alarm_fell_speech();		  
+		Moto_Vibration();         
+		fell_alarm_flag=0;
+		}
+
+	// Ö÷»úµçÁ¿³äÂúÌáÊ¾
+	if(Host_battery_high_flag == 1)
+		{
+		Host_battery_high_alarm_speech();		
+		Host_battery_high_flag = 0;
+		}
+		
+	if(battery_stolen_EN == 1)
+		{
+		battery_stolen_speech();
+		battery_stolen_EN = 0;
 		}
 	}
-}
 
 /*------------------------------------------------------------------
 	timerT1()
 	¶¨Ê±Æ÷1Ã¿´ÎÒç³öºóÖ´ĞĞµÄ²Ù×÷
 --------------------------------------------------------------------*/
 	
-void timerT1() interrupt interrupt_timer_1_overflow 				//¶¨Ê±Æ÷1ÖĞ¶Ï½ÓÊÕÊı¾İ
-{
-	TH1 = timer1_8H;					//ÖØ×°ÔØ
+void timerT1() interrupt interrupt_timer_1_overflow 			
+	{
+	// ÖØ×°ÔÚ¶¨Ê±Æ÷1µÄÉèÖÃ
+	TH1 = timer1_8H;				
 	TL1 = timer1_8L;
 
-	if(receive_wire == 0)							//Õı³£Çé¿öÎª¸ßµçÆ½,ÓĞµÍµçÆ½ËµÃ÷ÓĞĞÅºÅ
-	{
-		receive_LV_count++;
-		receive_wire_flag=0;
-		if(receive_LV_count==80)			//µÍµçÆ½³ÖĞøµÄ×î´óÊ±¼ä	
+	// ÅĞ¶Ï½ÓÊÕÏßÊÇ·ñÎª0£¬Èç¹ûÊÇ0£¬Ôò±íÊ¾¿ÉÄÜÓĞĞÅºÅ¹ıÀ´¡£
+	if(receive_wire == 0)					
 		{
+		// Èç¹û½ÓÊÕÏßÊÇ0£¬Ôò½«´Ë±êÖ¾Î»ÖÃ0£¬±íÊ¾´ËÏßÎª0¹ı¡£
+		receive_wire_flag=0;
+		
+		// ½ÓÊÕµ½µÍµçÆ½µÄÊ±¼ä¼ÆÊı£¬´óÓÚ8ms¾ÍÖØĞÂ¼ÆÊı
+		if(++receive_LV_count==120)		
+			{
 			receive_LV_count=0;
+			}
 		}
-	}
-	else//Îª¸ßµçÆ½ÁË
+	else
 	{
 		if(receive_wire_flag==0)//ËµÃ÷ÓĞÒ»¸öµÍµçÆ½
 		{
 			receive_wire_flag=1;
 //			one_receive_byte<<=1;
 
-			if((receive_LV_count>35)&&(receive_LV_count<=50))//µÍµçÆ½³ÖĞøµÄÊ±¼äĞ¡ÓÚ3ms£¬ÔòÎª0
+			if((receive_LV_count>35)&&(receive_LV_count<=80))//µÍµçÆ½³ÖĞøµÄÊ±¼äĞ¡ÓÚ3ms£¬ÔòÎª0
 			{
 				one_receive_byte<<=1;
 				one_receive_byte &= 0xfe;
 				one_receive_byte_count++;
 				receive_HV_count=0;
 			}
-			if(receive_LV_count>50)//µÍµçÆ½³ÖĞøµÄÊ±¼ä´óÓÚ4.5ms£¬ÔòÎª1
+			if(receive_LV_count>80)//µÍµçÆ½³ÖĞøµÄÊ±¼ä´óÓÚ4.5ms£¬ÔòÎª1
 			{
 				one_receive_byte<<=1;
 				one_receive_byte |= 0x01;
@@ -164,72 +225,60 @@ void timerT1() interrupt interrupt_timer_1_overflow 				//¶¨Ê±Æ÷1ÖĞ¶Ï½ÓÊÕÊı¾İ
 	if(receive_data_finished_flag==1)	//ËµÃ÷½ÓÊÕµ½ÁËÊı¾İ£¬¿ªÊ¼´¦Àí
 	{
 		receive_data_finished_flag=0;	//Çå½ÓÊÕ±êÖ¾
-		Receiver_EN=0;			//¹Ø±Õ½ÓÊÕ»ú
 		switch(received_data_buffer[2])//½âÎöÖ¸Áî
 		{
 			case ComMode_1://½ÓÊÕµ½µÄÊÇÖ÷»ú·¢ËÍ¹ıÀ´µÄ±àÂë1µÄĞÅºÅ£¬ËµÃ÷Ö÷»úÔÚ3MÄÚ£¬ÊÇÕı³£µÄ
-			{	
-				leave_count=0;//Õı³£Çé¿ö£¬Çå³¬Ê±±êÖ¾
-
-				stolen_alarm_count=0;//Çå±¨¾¯¼ÆÊıÆ÷
-				stolen_alarm_flag=0;//Çå±¨¾¯±êÖ¾
-
-				raised_alarm_count=0;//Çå±¨¾¯¼ÆÊıÆ÷
-				raised_alarm_flag=0;//Çå±¨¾¯±êÖ¾
-
-				fell_alarm_count=0;//Çå±¨¾¯¼ÆÊıÆ÷
-				fell_alarm_flag=0;//Çå±¨¾¯±êÖ¾
-
+				{	
 				Moto_Vibration();
-			}
+				ComMode_1_Data();
+				}
 			break;
-		
+			
+			case ComMode_2:
+				{
+				battery_stolen_EN = 1;
+				Moto_Vibration();          
+				}
+		   break;
+			
 			case ComMode_3:
-			{
-				leave_count=0;//Çå³¬Ê±±êÖ¾				
-				stolen_alarm_flag=1;
+				{
+				stolen_alarm_flag = 1;
+				Moto_Vibration();         
 
 				raised_alarm_count=0;//Çå±¨¾¯¼ÆÊıÆ÷
 				raised_alarm_flag=0;//Çå±¨¾¯±êÖ¾
 				fell_alarm_count=0;//Çå±¨¾¯¼ÆÊıÆ÷
 				fell_alarm_flag=0;//Çå±¨¾¯±êÖ¾
-
-				Moto_Vibration();
-			}
+				}
 			break;
 		
 			case ComMode_4://Áô×÷Ì§ÆğĞÅºÅÊ¹ÓÃ
 			{
-				leave_count=0;//Çå³¬Ê±±êÖ¾	
 				raised_alarm_flag=1;//Ì§Æğ±¨¾¯
 
 				stolen_alarm_count=0;//Çå±¨¾¯¼ÆÊıÆ÷
 				stolen_alarm_flag=0;//Çå±¨¾¯±êÖ¾
 				fell_alarm_count=0;//Çå±¨¾¯¼ÆÊıÆ÷
 				fell_alarm_flag=0;//Çå±¨¾¯±êÖ¾
-
-				Moto_Vibration();
 			}
 			break;
 
 			case ComMode_5://Áô×÷µ¹µØĞÅºÅÊ¹ÓÃ
 			{
-				leave_count=0;//Çå³¬Ê±±êÖ¾
 				fell_alarm_flag=1;	//µ¹µØ±¨¾¯
 
 				stolen_alarm_count=0;//Çå±¨¾¯¼ÆÊıÆ÷
 				stolen_alarm_flag=0;//Çå±¨¾¯±êÖ¾
 				raised_alarm_count=0;//Çå±¨¾¯¼ÆÊıÆ÷
 				raised_alarm_flag=0;//Çå±¨¾¯±êÖ¾
-
-				Moto_Vibration();
 			}
 			break;
 
 			case ComMode_6:
-			{
-				Host_battery_high_flag=1;
-			}
+				{
+				Host_battery_high_flag = 1;
+				}
 			break;
 		}
 	}
@@ -271,6 +320,15 @@ void InitTimer(const tByte Tick_ms_T0, Tick_us_T1)
 	PT1 = 1;			
 	EA = 1;
 	}
+
+/*---------------------------------------------------------------------
+	sEos_Go_To_Sleep()
+	½«MCU½øÈëĞİÃß×´Ì¬
+----------------------------------------------------------------------*/
+void sEOS_Go_To_Sleep(void)
+   {
+   PCON |= 0x01;    // Enter idle mode (generic 8051 version)
+   }
 
 /*---------------------------------------------------
 	end of file

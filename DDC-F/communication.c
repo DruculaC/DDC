@@ -21,8 +21,11 @@ tByte myTxRxData[7]={0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 void ComMode_1_Data()			
 	{
 	tByte i,n;
+   Receiver_EN = 1;			// turn off the receiver
+	Delay(2);
 
-	Transmitter_EN = 1;		//打开无线发射机
+	Transmitter_EN = 0;		// turn on the transmitter
+
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
 	myTxRxData[2]=ComMode_1;
@@ -41,14 +44,18 @@ void ComMode_1_Data()
 			else	
 				{
 				transmit_wire=0;
-				Delay3(80);
+				Delay3(60);
 				}
 			transmit_wire=1;
 			myTxRxData[i]<<=1;
 			Delay3(50);
 			}
 		}
-	Transmitter_EN = 0;		//关闭发射机
+	Transmitter_EN = 1;		// turn off the transmitter
+	Delay(2);
+
+	Receiver_EN = 0;			// turn on the receiver
+
 	}
 
 /*----------------------------------------------------
@@ -63,7 +70,7 @@ void initsignal()
 	{
 	tByte k,k1;
 	tByte mystartbuffer=0xaa;
-	for(k1=0;k1<1;k1++)
+	for(k1=0;k1<3;k1++)
 		{
 		for(k=0;k<8;k++)
 			{

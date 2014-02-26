@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   COMMUNICATION                                                         12/05/2013 14:04:14 PAGE 1   
+C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE COMMUNICATION
@@ -20,312 +20,487 @@ line level    source
   11          #include "Delay.h"
   12          
   13          /*-------------------------------------------------*/
-  14          unsigned char myTxRxData[7]={0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+  14          tByte myTxRxData[7]={0x00,0x00,0x00,0x00,0x00,0x00,0x00};
   15          
-  16          
-  17          /*----------------------------------------------------
-  18             initsignal()
-  19             
-  20             ³õÊ¼»¯ÐÅºÅ³ÌÐò£¬½ÓÊÕ»úÔÚ½Ó½ÓÊÕÐÅºÅµÄÊ±ºò£¬ÐèÒªÓÐ
-  21             Ò»¶Î´úÂëÀ´Ê¹½ÓÊÕ»ú´ò¿ª£¬¶øÕâÒ»¶Î³ÌÐòÓÐ¿ÉÄÜÎÞ·¨Ê¶±ð
-  22             ³öÀ´£¬¶øÊÇÏàµ±ÓÚ·Ï´úÂë£¬Ö»Õ¼ÓÃÍ¨ÐÅÊ±¼ä¡£
-  23          ----------------------------------------------------*/
+  16          extern tByte receive_LV_count;      //Ã¿´Îtimer1Òç³öÊ±ÅÐ¶Ï½ÓÊÕÏßÈç¹ûÎªLV£¬Ôò¼ÆÊý¼Ó1£¬ÒÔ´ËÀ´±íÃ÷µÍµçÆ½µÄÊ±¼ä
+  17          extern bit receive_wire_flag;    //½ÓÊÕÍ¨ÐÅÏßµÄ±êÖ¾Î»£¬1±íÃ÷¸ßµçÆ½£¬0±íÃ÷µÍµçÆ½£¬Ã¿´Îtimer1Òç³öÊ±£¬ÅÐ¶ÏP1.1Ò
+             -»´Î¡£ÒÔ´ËÀ´±íÃ÷ÊÇ·ñÎªÒ»´ÎÕýÈ·µÄÏÂ½µÑØ
+  18          extern tByte one_receive_byte;      //½ÓÊÕÊý¾ÝµÄÒ»¸ö×Ö½Ú£¬½ÓÊÕÍêºó½«Æä¸³Öµ¸øreceived_data_bufferÏà¶ÔÓ¦µÄ×Ö½Ú
+  19          extern tByte one_receive_byte_count;         //one_receive_byteÓÐ8Î»£¬´Ë¼ÆÊý±íÃ÷½ÓÊÕµ½µÚ¼¸Î»£¬Ã¿´Î¼ÆÊýµ½8µÄÊ±ºò±
+             -íÃ÷Ò»¸ö×Ö½Ú½ÓÊÕÍê³É¡£
+  20          extern tByte receive_HV_count;      //¶¨Ê±Æ÷T1ÔÚÃ»ÓÐÐÅºÅµ½À´µÄÊ±ºò£¬¶Ô¸ßµçÆ½¼ÆÊý£¬Ò»µ©³¬¹ýÄ³¸öÖµ£¬Ôò½«one_rece
+             -ive_byte_countÇå0
+  21          extern tByte data_count;            //½ÓÊÕÊý¾Ý»º´æµÄÎ»Êý£¬¼´±íÃ÷µÚ¼¸¸ö»º´æÊý¾Ý
+  22          extern tByte received_data_buffer[7];     //½ÓÊÕÊý¾Ý»º´æ
+  23          extern bit receive_data_finished_flag;    //½ÓÊÕÕâÒ»´®Êý¾ÝÍê³Éºó£¬´Ë±êÖ¾Î»ÖÃ1
   24          
-  25          void initsignal()
-  26          {
-  27   1         unsigned char k,k1;
-  28   1         unsigned char mystartbuffer=0xaa;
-  29   1         for(k1=0;k1<3;k1++)
-  30   1         {
-  31   2            for(k=0;k<8;k++)
-  32   2            {
-  33   3               if((mystartbuffer&0x80)==0x80)//Îª1
-  34   3               {
-  35   4                  P10=0;
-  36   4                  Delay3(80);//ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
-  37   4               }
-  38   3               else//Îª0µÄÇé¿ö
-  39   3               {
-  40   4                  P10=0;
-  41   4                  Delay3(80);//ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
-  42   4               }
-  43   3               P10=1;//³£Ì¬Îª¸ßµçÆ½
-  44   3               mystartbuffer<<=1;
-  45   3               Delay3(150);//ÑÓÊ±Òª´óÓÚ2ms
-  46   3            }
-  47   2            mystartbuffer=0xaa;
-  48   2            Delay3(80);
-  49   2         }
-  50   1         P10=1;
-  51   1      }
-  52          
-  53          /*----------------------------------------------------
-  54             initsignal2()
-  55             
-C51 COMPILER V9.51   COMMUNICATION                                                         12/05/2013 14:04:14 PAGE 2   
+  25          /*----------------------------------------------------
+  26             initsignal()
+  27             
+  28             ³õÊ¼»¯ÐÅºÅ³ÌÐò£¬½ÓÊÕ»úÔÚ½Ó½ÓÊÕÐÅºÅµÄÊ±ºò£¬ÐèÒªÓÐ
+  29             Ò»¶Î´úÂëÀ´Ê¹½ÓÊÕ»ú´ò¿ª£¬¶øÕâÒ»¶Î³ÌÐòÓÐ¿ÉÄÜÎÞ·¨Ê¶±ð
+  30             ³öÀ´£¬¶øÊÇÏàµ±ÓÚ·Ï´úÂë£¬Ö»Õ¼ÓÃÍ¨ÐÅÊ±¼ä¡£
+  31          ----------------------------------------------------*/
+  32          
+  33          void initsignal()
+  34          {
+  35   1         unsigned char k,k1;
+  36   1         unsigned char mystartbuffer=0xaa;
+  37   1         for(k1=0;k1<3;k1++)
+  38   1         {
+  39   2            for(k=0;k<8;k++)
+  40   2            {
+  41   3               if((mystartbuffer&0x80)==0x80)//Îª1
+  42   3               {
+  43   4                  P10=0;
+  44   4                  Delay3(80);//ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+  45   4               }
+  46   3               else//Îª0µÄÇé¿ö
+  47   3               {
+  48   4                  P10=0;
+  49   4                  Delay3(80);//ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+  50   4               }
+  51   3               P10=1;//³£Ì¬Îª¸ßµçÆ½
+  52   3               mystartbuffer<<=1;
+C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 2   
 
-  56             ³õÊ¼»¯ÐÅºÅ³ÌÐò£¬½ÓÊÕ»úÔÚ½Ó½ÓÊÕÐÅºÅµÄÊ±ºò£¬ÐèÒªÓÐ
-  57             Ò»¶Î´úÂëÀ´Ê¹½ÓÊÕ»ú´ò¿ª£¬¶øÕâÒ»¶Î³ÌÐòÓÐ¿ÉÄÜÎÞ·¨Ê¶±ð
-  58             ³öÀ´£¬¶øÊÇÏàµ±ÓÚ·Ï´úÂë£¬Ö»Õ¼ÓÃÍ¨ÐÅÊ±¼ä¡£
-  59          ----------------------------------------------------*/
+  53   3               Delay3(150);//ÑÓÊ±Òª´óÓÚ2ms
+  54   3            }
+  55   2            mystartbuffer=0xaa;
+  56   2            Delay3(80);
+  57   2         }
+  58   1         P10=1;
+  59   1      }
   60          
-  61          void initsignal2()
-  62          {
-  63   1         unsigned char k,k1;
-  64   1         unsigned char mystartbuffer=0xaa;
-  65   1         for(k1=0;k1<3;k1++)
-  66   1         {
-  67   2            for(k=0;k<8;k++)
-  68   2            {
-  69   3               if((mystartbuffer&0x80)==0x80)//Îª1
-  70   3               {
-  71   4                  P10=0;
-  72   4                  Delay3(80);//ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
-  73   4               }
-  74   3               else//Îª0µÄÇé¿ö
-  75   3               {
-  76   4                  P10=0;
-  77   4                  Delay3(80);//ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
-  78   4               }
-  79   3               P10=1;//³£Ì¬Îª¸ßµçÆ½
-  80   3               mystartbuffer<<=1;
-  81   3               Delay3(150);//ÑÓÊ±Òª´óÓÚ2ms
-  82   3            }
-  83   2            mystartbuffer=0xaa;
-  84   2            Delay3(80);
-  85   2         }
-  86   1         P10=1;
-  87   1      }
-  88          
-  89          /*----------------------------------------------------
-  90             initsignal3()
-  91             
-  92             ³õÊ¼»¯ÐÅºÅ³ÌÐò£¬½ÓÊÕ»úÔÚ½Ó½ÓÊÕÐÅºÅµÄÊ±ºò£¬ÐèÒªÓÐ
-  93             Ò»¶Î´úÂëÀ´Ê¹½ÓÊÕ»ú´ò¿ª£¬¶øÕâÒ»¶Î³ÌÐòÓÐ¿ÉÄÜÎÞ·¨Ê¶±ð
-  94             ³öÀ´£¬¶øÊÇÏàµ±ÓÚ·Ï´úÂë£¬Ö»Õ¼ÓÃÍ¨ÐÅÊ±¼ä¡£
-  95          ----------------------------------------------------*/
+  61          /*----------------------------------------------------
+  62             initsignal2()
+  63             
+  64             ³õÊ¼»¯ÐÅºÅ³ÌÐò£¬½ÓÊÕ»úÔÚ½Ó½ÓÊÕÐÅºÅµÄÊ±ºò£¬ÐèÒªÓÐ
+  65             Ò»¶Î´úÂëÀ´Ê¹½ÓÊÕ»ú´ò¿ª£¬¶øÕâÒ»¶Î³ÌÐòÓÐ¿ÉÄÜÎÞ·¨Ê¶±ð
+  66             ³öÀ´£¬¶øÊÇÏàµ±ÓÚ·Ï´úÂë£¬Ö»Õ¼ÓÃÍ¨ÐÅÊ±¼ä¡£
+  67          ----------------------------------------------------*/
+  68          
+  69          void initsignal2()
+  70          {
+  71   1         unsigned char k,k1;
+  72   1         unsigned char mystartbuffer=0xaa;
+  73   1         for(k1=0;k1<3;k1++)
+  74   1         {
+  75   2            for(k=0;k<8;k++)
+  76   2            {
+  77   3               if((mystartbuffer&0x80)==0x80)//Îª1
+  78   3               {
+  79   4                  P10=0;
+  80   4                  Delay3(80);//ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+  81   4               }
+  82   3               else//Îª0µÄÇé¿ö
+  83   3               {
+  84   4                  P10=0;
+  85   4                  Delay3(80);//ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+  86   4               }
+  87   3               P10=1;//³£Ì¬Îª¸ßµçÆ½
+  88   3               mystartbuffer<<=1;
+  89   3               Delay3(150);//ÑÓÊ±Òª´óÓÚ2ms
+  90   3            }
+  91   2            mystartbuffer=0xaa;
+  92   2            Delay3(80);
+  93   2         }
+  94   1         P10=1;
+  95   1      }
   96          
-  97          void initsignal3()
-  98          {
-  99   1         unsigned char k,k1;
- 100   1         unsigned char mystartbuffer=0xaa;
- 101   1         for(k1=0;k1<3;k1++)
- 102   1         {
- 103   2            for(k=0;k<8;k++)
- 104   2            {
- 105   3               if((mystartbuffer&0x80)==0x80)//Îª1
- 106   3               {
- 107   4                  P10=0;
- 108   4                  Delay3(80);//ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
- 109   4               }
- 110   3               else//Îª0µÄÇé¿ö
- 111   3               {
- 112   4                  P10=0;
- 113   4                  Delay3(80);//ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
- 114   4               }
- 115   3               P10=1;//³£Ì¬Îª¸ßµçÆ½
- 116   3               mystartbuffer<<=1;
- 117   3               Delay3(150);//ÑÓÊ±Òª´óÓÚ2ms
-C51 COMPILER V9.51   COMMUNICATION                                                         12/05/2013 14:04:14 PAGE 3   
+  97          /*----------------------------------------------------
+  98             initsignal3()
+  99             
+ 100             ³õÊ¼»¯ÐÅºÅ³ÌÐò£¬½ÓÊÕ»úÔÚ½Ó½ÓÊÕÐÅºÅµÄÊ±ºò£¬ÐèÒªÓÐ
+ 101             Ò»¶Î´úÂëÀ´Ê¹½ÓÊÕ»ú´ò¿ª£¬¶øÕâÒ»¶Î³ÌÐòÓÐ¿ÉÄÜÎÞ·¨Ê¶±ð
+ 102             ³öÀ´£¬¶øÊÇÏàµ±ÓÚ·Ï´úÂë£¬Ö»Õ¼ÓÃÍ¨ÐÅÊ±¼ä¡£
+ 103          ----------------------------------------------------*/
+ 104          
+ 105          void initsignal3()
+ 106          {
+ 107   1         unsigned char k,k1;
+ 108   1         unsigned char mystartbuffer=0xaa;
+ 109   1         for(k1=0;k1<3;k1++)
+ 110   1         {
+ 111   2            for(k=0;k<8;k++)
+ 112   2            {
+ 113   3               if((mystartbuffer&0x80)==0x80)//Îª1
+ 114   3               {
+C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 3   
 
- 118   3            }
- 119   2            mystartbuffer=0xaa;
- 120   2            Delay3(80);
- 121   2         }
- 122   1         P10=1;
- 123   1      }
- 124          
- 125          /*--------------------------------------------------
- 126             ComMode_1_Data()
- 127             
- 128             Ö÷»ú½ÓÊÕµ½±àÂë1ÐÅºÅºó£¬»á·´À¡Ò»¸ö±àÂë1ÐÅºÅ¸ø¸½»ú
- 129             ÒÔ±íÊ¾Ö÷»úÔÚ¸½»ú¸½½ü¡£
- 130          ---------------------------------------------------*/
- 131          
- 132          void ComMode_1_Data()   
- 133          {
- 134   1         unsigned char i,n;
- 135   1         transmiter_power=0;           
- 136   1         transmiter_EN=1;
- 137   1         myTxRxData[0]=CmdHead;
- 138   1         myTxRxData[1]=MyAddress;
- 139   1         myTxRxData[2]=ComMode_1;
- 140   1      /* myTxRxData[3]=0x00;
- 141   1         myTxRxData[4]=0x00;
- 142   1         myTxRxData[5]=0x00;
- 143   1         myTxRxData[6]=0x00;
- 144   1      */
- 145   1         initsignal2();
- 146   1      
- 147   1         for(i=0;i<3;i++)
- 148   1         {
- 149   2            for(n=0;n<8;n++)
- 150   2            {
- 151   3               if((myTxRxData[i]&0x80)==0x80)//Îª1
- 152   3               {
- 153   4                  P10=0;
- 154   4                  Delay4(120);//ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
- 155   4               }
- 156   3               else//Îª0µÄÇé¿ö
- 157   3               {
- 158   4                  P10=0;
- 159   4                  Delay4(80);//ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
- 160   4               }
- 161   3               P10=1;//³£Ì¬Îª¸ßµçÆ½
- 162   3               myTxRxData[i]<<=1;
- 163   3               Delay4(50);//ÑÓÊ±Òª´óÓÚ2ms
- 164   3            }
- 165   2         }
- 166   1         transmiter_EN=0;
- 167   1      }
- 168          
- 169          /*----------------------------------------------------------
- 170             ComMode_3_Data()
- 171             
- 172             ±»µÁ±¨¾¯ÐÅºÅ£¬ÈÃ¸½»úÓïÒôÌáÊ¾¡°µç¶¯³µ±»µÁ¡°
- 173          ----------------------------------------------------------*/
- 174          
- 175          void ComMode_3_Data()
- 176          {
- 177   1      // unsigned int j;
- 178   1         unsigned char i,n;
- 179   1         transmiter_power=1;//ÇÐ»»Îª300M·¢Éä
-C51 COMPILER V9.51   COMMUNICATION                                                         12/05/2013 14:04:14 PAGE 4   
+ 115   4                  P10=0;
+ 116   4                  Delay3(80); //ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+ 117   4               }
+ 118   3               else
+ 119   3               {
+ 120   4                  P10=0;
+ 121   4                  Delay3(80); //ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+ 122   4               }
+ 123   3               P10=1;
+ 124   3               mystartbuffer<<=1;
+ 125   3               Delay3(150);//ÑÓÊ±Òª´óÓÚ2ms
+ 126   3            }
+ 127   2            mystartbuffer=0xaa;
+ 128   2            Delay3(80);
+ 129   2         }
+ 130   1         P10=1;
+ 131   1      }
+ 132          
+ 133          /*------------------------------------------------------------------------
+ 134             
+ 135          
+ 136          /*--------------------------------------------------
+ 137             ComMode_1_Data()
+ 138             
+ 139             Ö÷»ú½ÓÊÕµ½±àÂë1ÐÅºÅºó£¬»á·´À¡Ò»¸ö±àÂë1ÐÅºÅ¸ø¸½»ú
+ 140             ÒÔ±íÊ¾Ö÷»úÔÚ¸½»ú¸½½ü¡£
+ 141          ---------------------------------------------------*/
+ 142          
+ 143          void ComMode_1_Data()   
+ 144          {
+ 145   1         unsigned char i,n;
+ 146   1         receiver_EN = 1;
+ 147   1         transmiter_power = 1;            
+ 148   1         transmiter_EN = 0;
+ 149   1         myTxRxData[0]=CmdHead;
+ 150   1         myTxRxData[1]=MyAddress;
+ 151   1         myTxRxData[2]=ComMode_1;
+ 152   1      /* myTxRxData[3]=0x00;
+ 153   1         myTxRxData[4]=0x00;
+ 154   1         myTxRxData[5]=0x00;
+ 155   1         myTxRxData[6]=0x00;
+ 156   1      */
+ 157   1         initsignal2();
+ 158   1      
+ 159   1         for(i=0;i<3;i++)
+ 160   1         {
+ 161   2            for(n=0;n<8;n++)
+ 162   2            {
+ 163   3               if((myTxRxData[i]&0x80)==0x80)//Îª1
+ 164   3               {
+ 165   4                  P10=0;
+ 166   4                  Delay4(120);//ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+ 167   4               }
+ 168   3               else//Îª0µÄÇé¿ö
+ 169   3               {
+ 170   4                  P10=0;
+ 171   4                  Delay4(80);//ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+ 172   4               }
+ 173   3               P10=1;//³£Ì¬Îª¸ßµçÆ½
+ 174   3               myTxRxData[i]<<=1;
+ 175   3               Delay4(50);//ÑÓÊ±Òª´óÓÚ2ms
+ 176   3            }
+C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 4   
 
- 180   1         transmiter_EN=1;
- 181   1         myTxRxData[0]=CmdHead;
- 182   1         myTxRxData[1]=MyAddress;
- 183   1         myTxRxData[2]=ComMode_3;
- 184   1      /* myTxRxData[3]=0x00;
- 185   1         myTxRxData[4]=0x00;
- 186   1         myTxRxData[5]=0x00;
- 187   1         myTxRxData[6]=0x00;
- 188   1      */
- 189   1         initsignal();
- 190   1      
- 191   1         for(i=0;i<3;i++)
- 192   1         {
- 193   2            for(n=0;n<8;n++)
- 194   2            {
- 195   3               if((myTxRxData[i]&0x80)==0x80)//Îª1
- 196   3               {
- 197   4                  P10=0;
- 198   4                  Delay3(120);//ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
- 199   4               }
- 200   3               else//Îª0µÄÇé¿ö
- 201   3               {
- 202   4                  P10=0;
- 203   4                  Delay3(80);//ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
- 204   4               }
- 205   3               P10=1;//³£Ì¬Îª¸ßµçÆ½
- 206   3               myTxRxData[i]<<=1;
- 207   3               Delay3(50);//ÑÓÊ±Òª´óÓÚ2ms
- 208   3            }
- 209   2         }
- 210   1         transmiter_EN=0;
- 211   1      }
- 212          
- 213          /*--------------------------------------------------------
- 214             ComMode_4_Data()
- 215             
- 216             ·¢ÐÅºÅ¸ø¸½»ú£¬ÈÃÆäÓïÒôÌáÊ¾¡°µç¶¯³µ±»Ì§Æð¡±
- 217          ---------------------------------------------------------*/
- 218          
- 219          void ComMode_4_Data()//·¢ËÍÌ§Æð±àÂë
- 220          {
- 221   1         unsigned char i,n;
- 222   1         transmiter_power=0;//ÇÐ»»Îª300M·¢Éä
- 223   1         transmiter_EN=1;
- 224   1         myTxRxData[0]=CmdHead;
- 225   1         myTxRxData[1]=MyAddress;
- 226   1         myTxRxData[2]=ComMode_4;
- 227   1      /* myTxRxData[3]=0x00;
- 228   1         myTxRxData[4]=0x00;
- 229   1         myTxRxData[5]=0x00;
- 230   1         myTxRxData[6]=0x00;
- 231   1      */
- 232   1         initsignal3();
- 233   1      
- 234   1         for(i=0;i<3;i++)
- 235   1         {
- 236   2            for(n=0;n<8;n++)
- 237   2            {
- 238   3               if((myTxRxData[i]&0x80)==0x80)//Îª1
- 239   3               {
- 240   4                  P10=0;
- 241   4                  Delay3(120);//ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
-C51 COMPILER V9.51   COMMUNICATION                                                         12/05/2013 14:04:14 PAGE 5   
+ 177   2         }
+ 178   1         transmiter_EN = 1;
+ 179   1         receiver_EN = 0;
+ 180   1         transmiter_power = 1;            
+ 181   1      }
+ 182          
+ 183          /*--------------------------------------------------
+ 184             ComMode_2_Data()
+ 185             when battery is stolen, transmit this code to slave. 
+ 186          ---------------------------------------------------*/
+ 187          
+ 188          void ComMode_2_Data()   
+ 189          {
+ 190   1         unsigned char i,n;
+ 191   1         receiver_EN = 1;
+ 192   1         transmiter_power = 1;            
+ 193   1         transmiter_EN = 0;
+ 194   1         myTxRxData[0]=CmdHead;
+ 195   1         myTxRxData[1]=MyAddress;
+ 196   1         myTxRxData[2]=ComMode_2;
+ 197   1      /* myTxRxData[3]=0x00;
+ 198   1         myTxRxData[4]=0x00;
+ 199   1         myTxRxData[5]=0x00;
+ 200   1         myTxRxData[6]=0x00;
+ 201   1      */
+ 202   1         initsignal2();
+ 203   1      
+ 204   1         for(i=0;i<3;i++)
+ 205   1         {
+ 206   2            for(n=0;n<8;n++)
+ 207   2            {
+ 208   3               if((myTxRxData[i]&0x80)==0x80)//Îª1
+ 209   3               {
+ 210   4                  P10=0;
+ 211   4                  Delay4(120);//ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+ 212   4               }
+ 213   3               else//Îª0µÄÇé¿ö
+ 214   3               {
+ 215   4                  P10=0;
+ 216   4                  Delay4(80);//ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+ 217   4               }
+ 218   3               P10=1;//³£Ì¬Îª¸ßµçÆ½
+ 219   3               myTxRxData[i]<<=1;
+ 220   3               Delay4(50);//ÑÓÊ±Òª´óÓÚ2ms
+ 221   3            }
+ 222   2         }
+ 223   1         transmiter_EN = 1;
+ 224   1         transmiter_power = 1;            
+ 225   1         receiver_EN = 0;
+ 226   1      }
+ 227          
+ 228          /*----------------------------------------------------------
+ 229             ComMode_3_Data()
+ 230             
+ 231             ±»µÁ±¨¾¯ÐÅºÅ£¬ÈÃ¸½»úÓïÒôÌáÊ¾¡°µç¶¯³µ±»µÁ¡°
+ 232          ----------------------------------------------------------*/
+ 233          
+ 234          void ComMode_3_Data()
+ 235          {
+ 236   1      // unsigned int j;
+ 237   1         unsigned char i,n;
+ 238   1         receiver_EN = 1;
+C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 5   
 
- 242   4               }
- 243   3               else//Îª0µÄÇé¿ö
- 244   3               {
- 245   4                  P10=0;
- 246   4                  Delay3(80);//ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
- 247   4               }
- 248   3               P10=1;//³£Ì¬Îª¸ßµçÆ½
- 249   3               myTxRxData[i]<<=1;
- 250   3               Delay3(50);//ÑÓÊ±Òª´óÓÚ2ms
- 251   3            }
- 252   2         }
- 253   1         transmiter_EN=0;
- 254   1      }
- 255          
- 256          /*-----------------------------------------------------------
- 257             ComMode_5_Data()
- 258             
- 259             ·¢ÐÅºÅ¸ø¸½»ú£¬ÈÃÆäÓïÒôÌáÊ¾¡°µç¶¯³µµ¹µØÁË¡±
- 260          ------------------------------------------------------------*/
- 261          
- 262          void ComMode_5_Data()//·¢ËÍµ¹µØ±àÂë
- 263          {
- 264   1         unsigned char i,n;
- 265   1         transmiter_power=0;//ÇÐ»»Îª300M·¢Éä
- 266   1         transmiter_EN=1;      //´ò¿ªÎÞÏß·¢Éä»ú
- 267   1         myTxRxData[0]=CmdHead;
- 268   1         myTxRxData[1]=MyAddress;
- 269   1         myTxRxData[2]=ComMode_5;
- 270   1      /* myTxRxData[3]=0x00;
- 271   1         myTxRxData[4]=0x00;
- 272   1         myTxRxData[5]=0x00;
- 273   1         myTxRxData[6]=0x00;
- 274   1      */
- 275   1         initsignal3();
- 276   1      
- 277   1         for(i=0;i<3;i++)
- 278   1         {
- 279   2            for(n=0;n<8;n++)
- 280   2            {
- 281   3               if((myTxRxData[i]&0x80)==0x80)//Îª1
- 282   3               {
- 283   4                  P10=0;
- 284   4                  Delay3(120);//ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
- 285   4               }
- 286   3               else//Îª0µÄÇé¿ö
- 287   3               {
- 288   4                  P10=0;
- 289   4                  Delay3(80);//ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
- 290   4               }
- 291   3               P10=1;//³£Ì¬Îª¸ßµçÆ½
- 292   3               myTxRxData[i]<<=1;
- 293   3               Delay3(50);//ÑÓÊ±Òª´óÓÚ2ms
- 294   3            }
- 295   2         }
- 296   1         transmiter_EN=0;
- 297   1      }
- 298          
- 299          /*---------------------------------------------------
- 300             end of file
- 301          ----------------------------------------------------*/
+ 239   1         transmiter_power = 1;
+ 240   1         transmiter_EN = 0;
+ 241   1         myTxRxData[0]=CmdHead;
+ 242   1         myTxRxData[1]=MyAddress;
+ 243   1         myTxRxData[2]=ComMode_3;
+ 244   1      /* myTxRxData[3]=0x00;
+ 245   1         myTxRxData[4]=0x00;
+ 246   1         myTxRxData[5]=0x00;
+ 247   1         myTxRxData[6]=0x00;
+ 248   1      */
+ 249   1         initsignal();
+ 250   1      
+ 251   1         for(i=0;i<3;i++)
+ 252   1         {
+ 253   2            for(n=0;n<8;n++)
+ 254   2            {
+ 255   3               if((myTxRxData[i]&0x80)==0x80)//Îª1
+ 256   3               {
+ 257   4                  P10=0;
+ 258   4                  Delay4(120);//ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+ 259   4               }
+ 260   3               else//Îª0µÄÇé¿ö
+ 261   3               {
+ 262   4                  P10=0;
+ 263   4                  Delay4(80);//ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+ 264   4               }
+ 265   3               P10=1;//³£Ì¬Îª¸ßµçÆ½
+ 266   3               myTxRxData[i]<<=1;
+ 267   3               Delay4(50);//ÑÓÊ±Òª´óÓÚ2ms
+ 268   3            }
+ 269   2         }
+ 270   1         transmiter_EN = 1;
+ 271   1         transmiter_power = 1;
+ 272   1         receiver_EN = 0;
+ 273   1      }
+ 274          
+ 275          /*--------------------------------------------------------
+ 276             ComMode_4_Data()
+ 277             
+ 278             ·¢ÐÅºÅ¸ø¸½»ú£¬ÈÃÆäÓïÒôÌáÊ¾¡°µç¶¯³µ±»Ì§Æð¡±
+ 279          ---------------------------------------------------------*/
+ 280          
+ 281          void ComMode_4_Data()//·¢ËÍÌ§Æð±àÂë
+ 282          {
+ 283   1         unsigned char i,n;
+ 284   1         receiver_EN = 1;
+ 285   1         transmiter_power = 1;
+ 286   1         transmiter_EN = 0;
+ 287   1         myTxRxData[0]=CmdHead;
+ 288   1         myTxRxData[1]=MyAddress;
+ 289   1         myTxRxData[2]=ComMode_4;
+ 290   1      /* myTxRxData[3]=0x00;
+ 291   1         myTxRxData[4]=0x00;
+ 292   1         myTxRxData[5]=0x00;
+ 293   1         myTxRxData[6]=0x00;
+ 294   1      */
+ 295   1         initsignal3();
+ 296   1      
+ 297   1         for(i=0;i<3;i++)
+ 298   1         {
+ 299   2            for(n=0;n<8;n++)
+ 300   2            {
+C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 6   
 
+ 301   3               if((myTxRxData[i]&0x80)==0x80)//Îª1
+ 302   3               {
+ 303   4                  P10=0;
+ 304   4                  Delay4(120);//ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+ 305   4               }
+ 306   3               else//Îª0µÄÇé¿ö
+ 307   3               {
+ 308   4                  P10=0;
+ 309   4                  Delay4(80);//ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+ 310   4               }
+ 311   3               P10=1;//³£Ì¬Îª¸ßµçÆ½
+ 312   3               myTxRxData[i]<<=1;
+ 313   3               Delay4(50);//ÑÓÊ±Òª´óÓÚ2ms
+ 314   3            }
+ 315   2         }
+ 316   1         transmiter_EN = 1;
+ 317   1         transmiter_power = 1;
+ 318   1         receiver_EN = 0;
+ 319   1      }
+ 320          
+ 321          /*-----------------------------------------------------------
+ 322             ComMode_5_Data()
+ 323             
+ 324             ·¢ÐÅºÅ¸ø¸½»ú£¬ÈÃÆäÓïÒôÌáÊ¾¡°µç¶¯³µµ¹µØÁË¡±
+ 325          ------------------------------------------------------------*/
+ 326          
+ 327          void ComMode_5_Data()//·¢ËÍµ¹µØ±àÂë
+ 328          {
+ 329   1         unsigned char i,n;
+ 330   1         receiver_EN = 1;
+ 331   1         transmiter_power = 1;//ÇÐ»»Îª300M·¢Éä
+ 332   1         transmiter_EN = 0;      //´ò¿ªÎÞÏß·¢Éä»ú
+ 333   1         myTxRxData[0]=CmdHead;
+ 334   1         myTxRxData[1]=MyAddress;
+ 335   1         myTxRxData[2]=ComMode_5;
+ 336   1      /* myTxRxData[3]=0x00;
+ 337   1         myTxRxData[4]=0x00;
+ 338   1         myTxRxData[5]=0x00;
+ 339   1         myTxRxData[6]=0x00;
+ 340   1      */
+ 341   1         initsignal3();
+ 342   1      
+ 343   1         for(i=0;i<3;i++)
+ 344   1         {
+ 345   2            for(n=0;n<8;n++)
+ 346   2            {
+ 347   3               if((myTxRxData[i]&0x80)==0x80)//Îª1
+ 348   3               {
+ 349   4                  P10=0;
+ 350   4                  Delay4(120);//ÑÓÊ±4.5msÒÔÉÏ£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+ 351   4               }
+ 352   3               else//Îª0µÄÇé¿ö
+ 353   3               {
+ 354   4                  P10=0;
+ 355   4                  Delay4(80);//ÑÓÊ±2ms£¬ÓÉÓÚ¶¨Ê±Æ÷Õ¼ÓÃÎÊÌâ£¬Ö»ÄÜÓÃÕâÖÖÑÓÊ±À´ÊµÏÖ
+ 356   4               }
+ 357   3               P10=1;//³£Ì¬Îª¸ßµçÆ½
+ 358   3               myTxRxData[i]<<=1;
+ 359   3               Delay4(50);//ÑÓÊ±Òª´óÓÚ2ms
+ 360   3            }
+ 361   2         }
+ 362   1         transmiter_EN = 1;
+C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 7   
 
-C51 COMPILER V9.51   COMMUNICATION                                                         12/05/2013 14:04:14 PAGE 6   
+ 363   1         transmiter_power = 1;
+ 364   1         receiver_EN = 0;
+ 365   1      }
+ 366          
+ 367          /*-----------------------------------------------------------------------------
+ 368             receive_byte()
+ 369             receive a byte program
+ 370          -----------------------------------------------------------------------------*/
+ 371          void receive_byte(void)
+ 372             {
+ 373   1         // P11 constantly HV, if detected a LV, judge it.
+ 374   1         if(P11 == 0)
+ 375   1            {
+ 376   2            // count the LV time, if more than 12ms, reset it.
+ 377   2            if(++receive_LV_count == 120)
+ 378   2               {
+ 379   3               receive_LV_count = 0;
+ 380   3               }
+ 381   2            receive_wire_flag = 0;
+ 382   2            }
+ 383   1         // if P11 return to HV
+ 384   1         else
+ 385   1            {
+ 386   2            // and already have LV before, so we think it maybe a bit signal
+ 387   2            if(receive_wire_flag == 0)
+ 388   2               {
+ 389   3               // set the flag, to judge a bit only one time
+ 390   3               receive_wire_flag = 1;
+ 391   3      
+ 392   3               // judge the LV time, if 3.5ms < time < 8ms, we think it is a "0". time<3.5ms means a noise.
+ 393   3               if((receive_LV_count > 35)&&(receive_LV_count <= 80)) 
+ 394   3                  {
+ 395   4                  // save "0" to one byte
+ 396   4                  one_receive_byte <<= 1;
+ 397   4                  one_receive_byte &= 0xfe;
+ 398   4                  one_receive_byte_count++;
+ 399   4                  receive_HV_count = 0;
+ 400   4                  }
+ 401   3               // time > 8ms, means a "1"
+ 402   3               else if((receive_LV_count > 80))
+ 403   3                  {
+ 404   4                  // save "1" to one byte
+ 405   4                  one_receive_byte <<= 1;
+ 406   4                  one_receive_byte |= 0x01;
+ 407   4                  one_receive_byte_count++;
+ 408   4                  receive_HV_count = 0;
+ 409   4                  }
+ 410   3               
+ 411   3               else
+ 412   3                  {
+ 413   4                  // increase the count for HV
+ 414   4                  receive_HV_count++;  
+ 415   4                  }
+ 416   3               // reset LV count
+ 417   3               receive_LV_count = 0;
+ 418   3               }
+ 419   2            else
+ 420   2               {
+ 421   3               // judge whether HV count > 6ms, if yes, means a restart
+ 422   3               if(++receive_HV_count >= 60)
+ 423   3                  {
+ 424   4                  one_receive_byte_count = 0;
+C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 8   
+
+ 425   4                  receive_wire_flag = 1;
+ 426   4                  data_count = 0;
+ 427   4                  }     
+ 428   3               }
+ 429   2            }
+ 430   1         }
+ 431          
+ 432          /*-----------------------------------------------------------------------------
+ 433             receive_word()
+ 434             receive a word program
+ 435          -----------------------------------------------------------------------------*/
+ 436          void receive_word(void)
+ 437             {
+ 438   1         // one byte have 8 bit, once receive a bit, the count increase, once it is 8, it means a byte received.
+ 439   1         if(one_receive_byte_count == 8)
+ 440   1            {
+ 441   2            one_receive_byte_count = 0;
+ 442   2            // assign one byte to buffer[i] 
+ 443   2            received_data_buffer[data_count] = one_receive_byte;
+ 444   2            
+ 445   2            // judge whether buffer[0] is CmdHead
+ 446   2            if((data_count == 0) && (received_data_buffer[0] == CmdHead))
+ 447   2               {
+ 448   3               data_count = 1;
+ 449   3               }
+ 450   2            // judge whether buffer[1] is MyAddress
+ 451   2            else if((data_count == 1) && (received_data_buffer[1] == MyAddress))
+ 452   2               {
+ 453   3               data_count = 2;
+ 454   3               }
+ 455   2            else if(data_count == 2)
+ 456   2               {
+ 457   3               receive_data_finished_flag = 1;
+ 458   3               data_count = 0;
+ 459   3               }
+ 460   2            else 
+ 461   2               {
+ 462   3               data_count = 0;
+ 463   3               }
+ 464   2            }
+ 465   1         }
+ 466             
+ 467          /*---------------------------------------------------
+ 468             end of file
+ 469          ----------------------------------------------------*/
+
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    554    ----
+   CODE SIZE        =    820    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      7      17
+   DATA SIZE        =      7      19
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

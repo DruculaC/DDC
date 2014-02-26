@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   OTHER                                                                 12/05/2013 14:04:14 PAGE 1   
+C51 COMPILER V9.51   OTHER                                                                 02/26/2014 15:42:02 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE OTHER
@@ -21,36 +21,38 @@ line level    source
   12          
   13          /*-------------------------------------------------------
   14             magnet_CW()
-  15             电磁铁正转，顺时针
+  15             电磁铁正转，顺时针，将锁打开
   16          --------------------------------------------------------*/
   17          void magnet_CW(void)
   18             {
-  19   1         MagentControl_1=0;//关闭磁铁
-  20   1         MagentControl_2=1;
-  21   1         Delay(73);
-  22   1         MagentControl_1=0;//磁铁常态为这种模式
-  23   1         MagentControl_2=0;
-  24   1         }
-  25          
-  26          /*-------------------------------------------------------
-  27             magnet_ACW()
-  28             电磁铁反转，逆时针
-  29          --------------------------------------------------------*/
-  30          void magnet_ACW(void)
-  31             {
-  32   1         MagentControl_1=1;//开启磁铁
-  33   1         MagentControl_2=0;
-  34   1         Delay(73);
-  35   1         MagentControl_1=0;//磁铁常态为这种模式
-  36   1         MagentControl_2=0;
-  37   1         }
-  38          /*---------------------------------------------------
-  39             end of file
-  40          ----------------------------------------------------*/
+  19   1         MagentControl_1 = 0;
+  20   1         MagentControl_2 = 1;
+  21   1         magnet_delay();
+  22   1         MagentControl_1 = 1;
+  23   1         MagentControl_2 = 1;
+  24   1         motor_lock = 0;
+  25   1         }
+  26          
+  27          /*-------------------------------------------------------
+  28             magnet_ACW()
+  29             电磁铁反转，逆时针，将锁关闭
+  30          --------------------------------------------------------*/
+  31          void magnet_ACW(void)
+  32             {
+  33   1         motor_lock = 1;
+  34   1         MagentControl_1 = 1;
+  35   1         MagentControl_2 = 0;
+  36   1         magnet_delay();
+  37   1         MagentControl_1 = 1;
+  38   1         MagentControl_2 = 1;
+  39   1         }
+  40          /*---------------------------------------------------
+  41             end of file
+  42          ----------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     32    ----
+   CODE SIZE        =     28    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

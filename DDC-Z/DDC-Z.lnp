@@ -7,5 +7,6 @@
 "communication.obj",
 "Battery.obj",
 "Other.obj",
-"Timer.obj" 
+"Timer.obj",
+"operation.obj" 
 TO "DDC-Z" 

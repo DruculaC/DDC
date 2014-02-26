@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   PWM                                                                   12/05/2013 14:04:14 PAGE 1   
+C51 COMPILER V9.51   PWM                                                                   02/26/2014 15:42:01 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE PWM
@@ -18,73 +18,89 @@ line level    source
    9          
   10          #include "pwm.h"
   11          
-  12          UINT16 PWM_shadow;
+  12          tWord PWM_shadow;
   13          
   14          /*---------------------------------------------------
   15             Init_PWM()
   16             
-  17             初始化方波输出功能
+  17             initialize PWM
   18          ----------------------------------------------------*/
   19          
   20          void Init_PWM(void)
-  21          {    
-  22   1          PWMCON0 = 0xC0;                     // Enable PWM and select auto reload mode    
-  23   1      
-  24   1          PWM_shadow = PWMP;
-  25   1          PWMPH = HIBYTE(PWM_shadow);         // PWM Period
-  26   1          PWMPL = LOBYTE(PWM_shadow);                               
-  27   1      }
-  28          
-  29          /*---------------------------------------------------
-  30             PWM_Channel()
-  31             
-  32             选择PWM方波输出的通道
-  33          ----------------------------------------------------*/
-  34          
-  35          void PWM_Channel(E_PWMCNL_SEL Channel)  //选择PWM输出通道
-  36          {
-  37   1          switch(Channel)
-  38   1          {
-  39   2              case E_CHANNEL0:
-  40   2                  PWM_shadow=PWM0_Duty;
-  41   2                  PWM0H = HIBYTE(PWM_shadow);// PWM0 Duty (P0.1)
-  42   2                  PWM0L = LOBYTE(PWM_shadow);
-  43   2                  break;
-  44   2              case E_CHANNEL1:
-  45   2                  PWM_shadow=PWM1_Duty;
-  46   2                  PWM1H = HIBYTE(PWM_shadow);// PWM1 Duty (P1.6)
-  47   2                  PWM1L = LOBYTE(PWM_shadow);
-  48   2                  break;
-  49   2              case E_CHANNEL2:
-  50   2                  PWM_shadow=PWM2_Duty;
-  51   2                  PWM2H = HIBYTE(PWM_shadow);// PWM2 Duty (P1.7)
-  52   2                  PWM2L = LOBYTE(PWM_shadow);
-  53   2                  break;
-  54   2              case E_CHANNEL3:
-  55   2                  PWM_shadow=PWM3_Duty;
-C51 COMPILER V9.51   PWM                                                                   12/05/2013 14:04:14 PAGE 2   
+  21             {    
+  22   1         // Enable PWM and select auto reload mode 
+  23   1         PWMCON0 = 0xC0;                        
+  24   1      
+  25   1         PWM_shadow = PWMP;
+  26   1         // PWM Period
+  27   1         PWMPH = HIBYTE(PWM_shadow);         
+  28   1         PWMPL = LOBYTE(PWM_shadow);                               
+  29   1         }
+  30          
+  31          /*---------------------------------------------------
+  32             PWM_Channel()
+  33             
+  34             choose the PWM channel
+  35          ----------------------------------------------------*/
+  36          
+  37          void PWM_Channel(E_PWMCNL_SEL Channel) 
+  38             {
+  39   1          switch(Channel)
+  40   1            {
+  41   2            // PWM0 Duty (P0.1)
+  42   2            case E_CHANNEL0:
+  43   2               {
+  44   3               PWM_shadow = PWM0_Duty;
+  45   3               PWM0H = HIBYTE(PWM_shadow);
+  46   3               PWM0L = LOBYTE(PWM_shadow);
+  47   3               }
+  48   2            break;
+  49   2            // PWM1 Duty (P1.6)
+  50   2            case E_CHANNEL1:
+  51   2               {
+  52   3               PWM_shadow = PWM1_Duty;
+  53   3               PWM1H = HIBYTE(PWM_shadow);
+  54   3               PWM1L = LOBYTE(PWM_shadow);
+  55   3               }
+C51 COMPILER V9.51   PWM                                                                   02/26/2014 15:42:01 PAGE 2   
 
-  56   2                  PWM3H = HIBYTE(PWM_shadow);// PWM3 Duty (P0.0)
-  57   2                  PWM3L = LOBYTE(PWM_shadow);
-  58   2                  break; 
-  59   2          }
-  60   1      }
-  61          
-  62          /*-------------------------------------------------------
-  63             myPwm()
-  64             
-  65             方波输出打开
-  66          --------------------------------------------------------*/
-  67          
-  68          void myPwm()
-  69          {
-  70   1         PWM_Channel(E_CHANNEL0);           // Select PWM channel.
-  71   1         Init_PWM();                        // Enable PWM function and set PWM period.  
-  72   1      }
-  73          
-  74          /*---------------------------------------------------
-  75             end of file
-  76          ----------------------------------------------------*/ 
+  56   2            break;
+  57   2            // PWM2 Duty (P1.7)
+  58   2            case E_CHANNEL2:
+  59   2               {
+  60   3               PWM_shadow = PWM2_Duty;
+  61   3               PWM2H = HIBYTE(PWM_shadow);
+  62   3               PWM2L = LOBYTE(PWM_shadow);         
+  63   3               }
+  64   2            break;
+  65   2            // PWM3 Duty (P0.0)
+  66   2            case E_CHANNEL3:
+  67   2               {
+  68   3               PWM_shadow = PWM3_Duty;
+  69   3               PWM3H = HIBYTE(PWM_shadow);
+  70   3               PWM3L = LOBYTE(PWM_shadow);
+  71   3               }
+  72   2            break; 
+  73   2            }  
+  74   1         }
+  75          
+  76          /*-------------------------------------------------------
+  77             myPwm()
+  78             
+  79             方波输出打开
+  80          --------------------------------------------------------*/
+  81          
+  82          void myPwm()
+  83          {
+  84   1         // choose channel for pwm
+  85   1         PWM_Channel(E_CHANNEL0);         
+  86   1         // pwm out enable
+  87   1         Init_PWM();                        
+  88   1      }
+  89          
+  90          /*---------------------------------------------------
+  91             end of file
+  92          ----------------------------------------------------*/ 
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

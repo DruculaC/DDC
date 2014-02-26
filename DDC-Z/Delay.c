@@ -56,13 +56,12 @@ void Delay4(tWord t)
 	延迟约为1ms的子程序
 ----------------------------------------------------*/
 
-void delay_ms(unsigned int count)
+void delay_ms(tWord count)
 {
-	unsigned int i;
-	unsigned int j;
+	tWord i, j;
 	for(i=0;i<count;i++)
 	{
-		for(j=0;j<500;j++);
+		for(j=0;j<100;j++);
 	}
 }
 
@@ -72,16 +71,37 @@ void delay_ms(unsigned int count)
 	延迟约为1us的子程序
 ----------------------------------------------------*/
 
-void delay_us(unsigned int count1)
-{
-	unsigned int i;
-	unsigned char j;
-	for(i=0;i<count1;i++)
+void delay_us(tWord count1)
 	{
-		for(j=0;j<20;j++);
+	tWord i;
+	tByte j;
+	for(i=0;i<count1;i++)
+		{
+		for(j=0;j<4;j++);
+		}
 	}
-}
 
+/*----------------------------------------------------
+	magnet_delay()
+	电磁铁的延迟程序，要在里面加入对过流的判断
+-----------------------------------------------------*/
+void magnet_delay(void)
+	{
+	tByte i;
+	tWord j;                                                                                                        
+	for(i = 0; i < 50; i++)
+		{
+		for(j = 0; j< 8000; j++);
+		}
+	for(i = 0; i < 50; i++)
+		{
+		if(magnet_overcurrent == 1)
+			{
+			for(j = 0; j< 18000; j++);
+			}
+		}
+
+	}
 /*---------------------------------------------------
 	end of file
 ----------------------------------------------------*/

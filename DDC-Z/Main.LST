@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   MAIN                                                                  12/05/2013 14:04:14 PAGE 1   
+C51 COMPILER V9.51   MAIN                                                                  02/26/2014 15:42:01 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE MAIN
@@ -25,176 +25,113 @@ line level    source
   16          #include "communication.h"
   17          #include "Battery.h"
   18          #include "Other.h"
-  19                                                  
-  20          /*------- Public variable declarations --------------------------*/
-  21          extern bit stolen_alarm_flag;    //主机被盗报警标志，1的时候表示触发    
-  22          extern bit host_stolen_speech_EN;      //主机被盗语音使能，1的时候在main中语音提示
-  23          extern bit battery_check;              //置1时，执行一次电量转换，执行完后，将其置0
-  24          extern bit position_sensor_EN;         //位置传感器，即倒地抬起传感器总开关，1的时候，检测这两个传感器
-  25          extern bit slave_away_speech_EN;       //判断附机离开后，语音提示，在main里面操作
-  26          extern bit magnet_CW_EN;               //电磁铁顺时针转动使能，转动一次后复位为0
-  27          extern bit comm_whole_control;            //通信总开关，0关闭通信，1打开通信
-  28          extern tWord host_stolen_speech_count;    //判断主机被盗后，语音提示的次数
-  29          extern bit magnet_ACW_EN;                 //电磁铁逆时针转动使能，转动一次后复位为0
-  30          extern bit slave_nearby_speech_EN;       //判断附近靠近后，语音提示，在main里面操作
-  31          extern bit host_stolen_alarm1_EN;      //判断为被盗报警后的第一段语音使能
-  32          extern bit host_stolen_alarm2_EN;      //判断为被盗报警后的第二段语音使能
-  33          extern tByte host_stolen_alarm1_count;    //判断为被盗报警后的第一段语音次数
-  34          extern tByte host_stolen_alarm2_count;    //判断为被盗报警后的第二段语音次数
-  35          
-  36          /*------- Private variable declarations --------------------------*/
-  37          bit magnet_ACW_flag=0;
-  38          tByte slave_nearby_speech_count=0;
-  39          tByte slave_away_speech_count=0;
-  40          tByte key_rotated_on_flag=0;        //电动车开启关闭标志位，1表示电动车开启了，0表示电动车关闭了
-  41          tWord ADC_check_result = 0;      //作为AD检测值
-  42          
-  43          void main()
-  44          {
-  45   1         InitTimer(1,100);
-  46   1         
-  47   1         sensor_EN=0;
-  48   1      
-  49   1         noVoice();
-  50   1         myPwm(); //开发射机
-  51   1      
-  52   1         voice_EN=0;    //将功放关闭
-  53   1      
-  54   1         raised_sensor_detect=1;
-  55   1         fell_sensor_detect=1;
-C51 COMPILER V9.51   MAIN                                                                  12/05/2013 14:04:14 PAGE 2   
+  19          #include "operation.h"
+  20                                                  
+  21          /*------- Public variable declarations --------------------------*/
+  22          extern bit stolen_alarm_flag;    //主机被盗报警标志，1的时候表示触发    
+  23          extern bit host_stolen_speech_EN;      //主机被盗语音使能，1的时候在main中语音提示
+  24          extern bit battery_check;              //置1时，执行一次电量转换，执行完后，将其置0
+  25          extern bit position_sensor_EN;         //位置传感器，即倒地抬起传感器总开关，1的时候，检测这两个传感器
+  26          extern bit slave_away_speech_EN;       //判断附机离开后，语音提示，在main里面操作
+  27          extern bit magnet_CW_EN;               //电磁铁顺时针转动使能，转动一次后复位为0
+  28          extern bit comm_whole_control;            //通信总开关，0关闭通信，1打开通信
+  29          extern tWord host_stolen_speech_count;    //判断主机被盗后，语音提示的次数
+  30          extern bit magnet_ACW_EN;                 //电磁铁逆时针转动使能，转动一次后复位为0
+  31          extern bit slave_nearby_speech_EN;       //判断附近靠近后，语音提示，在main里面操作
+  32          extern bit host_stolen_alarm1_EN;      //判断为被盗报警后的第一段语音使能
+  33          extern bit host_stolen_alarm2_EN;      //判断为被盗报警后的第二段语音使能
+  34          extern tByte host_stolen_alarm1_count;    //判断为被盗报警后的第一段语音次数
+  35          extern tByte host_stolen_alarm2_count;    //判断为被盗报警后的第二段语音次数
+  36          extern bit fell_flag;                  //判断主机倒下后，置1
+  37          extern tByte slave_away;               //模式选择位，1则用模式1,2则用模式2,3则为模式3
+  38          extern tByte leave_count;              //附机离开时的计数，只要附机3s应答正确，就清0   
+  39          extern bit raised_flag;             //判断主机被抬起后，置1
+  40          extern tByte sensor_2ndstage_LV_time;  //传感器进入第二阶段检测时，计算低电平的时间
+  41          extern tByte sensor_2ndstage_count;    //传感器进入第二阶段检测时，计算低电平的时间
+  42          extern tByte host_2ndtouch_speech_count;     //主机被第二次触碰后，语音提示的次数
+  43          extern tWord sensor_3rdstage_time;        //传感器进入第三阶段的时间，
+  44          extern tByte sensor_3rdstage_effcount;    //传感器进入第三阶段后，有效触碰次数的计数
+  45          extern tByte sensor_3rdstage_count;       //传感器进入第三阶段后，低电平的计数
+  46          extern tWord sensor_3rdstage_interval;    //传感器在第三阶段中，每次有效低电平计数之间的时间间隔。在这期间的
+             -低电平不认为有效。
+  47          extern bit host_touch_speech_EN;          //第一次触碰后语音使能
+  48          extern bit host_2ndtouch_speech_EN;       //第二次触碰后语音使能
+  49          extern bit raised_fell_flag;              //倒地或者抬起触发后，此标志位置1
+  50          extern tByte sensor_trigger_count;        //传感器触发计数
+  51          extern tWord sensor_2ndstage_time;        //传感器进入第二阶段后流逝时间的计数
+  52          extern tByte sensor_1ststage_count;       //传感器第一阶段判断低电平的计数
+  53          extern tByte nearby_away_interval;     //附机离开和靠近时，语音提示和开关锁的时间间隔
+  54          extern bit magnet_ACW_flag;
+C51 COMPILER V9.51   MAIN                                                                  02/26/2014 15:42:01 PAGE 2   
 
-  56   1      
-  57   1         P10=1;
-  58   1      
-  59   1         transmiter_power=0; //发射机模式控制端,开机时为30M模式
-  60   1         
-  61   1         magnet_ACW_flag=0;
-  62   1      
-  63   1         comm_whole_control=1; //开启通信
-  64   1         transmiter_EN=0;
-  65   1      
-  66   1         position_sensor_EN=1;
-  67   1         magnet_ACW();
-  68   1      // P2M1 |= 0x10;
-  69   1      // P2M2 &= 0xef;
-  70   1         
-  71   1         while(1)
-  72   1         {
-  73   2            if((key_rotate==1)&&(key_rotated_on_flag==0))         //开车转动钥匙时，执行一次电量转换
-  74   2            {
-  75   3               Delay(5);
-  76   3               if(key_rotate==1)
-  77   3               {
-  78   4                  verifybattery(ADC_check_result);                //检查电瓶的电压，然后
-  79   4                  key_rotate_on_speech();
-  80   4                  key_rotated_on_flag = 1;
-  81   4               }
-  82   3            }
-  83   2            
-  84   2            if((key_rotate==0)&&(key_rotated_on_flag==1))
-  85   2            {
-  86   3               Delay(5);
-  87   3               if(key_rotate==0)
-  88   3               {
-  89   4                  key_rotate_off_speech();
-  90   4                  verifybattery(ADC_check_result);
-  91   4                  key_rotated_on_flag=0;
-  92   4               }
-  93   3            }
-  94   2      
-  95   2            if(battery_check==1)
-  96   2            {
-  97   3               ADC_check_result=GetADCResult(6);   //电池电量检测
-  98   3               battery_check=0;  
-  99   3            }
- 100   2      
- 101   2            if(magnet_CW_EN==1)
- 102   2            {
- 103   3               if(magnet_ACW_flag==1)
- 104   3               {
- 105   4                  magnet_CW();
- 106   4                  magnet_ACW_flag=0;
- 107   4               }
- 108   3               magnet_CW_EN=0;
- 109   3            }
- 110   2      
- 111   2            if(magnet_ACW_EN==1)
- 112   2            {
- 113   3               if(magnet_ACW_flag==0)
- 114   3               {
- 115   4                  magnet_ACW();
- 116   4                  magnet_ACW_flag=1;
- 117   4               }
-C51 COMPILER V9.51   MAIN                                                                  12/05/2013 14:04:14 PAGE 3   
-
- 118   3               magnet_ACW_EN=0;
- 119   3            }
- 120   2      
- 121   2            if((host_stolen_alarm1_EN == 1)&&(host_stolen_alarm1_count < 2))
- 122   2               {
- 123   3               stolen_alarm_flag = 1;
- 124   3               stolen_alarm_speech1();
- 125   3               host_stolen_alarm1_count++;
- 126   3               if(host_stolen_alarm1_count >=2)
- 127   3                  {
- 128   4                  host_stolen_alarm1_count = 0;
- 129   4                  host_stolen_alarm1_EN = 0;
- 130   4                  stolen_alarm_flag = 0;
- 131   4                  }
- 132   3               }
- 133   2            
- 134   2            if((host_stolen_alarm2_EN == 1)&&(host_stolen_alarm2_count < 2))
- 135   2               {
- 136   3               stolen_alarm_flag = 1;
- 137   3               stolen_alarm_speech2();
- 138   3               host_stolen_alarm2_count++;
- 139   3               if(host_stolen_alarm2_count >=2)
- 140   3                  {
- 141   4                  host_stolen_alarm2_count = 0;
- 142   4                  host_stolen_alarm2_EN = 0;
- 143   4                  stolen_alarm_flag = 0;
- 144   4                  }
- 145   3               }
- 146   2      
- 147   2            if((slave_nearby_speech_EN==1)&&(slave_nearby_speech_count<1))
- 148   2            {
- 149   3                  slave_away_speech_EN=0;
- 150   3                  slave_away_speech_count=0;
- 151   3                  slave_nearby_speech();
- 152   3                  slave_nearby_speech_count++;
- 153   3            }
- 154   2      
- 155   2            if((slave_away_speech_EN==1)&&(slave_away_speech_count<1))
- 156   2            {
- 157   3                  slave_nearby_speech_EN=0;
- 158   3                  slave_nearby_speech_count=0;
- 159   3                  
- 160   3                  slave_away_speech();
- 161   3                  
- 162   3                  slave_away_speech_count++;
- 163   3                  sensor_EN=1;   //开启三轴传感器
- 164   3            }
- 165   2         }
- 166   1      }
- 167          
- 168          
- 169          
- 170          /*---------------------------------------------------
- 171             end of file
- 172          ----------------------------------------------------*/
+  55          extern bit slave_nearby_EN;         // 作为slave靠近后操作的使能
+  56          extern tByte key_rotated_on_flag;         //电动车开启关闭标志位，1表示电动车开启了，0表示电动车关闭了
+  57          extern tByte slave_nearby_operation_count;   // 作为slave靠近后操作的次数
+  58          extern tWord ADC_check_result;      //作为AD检测值
+  59          
+  60          /*------- Private variable declarations --------------------------*/
+  61          
+  62          void main()
+  63             {
+  64   1         InitTimer(1,100);
+  65   1         
+  66   1         sensor_EN = 0;
+  67   1         position_sensor_EN = 0;
+  68   1      
+  69   1         noVoice();
+  70   1         myPwm(); //开发射机
+  71   1      
+  72   1         voice_EN=0;    //将功放关闭
+  73   1      
+  74   1         raised_sensor_detect=1;
+  75   1         fell_sensor_detect=1;
+  76   1      
+  77   1         P10=1;
+  78   1         
+  79   1         magnet_ACW_flag=0;
+  80   1         horizontal_sensor = 1;
+  81   1         // open communication
+  82   1         comm_whole_control = 1; 
+  83   1         
+  84   1         // turn off transmitter, turn on receiver
+  85   1         transmiter_EN = 1;
+  86   1         receiver_EN = 0;
+  87   1      
+  88   1      
+  89   1         nearby_away_interval = 6;        //初始化使附机和主机开关机的计数为可以执行的状态
+  90   1         
+  91   1         // initialize the magnet, 
+  92   1         MagentControl_1 = 1;
+  93   1         MagentControl_2 = 1;
+  94   1         
+  95   1         transmiter_power = 1; 
+  96   1         
+  97   1         // lock the external motor, 防止锁还没完全打开的时候，车手加电导致轮子与锁的告诉碰撞。 
+  98   1         motor_lock = 1;
+  99   1         
+ 100   1         while(1)
+ 101   1            {
+ 102   2            sEOS_Go_To_Sleep();
+ 103   2            }
+ 104   1         }
+ 105          
+ 106          
+ 107          
+ 108          /*---------------------------------------------------
+ 109             end of file
+ 110          ----------------------------------------------------*/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    251    ----
+   CODE SIZE        =     53    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
-   PDATA SIZE       =   ----    ----
-C51 COMPILER V9.51   MAIN                                                                  12/05/2013 14:04:14 PAGE 4   
+C51 COMPILER V9.51   MAIN                                                                  02/26/2014 15:42:01 PAGE 3   
 
-   DATA SIZE        =      5    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
-   BIT SIZE         =      1    ----
+   BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
 

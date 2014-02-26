@@ -400,6 +400,11 @@
               <FileType>1</FileType>
               <FilePath>.\Timer.c</FilePath>
             </File>
+            <File>
+              <FileName>operation.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\operation.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

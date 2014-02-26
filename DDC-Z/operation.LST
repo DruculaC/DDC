@@ -1,0 +1,130 @@
+C51 COMPILER V9.51   OPERATION                                                             02/26/2014 15:42:02 PAGE 1   
+
+
+C51 COMPILER V9.51, COMPILATION OF MODULE OPERATION
+OBJECT MODULE PLACED IN operation.OBJ
+COMPILER INVOKED BY: D:\Program Files (x86)\keil\C51\BIN\C51.EXE operation.c BROWSE DEBUG OBJECTEXTEND TABS(3)
+
+line level    source
+
+   1          /*-------------------------------------------------------------
+   2             operation.c
+   3             operation in all case
+   4          --------------------------------------------------------------*/
+   5          
+   6          #include "main.h"
+   7          #include "port.h"
+   8          
+   9          #include "operation.h"
+  10          #include "other.h"
+  11          #include "voice.h"
+  12          #include "battery.h"
+  13          #include "delay.h"
+  14          
+  15          /*------- Public variable declarations --------------------------*/
+  16          extern bit slave_away_speech_EN;      
+  17          extern bit slave_nearby_speech_EN;     
+  18          extern bit position_sensor_EN;      //位置传感器，即倒地抬起传感器总开关，1的时候，检测这两个传感器
+  19          extern bit slave_away;              //模式选择位，1则用模式1,2则用模式2,3则为模式3
+  20          extern bit magnet_CW_EN;               //电磁铁顺时针转动使能，转动一次后复位为0
+  21          extern bit fell_flag;                  //判断主机倒下后，置1
+  22          extern bit raised_flag;             //判断主机被抬起后，置1
+  23          extern tByte sensor_trigger_count;     //传感器触发计数
+  24          extern tByte sensor_1ststage_count; //传感器第一阶段判断低电平的计数
+  25          extern tByte leave_count;              // increment every 2s, reset for every success communication
+  26          extern bit raised_fell_once_flag;         //raised_fell_flag是否曾经标志过，如果标志过则置1.然后主机被恢复倒地或
+             -者恢复抬起时，此标志位复位。
+  27          extern bit raised_fell_flag;              //倒地或者抬起触发后，此标志位置1
+  28          extern bit host_stolen_alarm1_EN;      //判断为被盗报警后的第一段语音使能
+  29          extern bit host_stolen_alarm2_EN;      //判断为被盗报警后的第二段语音使能
+  30          extern tByte host_stolen_alarm1_count;    //判断为被盗报警后的第一段语音次数
+  31          extern tByte host_stolen_alarm2_count;    //判断为被盗报警后的第二段语音次数
+  32          extern bit stolen_alarm_flag;             // when host been touch 3 times, this flag 1 before alarm voice present,
+             - not to detect sensor for 1st voice alarm.
+  33          extern tWord sensor_3rdstage_time;        //传感器进入第三阶段的时间，
+  34          extern tByte sensor_3rdstage_effcount;    //传感器进入第三阶段后，有效触碰次数的计数
+  35          extern tByte sensor_3rdstage_count;       //传感器进入第三阶段后，低电平的计数
+  36          extern tWord sensor_3rdstage_interval;    //传感器在第三阶段中，每次有效低电平计数之间的时间间隔。在这期间的
+             -低电平不认为有效。
+  37          extern tWord sensor_2ndstage_time;     //传感器进入第二阶段后流逝时间的计数
+  38          extern tByte sensor_2ndstage_count;    //传感器进入第二阶段检测时，计算低电平的时间
+  39          extern tByte nearby_away_interval;     //附机离开和靠近时，语音提示和开关锁的时间间隔
+  40          extern bit slave_nearby_EN;         // 作为slave靠近后操作的使能
+  41          extern tByte slave_nearby_operation_count;   // 作为slave靠近后操作的次数
+  42          extern tByte key_rotated_on_flag;         //电动车开启关闭标志位，1表示电动车开启了，0表示电动车关闭了
+  43          extern tWord ADC_check_result;      //作为AD检测值
+  44          
+  45          /*-----------------------------------------
+  46             slave_away_operation().c
+  47             
+  48             operation for slave is away
+  49          ------------------------------------------*/
+  50          void slave_away_operation(void)
+  51             {
+  52   1         if(slave_away == 0)
+C51 COMPILER V9.51   OPERATION                                                             02/26/2014 15:42:02 PAGE 2   
+
+  53   1            {
+  54   2            // turn off the magnet 
+  55   2            magnet_ACW();
+  56   2            }
+  57   1         
+  58   1         // speech for slave away
+  59   1         slave_away_speech();
+  60   1         
+  61   1         nearby_away_interval = 0;
+  62   1         
+  63   1         // enable position sensor(vertical and horizontal) and vibration sensor
+  64   1         position_sensor_EN=1;   
+  65   1         sensor_EN = 1;
+  66   1         // reset slave nearby EN and count
+  67   1         slave_nearby_EN = 0;
+  68   1         slave_nearby_operation_count = 0;
+  69   1         // reset relatively sensor count
+  70   1         sensor_trigger_count=0;
+  71   1         sensor_1ststage_count=0;               
+  72   1         }
+  73          
+  74          /*----------------------------------------------------------------------
+  75                slave_nearby_operation()
+  76                operation for slave is nearby
+  77          ----------------------------------------------------------------------*/
+  78          void slave_nearby_operation(void)
+  79             {
+  80   1         // turn on the magnet
+  81   1         magnet_CW();
+  82   1      
+  83   1         if(key_rotated_on_flag == 0)
+  84   1            {
+  85   2            // speech for slave nearby
+  86   2            slave_nearby_speech();
+  87   2            // handle with battery status 
+  88   2            verifybattery(ADC_check_result);             
+  89   2            // rotate on speech
+  90   2            key_rotate_on_speech();
+  91   2            }
+  92   1         nearby_away_interval = 0;
+  93   1         
+  94   1         slave_nearby_operation_count++;
+  95   1      
+  96   1         // reset the slave away flag, 0 means slave is nearby.
+  97   1         slave_away = 0;      
+  98   1         }
+  99             
+ 100          /*---------------------------------------------------
+ 101             end of file
+ 102          ----------------------------------------------------*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     53    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

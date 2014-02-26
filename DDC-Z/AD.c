@@ -1,7 +1,7 @@
 /*---------------------------------------------------
-	Delay.c (v1.00)
+	ADC.c (v1.00)
 	
-	Delay functions
+	ADC function, for voltage conversion
 ---------------------------------------------------*/	
 
 #include "main.h"
@@ -12,56 +12,61 @@
 
 /*----------------------------------------------------
 	GetADCResult(tByte ch)
-	通过指定通道，来生成ADC的值。
+	assign the channel, to get the voltage
 ----------------------------------------------------*/
 
-unsigned int GetADCResult(unsigned char ch)
-{
-	unsigned char DataL=0;
-	unsigned int DataH=0;
-	if(ch==5)//检测拾音器的电量大小
+tWord GetADCResult(tByte ch)
 	{
-		P0DIDS|=0x20; // Set ADC0 (P0.5 default) is input only mode
-
-		AADR0=0;	//选择通道P0.5
-		AADR1=0;
-		AADR2=1;
+	tByte DataL = 0;
+	tWord DataH = 0;
+	// channel 5 is MIC voltage detection
+	if(ch == 5)
+		{	
+		// Set ADC0 (P0.5 default) is input only mode
+		P0DIDS |= 0x20; 
+      // choose channel 5
+		AADR0 = 0;	
+		AADR1 = 0;
+		AADR2 = 1;
 	                                                                  
-	    ADCCON1|=0x80;                                          
+	   ADCCON1 |= 0x80;                                          
 		
-		ADCI=0;                                           
-    	ADCS=1;  
+		ADCI = 0;                                           
+    	ADCS = 1;  
 		
-		DataL=ADCCON0;
-		DataL=DataL>>6; 
+		DataL = ADCCON0;
+		DataL = DataL>>6; 
 
-		DataH=ADCH;
-		DataH=(DataH<<2)+DataL;
+		DataH = ADCH;
+		DataH = (DataH<<2) + DataL;
 
 		return DataH;
-	}
-	else if(ch==6) //电池检测
-	{
-		P0DIDS|=0x40; // Set ADC0 (P0.6 default) is input only mode
+		}
+	// channel 6 is battery voltage detection
+	else if(ch == 6) 
+		{
+		// Set ADC0 (P0.6 default) is input only mode
+		P0DIDS |= 0x40; 
 
-		AADR0=1;	//选择通道P0.6
-		AADR1=0;
-		AADR2=1;
+		// choose channel 6.
+		AADR0 = 1;
+		AADR1 = 0;
+		AADR2 = 1;
 	                                                                  
-	    ADCCON1|=0x80;                                      
+	   ADCCON1 |= 0x80;                                      
 		
-		ADCI=0;                                       
-    	ADCS=1;  
+		ADCI = 0;                                       
+    	ADCS = 1;  
 		
-		DataL=ADCCON0;
-		DataL=DataL>>6; 
+		DataL = ADCCON0;
+		DataL = DataL>>6; 
 
-		DataH=ADCH;
-		DataH=(DataH<<2)+DataL;
+		DataH = ADCH;
+		DataH = (DataH<<2) + DataL;
 
 		return DataH;
+		}
 	}
-}
 
 /*---------------------------------------------------
 	end of file

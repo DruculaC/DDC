@@ -27,7 +27,7 @@ tWord GetADCResult(tByte ch)
 		AADR1=0;
 		AADR2=1;
 	                                                                  
-	    ADCCON1|=0x80;                                          // Enable ADC Function   
+	   ADCCON1|=0x80;                                          // Enable ADC Function   
 		
 		ADCI=0;                                           // Clear ADC flag (ADCI=0)
     	ADCS=1;  

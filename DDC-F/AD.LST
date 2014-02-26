@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   AD                                                                    11/20/2013 10:31:17 PAGE 1   
+C51 COMPILER V9.51   AD                                                                    02/26/2014 15:28:12 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE AD
@@ -36,7 +36,7 @@ line level    source
   27   2            AADR1=0;
   28   2            AADR2=1;
   29   2                                                                           
-  30   2             ADCCON1|=0x80;                                          // Enable ADC Function   
+  30   2            ADCCON1|=0x80;                                          // Enable ADC Function   
   31   2            
   32   2            ADCI=0;                                           // Clear ADC flag (ADCI=0)
   33   2            ADCS=1;  
@@ -62,7 +62,7 @@ line level    source
   53   2            ADCI=0;                                           // Clear ADC flag (ADCI=0)
   54   2            ADCS=1;  
   55   2            
-C51 COMPILER V9.51   AD                                                                    11/20/2013 10:31:17 PAGE 2   
+C51 COMPILER V9.51   AD                                                                    02/26/2014 15:28:12 PAGE 2   
 
   56   2            DataL=ADCCON0;
   57   2            DataL=DataL>>6; 

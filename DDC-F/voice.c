@@ -20,15 +20,15 @@ void SC_Speech(tByte cnt)
 	{                   
 	tByte i;
 	SC_RST = 0;
-	delay_ms(40);
+	delay_ms(100);
 	SC_RST = 1;
-	delay_ms(40);
+	delay_ms(150);
 	for(i=0;i < cnt;i++)
 		{
 		SC_DATA = 1; 	// 数据脉冲高
-		delay_us(350); 	// 延时 100US
+		delay_us(20); 	// 延时 100US
 		SC_DATA = 0; 	// 数据脉冲低
-		delay_us(350); 	// 延时 100US
+		delay_us(20); 	// 延时 100US
 		}
 	}
 
@@ -42,9 +42,9 @@ void noVoice()
 	P14 = 0;
 	SC_DATA = 0;
 	SC_RST = 0;
-	delay_us(1000);	//上电复位防止干扰发声
+	delay_us(100);	//上电复位防止干扰发声
 	SC_RST = 1;
-	delay_us(1000);
+	delay_us(100);
 	P14 = 1;
 	}
 
@@ -55,10 +55,8 @@ void noVoice()
 void Alarm_stolen_speech(void)
 	{
 	Voice_EN = 1;
-	SC_Speech(5);
-	Delay(100);
-	SC_Speech(12);
-	Delay(50);
+	SC_Speech(4);
+	Delay(150);
 	Voice_EN = 0;
 	}
 	
@@ -93,7 +91,7 @@ void Alarm_fell_speech(void)
 void Battery_low_alarm_speech(void)
 	{
 		Voice_EN = 1;
-		SC_Speech(10);
+		SC_Speech(9);
 		Delay(120);
 		Voice_EN = 0;
 	}
@@ -105,7 +103,7 @@ void Battery_low_alarm_speech(void)
 void Battery_high_alarm_speech(void)
 	{
 	Voice_EN = 1;
-	SC_Speech(7);
+	SC_Speech(14);
 	Delay(120);
 	Voice_EN = 0;
 	}
@@ -121,6 +119,18 @@ void Host_battery_high_alarm_speech(void)
 		SC_Speech(7);  
 		Delay(80);
 		Voice_EN = 0;
+	}
+
+/*---------------------------------------------------------------
+	battery_stolen_speech()
+	接到主机电瓶被盗的信号后，语音提示
+---------------------------------------------------------------*/
+void battery_stolen_speech(void)
+	{
+	Voice_EN = 1;
+	SC_Speech(11);  
+	Delay(50);
+	Voice_EN = 0;
 	}
 
 /*---------------------------------------------------

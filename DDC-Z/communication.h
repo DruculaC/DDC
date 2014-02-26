@@ -9,15 +9,15 @@
 
 //-----public constants--------------------------------
 
-//通信编码由三部分组成，Head, Address和Command组成
 #define CmdHead 0xc8
 #define MyAddress 0xe0
 
-#define ComMode_1 0xc1	//通信模式1，附机收到此指令后，表明主机在附近，没有特别意义 
-#define ComMode_3 0xc3 	//通信模式3，附机收到此指令后，语音提示“有人在偷车”
-#define ComMode_4 0xc4 	//抬起指令，附机收到此指令后，语音提示“电动车被人抬起”
-#define ComMode_5 0xc5	//倒地指令，附机收到此指令后，语音提示“电动车倒地”
-#define ComMode_6 0xc6	//充电已满指，附机收到此指令后，语音提示“电动车的电池已经充满电”
+#define ComMode_1 0xc1	// the verification/confirmation signal. once slave receive this signal, slave transmit a confirmation signal.
+								// once host receive this signal, it knows slave is here.
+#define ComMode_2 0xc2 	// battery stolen signal out
+#define ComMode_3 0xc3 	// host stolen alarm signal 
+#define ComMode_4 0xc4 	// raised alarm signal
+#define ComMode_5 0xc5	// fell alarm signal
 
 //---------public function prototype
 
@@ -25,9 +25,12 @@ void initsignal(void);
 void initsignal2(void);
 void initsignal3(void);
 void ComMode_1_Data(void);
+void ComMode_2_Data(void);	
 void ComMode_3_Data(void);	
 void ComMode_4_Data(void);
 void ComMode_5_Data(void);
+void receive_byte(void);
+void receive_word(void);
 
 #endif
 											

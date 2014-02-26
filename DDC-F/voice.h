@@ -19,6 +19,7 @@ void Alarm_fell_speech(void);
 void Battery_low_alarm_speech(void);
 void Battery_high_alarm_speech(void);
 void Host_battery_high_alarm_speech(void);
+void battery_stolen_speech(void);
 
 
 #endif

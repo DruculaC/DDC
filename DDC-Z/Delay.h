@@ -16,6 +16,7 @@ void Delay3(unsigned int t);
 void Delay4(unsigned int t);
 void delay_ms(unsigned int count);
 void delay_us(unsigned int count);
+void magnet_delay(void);
 
 #endif
 											
