@@ -183,21 +183,24 @@ void timer0() interrupt interrupt_timer_0_overflow
 			}
 		
 		// detect whether key is rotated off
-		if((key_rotate == 0)&&(key_rotated_on_flag == 1)&&(horizontal_vibration == 0))
+		if((sensor_detect == 1)&&(horizontal_sensor == 1))
 			{
-			Delay(5);
-			if(key_rotate == 0)
+			if((key_rotate == 0)&&(key_rotated_on_flag == 1))
 				{
-				// handle with battery status
-				verifybattery(ADC_check_result);
-				// reset key rotation flag
-				key_rotated_on_flag=0;
+				Delay(5);
+				if(key_rotate == 0)
+					{
+					// handle with battery status
+					verifybattery(ADC_check_result);
+					// reset key rotation flag
+					key_rotated_on_flag=0;
+					
+					slave_away_operation();
+					}
 				
-				slave_away_operation();
-				}
-			
-			leave_count = 0;
-			}			
+				leave_count = 0;
+				}				
+			}
 		
 		// whether host has been touched 3 times, if yes, then alarm 2 speech alternantively.
 		if((host_stolen_alarm1_EN == 1)&&(host_stolen_alarm1_count < 4))
@@ -258,7 +261,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 					if(((sensor_detect == 0)||(horizontal_sensor == 0))&&(stolen_alarm_flag == 0))		
 						{
 						// judge LV is more than 2ms, if yes, it means a effective touch
-						if(++sensor_1ststage_count >= 1)			
+						if(++sensor_1ststage_count >= 2)			
 							{
 							sensor_1ststage_count=0;
 							
@@ -282,7 +285,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 					if((sensor_detect == 0)||(horizontal_sensor == 0))
 						{
 						// LV for 2s, means a effective touch
-						if(++sensor_2ndstage_count >= 1)
+						if(++sensor_2ndstage_count >= 2)
 							{
 							sensor_2ndstage_count = 0;
 							sensor_trigger_count = 2;
@@ -313,7 +316,7 @@ void timer0() interrupt interrupt_timer_0_overflow
 					if((sensor_detect == 0)||(horizontal_sensor == 0))
 						{
 						// 2s LV is a effective touch
-						if(++sensor_3rdstage_count >= 1)
+						if(++sensor_3rdstage_count >= 2)
 							{
 							sensor_3rdstage_count = 0;
 							// stolen alarm speech enable

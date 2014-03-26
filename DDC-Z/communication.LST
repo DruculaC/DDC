@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 1   
+C51 COMPILER V9.51   COMMUNICATION                                                         03/14/2014 16:47:54 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE COMMUNICATION
@@ -62,7 +62,7 @@ line level    source
   50   4               }
   51   3               P10=1;//常态为高电平
   52   3               mystartbuffer<<=1;
-C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 2   
+C51 COMPILER V9.51   COMMUNICATION                                                         03/14/2014 16:47:54 PAGE 2   
 
   53   3               Delay3(150);//延时要大于2ms
   54   3            }
@@ -126,7 +126,7 @@ line level    source
  112   2            {
  113   3               if((mystartbuffer&0x80)==0x80)//为1
  114   3               {
-C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 3   
+C51 COMPILER V9.51   COMMUNICATION                                                         03/14/2014 16:47:54 PAGE 3   
 
  115   4                  P10=0;
  116   4                  Delay3(80); //延时4.5ms以上，由于定时器占用问题，只能用这种延时来实现
@@ -190,7 +190,7 @@ line level    source
  174   3               myTxRxData[i]<<=1;
  175   3               Delay4(50);//延时要大于2ms
  176   3            }
-C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 4   
+C51 COMPILER V9.51   COMMUNICATION                                                         03/14/2014 16:47:54 PAGE 4   
 
  177   2         }
  178   1         transmiter_EN = 1;
@@ -207,7 +207,7 @@ line level    source
  189          {
  190   1         unsigned char i,n;
  191   1         receiver_EN = 1;
- 192   1         transmiter_power = 1;            
+ 192   1         transmiter_power = 0;            
  193   1         transmiter_EN = 0;
  194   1         myTxRxData[0]=CmdHead;
  195   1         myTxRxData[1]=MyAddress;
@@ -254,9 +254,9 @@ line level    source
  236   1      // unsigned int j;
  237   1         unsigned char i,n;
  238   1         receiver_EN = 1;
-C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 5   
+C51 COMPILER V9.51   COMMUNICATION                                                         03/14/2014 16:47:54 PAGE 5   
 
- 239   1         transmiter_power = 1;
+ 239   1         transmiter_power = 0;
  240   1         transmiter_EN = 0;
  241   1         myTxRxData[0]=CmdHead;
  242   1         myTxRxData[1]=MyAddress;
@@ -302,7 +302,7 @@ line level    source
  282          {
  283   1         unsigned char i,n;
  284   1         receiver_EN = 1;
- 285   1         transmiter_power = 1;
+ 285   1         transmiter_power = 0;
  286   1         transmiter_EN = 0;
  287   1         myTxRxData[0]=CmdHead;
  288   1         myTxRxData[1]=MyAddress;
@@ -318,7 +318,7 @@ line level    source
  298   1         {
  299   2            for(n=0;n<8;n++)
  300   2            {
-C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 6   
+C51 COMPILER V9.51   COMMUNICATION                                                         03/14/2014 16:47:54 PAGE 6   
 
  301   3               if((myTxRxData[i]&0x80)==0x80)//为1
  302   3               {
@@ -350,7 +350,7 @@ line level    source
  328          {
  329   1         unsigned char i,n;
  330   1         receiver_EN = 1;
- 331   1         transmiter_power = 1;//切换为300M发射
+ 331   1         transmiter_power = 0;//切换为300M发射
  332   1         transmiter_EN = 0;      //打开无线发射机
  333   1         myTxRxData[0]=CmdHead;
  334   1         myTxRxData[1]=MyAddress;
@@ -382,7 +382,7 @@ line level    source
  360   3            }
  361   2         }
  362   1         transmiter_EN = 1;
-C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 7   
+C51 COMPILER V9.51   COMMUNICATION                                                         03/14/2014 16:47:54 PAGE 7   
 
  363   1         transmiter_power = 1;
  364   1         receiver_EN = 0;
@@ -446,7 +446,7 @@ line level    source
  422   3               if(++receive_HV_count >= 60)
  423   3                  {
  424   4                  one_receive_byte_count = 0;
-C51 COMPILER V9.51   COMMUNICATION                                                         02/26/2014 15:42:02 PAGE 8   
+C51 COMPILER V9.51   COMMUNICATION                                                         03/14/2014 16:47:54 PAGE 8   
 
  425   4                  receive_wire_flag = 1;
  426   4                  data_count = 0;

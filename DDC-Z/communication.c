@@ -189,7 +189,7 @@ void ComMode_2_Data()
 {
 	unsigned char i,n;
 	receiver_EN = 1;
-	transmiter_power = 1;				
+	transmiter_power = 0;				
 	transmiter_EN = 0;
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
@@ -236,7 +236,7 @@ void ComMode_3_Data()
 //	unsigned int j;
 	unsigned char i,n;
 	receiver_EN = 1;
-	transmiter_power = 1;
+	transmiter_power = 0;
 	transmiter_EN = 0;
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
@@ -282,7 +282,7 @@ void ComMode_4_Data()//发送抬起编码
 {
 	unsigned char i,n;
 	receiver_EN = 1;
-	transmiter_power = 1;
+	transmiter_power = 0;
 	transmiter_EN = 0;
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;
@@ -328,7 +328,7 @@ void ComMode_5_Data()//发送倒地编码
 {
 	unsigned char i,n;
 	receiver_EN = 1;
-	transmiter_power = 1;//切换为300M发射
+	transmiter_power = 0;//切换为300M发射
 	transmiter_EN = 0;      //打开无线发射机
 	myTxRxData[0]=CmdHead;
 	myTxRxData[1]=MyAddress;

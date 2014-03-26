@@ -68,7 +68,10 @@ void slave_away_operation(void)
 	slave_nearby_operation_count = 0;
 	// reset relatively sensor count
 	sensor_trigger_count=0;
-	sensor_1ststage_count=0;					
+	sensor_1ststage_count=0;
+	
+	// delay time, avoid sensor trigger on.
+	Delay(20);
 	}
 
 /*----------------------------------------------------------------------

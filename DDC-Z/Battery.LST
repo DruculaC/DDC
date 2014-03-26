@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   BATTERY                                                               02/26/2014 15:42:02 PAGE 1   
+C51 COMPILER V9.51   BATTERY                                                               03/14/2014 16:47:54 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE BATTERY
@@ -30,42 +30,42 @@ line level    source
   21          
   22          void verifybattery(tWord Check2)
   23             {  
-  24   1         // battery is sufficient, battery > 54.6V, 3.18V/3.67V
-  25   1         if((Check2 >= 0x377))
+  24   1         // battery is sufficient, battery > 54.6V, 3.18V/4.04V
+  25   1         if((Check2 >= 0x326))
   26   1            {
   27   2            voice_EN = 1;
   28   2            SC_Speech(28);    
   29   2            Delay(50);
   30   2            voice_EN = 0;
   31   2            }
-  32   1         // 20km, 52V < battery < 54.6, 3.08V/3.67V
-  33   1         else if((Check2 < 0x374)&&(Check2 >= 0x35B))    
+  32   1         // 20km, 52V < battery < 54.6, 3.08V/4.04V
+  33   1         else if((Check2 < 0x322)&&(Check2 >= 0x30c))    
   34   1            {
   35   2            voice_EN = 1;
   36   2            SC_Speech(10);  
   37   2            Delay(80);
   38   2            voice_EN = 0;
   39   2            }
-  40   1         // 15km, 50V < battery < 52V, 2.98V/3.65V 
-  41   1         else if((Check2 < 0x358)&&(Check2 >= 0x344))    
+  40   1         // 15km, 50V < battery < 52V, 2.98V/4.04V 
+  41   1         else if((Check2 < 0x309)&&(Check2 >= 0x2f3))    
   42   1            {
   43   2            voice_EN = 1;
   44   2            SC_Speech(9);     
   45   2            Delay(80);
   46   2            voice_EN = 0;
   47   2            }
-  48   1         // 10km, 48V < battery <50V, 2.88V/3.64V
-  49   1         else if((Check2 < 0x341)&&(Check2 >= 0x32a))    
+  48   1         // 10km, 48V < battery <50V, 2.88V/4.04V
+  49   1         else if((Check2 < 0x3f0)&&(Check2 >= 0x2da))    
   50   1            {
   51   2            voice_EN = 1;
   52   2            SC_Speech(8);     
   53   2            Delay(80);
   54   2            voice_EN = 0;
   55   2            }
-C51 COMPILER V9.51   BATTERY                                                               02/26/2014 15:42:02 PAGE 2   
+C51 COMPILER V9.51   BATTERY                                                               03/14/2014 16:47:54 PAGE 2   
 
-  56   1         // 5km, 46V < battery < 48V, 2.78V/3.63V
-  57   1         else if((Check2 < 0x327)&&(Check2 >= 0x310))    
+  56   1         // 5km, 46V < battery < 48V, 2.78V/4.04V
+  57   1         else if((Check2 < 0x2d7)&&(Check2 >= 0x2c0))    
   58   1            {
   59   2            voice_EN =1;
   60   2            SC_Speech(7);     //4V电量充足提示
@@ -73,7 +73,7 @@ line level    source
   62   2            voice_EN = 0;
   63   2            }
   64   1         // battery is low, battery < 46V
-  65   1         else if((Check2 < 0x30d)&&(key_rotated_on_flag == 1))
+  65   1         else if((Check2 < 0x2bd)&&(key_rotated_on_flag == 1))
   66   1            {
   67   2            motorBAT_low_speech();
   68   2            }

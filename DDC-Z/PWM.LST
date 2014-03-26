@@ -1,4 +1,4 @@
-C51 COMPILER V9.51   PWM                                                                   02/26/2014 15:42:01 PAGE 1   
+C51 COMPILER V9.51   PWM                                                                   03/14/2014 16:47:53 PAGE 1   
 
 
 C51 COMPILER V9.51, COMPILATION OF MODULE PWM
@@ -62,7 +62,7 @@ line level    source
   53   3               PWM1H = HIBYTE(PWM_shadow);
   54   3               PWM1L = LOBYTE(PWM_shadow);
   55   3               }
-C51 COMPILER V9.51   PWM                                                                   02/26/2014 15:42:01 PAGE 2   
+C51 COMPILER V9.51   PWM                                                                   03/14/2014 16:47:53 PAGE 2   
 
   56   2            break;
   57   2            // PWM2 Duty (P1.7)
